@@ -22,7 +22,8 @@
 			<!-- Fonts -->
 			<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 			<link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@531&display=swap" rel="stylesheet">
-		
+			<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
 			<!-- Favicon -->
 			<link rel="icon" type="image/svg" href="/media/images/snowboarding-solid.svg" />
 		
@@ -32,16 +33,16 @@
 	<body data-spy="scroll" data-target="#mainNav">
 
 		<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" id="mainNav">
-			<a class="navbar-brand" href="{{ path('home') }}"><i class="fas fa-snowboarding"></i>  SnowTricks</a>
+			<a class="navbar-brand" href="{{ path('tricks') }}"><i class="fas fa-snowboarding"></i>  SnowTricks</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 				<div class="navbar-nav ml-auto">
-					<a class="nav-item nav-link active" href="{{ path('home') }}">Home
+					<a class="nav-item nav-link active" href="{{ path('tricks') }}">Home
 						<span class="sr-only">(current)</span>
 					</a>
-					<a class="nav-item nav-link nav-separator" href="#trickList">Tricks</a>
+					<a class="nav-item nav-link nav-separator" href="{{ path('tricks') }}">Tricks</a>
 					<a class="nav-item nav-link nav-separator" href="#">Sign in</a>
 					<a class="nav-item nav-link nav-separator" href="#">Sign out</a>
 				</div>

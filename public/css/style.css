@@ -12,10 +12,16 @@ Navy Blue: #183A50
 
 body {
     position: relative;
+    font-family: 'Roboto', sans-serif;
 }
 
-h1, h2, .navbar-brand {
+h1, h2, h5, .navbar-brand {
     font-family: 'MuseoModerno', cursive;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-style: italic;
 }
 
 /******* Nav *********/
@@ -47,11 +53,42 @@ h1, h2, .navbar-brand {
 footer {
     background-color: black;
     color: #89ACAA;
+    font-style: italic;
+    font-size: 0.7rem;
 }
 
 /*************************
 ******* Home Page ********
 *************************/
+
+.fa-arrow-down {
+    color: #89ACAA;
+    font-size: 2rem;
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
+    animation: arrow-nav 1000ms forwards infinite alternate;
+}
+
+.fa-arrow-up {
+    color: #89ACAA;
+    font-size: 2rem;
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
+    animation: arrow-nav 1000ms forwards infinite alternate;
+}
+
+@keyframes arrow-nav {
+	from {
+		transform: scale(1);
+		opacity: 0.2;
+	}
+	to {
+		transform: scale(1.1);
+		opacity: 1;
+	}
+}
 
 /******* Header *********/
 
@@ -78,38 +115,46 @@ footer {
     color: white;
 }
 
-.fa-arrow-down {
-    color: #89ACAA;
-    font-size: 2rem;
-    position: absolute;
-    right: 2rem;
-    bottom: 2rem;
-    animation: arrow-nav 1000ms forwards infinite alternate;
-}
-
-@keyframes arrow-nav {
-	from {
-		transform: scale(1);
-		opacity: 0.2;
-	}
-	to {
-		transform: scale(1.1);
-		opacity: 1;
-	}
-}
-
 /******* Trick List *********/
 
 #trickList {
-    height: 500px;
     position: relative;
+    padding: 5rem 0;
 }
 
-.fa-arrow-up {
-    color: #89ACAA;
-    font-size: 2rem;
-    position: absolute;
-    right: 2rem;
-    bottom: 2rem;
-    animation: arrow-nav 1000ms forwards infinite alternate;
+#trickList .card {
+    box-shadow: grey 0px 0px 20px -7px;
+    border-radius: 5%;
+    transform: scale(1);
+    transition: transform 0.3s;
 }
+
+#trickList .card:hover {
+    box-shadow: grey 0px 0px 20px -7px;
+    border-radius: 5%;
+    transform: scale(1.05);
+    transition: transform 0.3s;
+}
+
+#trickList .card-img-top {
+    border-radius: 5% 5% 0% 0%;
+}
+
+#trickList .card-title {
+    text-transform: capitalize;
+}
+
+#trickList .card-title a {
+    text-decoration: none;
+    color: black;
+}
+
+#trickList .card-title a:hover {
+    color: #89ACAA;
+    transition: color 0.3s;
+}
+
+#trickList .card-body .fas {
+    color: #89ACAA;
+}
+

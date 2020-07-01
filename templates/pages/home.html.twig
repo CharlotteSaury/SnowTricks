@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Site communautaire SnowTricks
+{% endblock %}
+
+
+{% block body %}
+	<div class="row" id="home">
+		<div class="container-fluid  homeHeader d-flex justify-content-center align-items-center px-0 mx-0">
+			<div class="homeTitle text-center py-4">
+				<h1>SnowTricks</h1>
+				<h2>La communauté</h2>
+			</div>
+		</div>
+		<a href="#trickList">
+			<i class="fas fa-arrow-down"></i>
+		</a>
+	</div>
+	<div class="row" id="trickList">
+		<div class="container"></div>
+		<a href="#home">
+			<i class="fas fa-arrow-up"></i>
+		</a>
+	</div>
+
+
+{% endblock %}

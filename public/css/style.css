@@ -1,0 +1,115 @@
+/*** Colors *****
+Taupe: #CDBDB2
+Spearmint: #89ACAA
+Honeysuckle: #BB616C
+Navy Blue: #183A50
+*/
+
+
+/*************************
+******* Global ********
+*************************/
+
+body {
+    position: relative;
+}
+
+h1, h2, .navbar-brand {
+    font-family: 'MuseoModerno', cursive;
+}
+
+/******* Nav *********/
+.navbar-brand {
+    color: #89ACAA !important;
+}
+
+.nav-separator {
+    position: relative;
+    margin-left: 1rem;
+}
+
+.nav-separator::before {
+    content: "";
+    position: absolute;
+    left: -10%;
+    height: 60%;
+    width: 2px;
+    background-color:#89ACAA
+}
+
+.nav-link .active a {
+    font-weight: bold !important;
+    color: #89ACAA !important;
+}
+
+/******* Footer *********/
+
+footer {
+    background-color: black;
+    color: #89ACAA;
+}
+
+/*************************
+******* Home Page ********
+*************************/
+
+/******* Header *********/
+
+#home {
+    position: relative;
+}
+
+.homeHeader {
+    background: url("../media/images/home.jpg") no-repeat fixed;
+    background-position: right;
+    position: relative;
+    height: 94vh;
+}
+
+.homeHeader .homeTitle {
+    position: relative;
+    top: 10%;
+    background-color: rgba(137, 172, 170, 0.5);
+    width: 100%; 
+}
+
+.homeHeader h1 {
+    font-size: 6rem;
+    color: white;
+}
+
+.fa-arrow-down {
+    color: #89ACAA;
+    font-size: 2rem;
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
+    animation: arrow-nav 1000ms forwards infinite alternate;
+}
+
+@keyframes arrow-nav {
+	from {
+		transform: scale(1);
+		opacity: 0.2;
+	}
+	to {
+		transform: scale(1.1);
+		opacity: 1;
+	}
+}
+
+/******* Trick List *********/
+
+#trickList {
+    height: 500px;
+    position: relative;
+}
+
+.fa-arrow-up {
+    color: #89ACAA;
+    font-size: 2rem;
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
+    animation: arrow-nav 1000ms forwards infinite alternate;
+}

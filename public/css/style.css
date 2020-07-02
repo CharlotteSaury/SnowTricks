@@ -15,7 +15,7 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
-h1, h2, h5, .navbar-brand {
+h1, h2, h5, button, .navbar-brand {
     font-family: 'MuseoModerno', cursive;
 }
 
@@ -158,3 +158,16 @@ footer {
     color: #89ACAA;
 }
 
+#loadMoreBtn {
+    border : black 1px solid;
+    box-shadow: 1px 1px 3px 1px;
+}
+
+.fa-spinner {
+    color: #89ACAA;
+}
+
+.fa-spinner:hover {
+    transform: rotate(360deg);
+    transition: transform 1000ms;
+}

@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=TrickRepository::class)
- * @ORM\HasLifeCycleCallbacks
  */
 class Trick
 {
@@ -30,12 +29,12 @@ class Trick
     private $description;
 
     /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     * @ORM\Column(type="datetime")
      */
     private $updatedAt;
 
@@ -43,6 +42,13 @@ class Trick
      * @ORM\Column(type="string", length=255)
      */
     private $mainImage;
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+        $this->updatedAt = new DateTime();
+        $this->mainImage = "/media/images/home.jpg";
+    }
 
     public function getId(): ?int
     {
@@ -114,12 +120,12 @@ class Trick
      * @ORM\PreUpdate
      * @return void
      */
-    public function updateTimestamps()
+    /*public function updateTimestamps()
     {
         if ($this->createdAt === null) {
             $this->setCreatedAt(new \DateTime());
         }
         $this->setUpdatedAt(new \DateTime());
-    }
+    }*/
 
 }

@@ -16,10 +16,10 @@
 			<i class="fas fa-arrow-down"></i>
 		</a>
 	</div>
-	<div class="row" id="trickList">
-		<div class="container-fluid d-flex flex-row justify-content-center">
+	<div class="container-fluid" id="trickList">
+		<div class="row justify-content-center">
 			{% for trick in tricks %}
-				<div class="col-md-2">
+				<div class="col-md-2 col-sm-4 mx-1 mb-5">
 					<div class="card">
 						<img src="{{ trick.mainImage }}" class="card-img-top" alt="Illustration de la figure {{ trick.name }}">
 						<div class="card-body d-flex flex-row justify-content-between">
@@ -35,9 +35,10 @@
 						</div>
 					</div>
 				</div>
-
-
 			{% endfor %}
+		</div>
+		<div class="row justify-content-center">
+			<button type="button" class="btn btn-light" id="loadMoreBtn"><i class="fas fa-spinner mr-3"></i>Load more</button>
 		</div>
 		<a href="#home">
 			<i class="fas fa-arrow-up"></i>

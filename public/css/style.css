@@ -74,8 +74,8 @@ footer {
     color: #89ACAA;
     font-size: 2rem;
     position: absolute;
-    right: 2rem;
-    bottom: 2rem;
+    right: 1rem;
+    bottom: 0rem;
     animation: arrow-nav 1000ms forwards infinite alternate;
 }
 
@@ -158,7 +158,7 @@ footer {
     color: #89ACAA;
 }
 
-#loadMoreBtn {
+#loadMoreBtn, #loadLessBtn {
     border : black 1px solid;
     box-shadow: 1px 1px 3px 1px;
 }

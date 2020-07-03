@@ -30,4 +30,17 @@ class TrickController extends AbstractController
             'tricks' => $tricks
         ]);
     }
+
+    /**
+     * @Route("/trick{id}/{slug}", name="trick.show")
+     * @return Response
+     */
+    public function show($id): Response
+    {
+        $trick = $this->repository->find($id);
+        return $this->render('trick/show.html.twig', [
+            'trick' => $trick
+        ]);
+    }
+    
 }

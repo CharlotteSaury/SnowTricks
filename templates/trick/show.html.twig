@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Figure
+{% endblock %}
+
+
+{% block body %}
+	<div class="container-fluid py-5 trick-bg">
+		<div class="container px-0" id="trickPage">
+			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{{ trick.mainImage }}');">
+				<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
+					<a href="#">
+						<i class="fas fa-pencil-alt"></i>
+					</a>
+					<a class="ml-3" href="#">
+						<i class="fas fa-trash-alt"></i>
+					</a>
+				</div>
+				<div class="text-center">
+					<h1>{{ trick.name }}</h1>
+				</div>
+			</div>
+			<div class="row py-3" id="trickMedia"></div>
+			<div class="row py-3 justify-content-center pb-0" id="trickInfos">
+				<p>{{ trick.description | nl2br }}</p>
+				<div class="row py-3">
+					<div class="badge badge-info mr-2">
+						Crée le: {{ trick.createdAt|date('d/m/Y') }}
+					</div>
+
+					{% if trick.updatedAt != trick.createdAt %}
+						<div class="badge badge-info mr-2">
+							Modifiée le: {{ trick.updatedAt|date('d/m/Y') }}
+						</div>
+					{% endif %}
+
+					<div class="trickInfo"></div>
+				</div>
+			</div>
+			<hr>
+			<div class="row py-3 justify-content-center" id="trickCommentForm">
+				<p>
+					<a href="">Inscrivez-vous</a>
+					ou
+					<a href="">connectez-vous</a>
+					pour participer à la discussion !
+				</p>
+			</div>
+			<hr>
+			<div class="row py-3 justify-content-center" id="trickComments"></div>
+
+		</div>
+	</div>
+</div>{% endblock %}

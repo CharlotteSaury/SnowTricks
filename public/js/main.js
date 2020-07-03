@@ -3,15 +3,11 @@ $(function () {
     var tricksPerPage = 5;
     var tricks = $('div.trick-card-div');
     $('#arrowUp').hide();
+    $('#loadLessBtn').hide();
 
     for (var i = tricksPerPage; i <= tricks.length - 1; i++) {
         tricks[i].remove();
     }
-
-    if (tricks.length >= tricksPerPage) {
-        $('#loadLessBtn').hide();
-    }
-
 
     $('#loadMoreBtn').on('click', function (e) {
         e.preventDefault();
@@ -37,5 +33,6 @@ $(function () {
         $('#loadLessBtn').hide();
         $('#loadMoreBtn').show();
         $('#arrowUp').hide();
+        
     });
 });

@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\TrickRepository;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -43,11 +45,17 @@ class Trick
      */
     private $mainImage;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Group::class, inversedBy="tricks")
+     */
+    private $groups;
+
     public function __construct()
     {
         $this->createdAt = new DateTime();
         $this->updatedAt = new DateTime();
         $this->mainImage = "/media/images/home.jpg";
+        $this->groups = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -127,5 +135,33 @@ class Trick
         }
         $this->setUpdatedAt(new \DateTime());
     }*/
+
+    /**
+     * @return Collection|Group[]
+     */
+    public function getGroups(): Collection
+    {
+        return $this->groups;
+    }
+
+    public function addGroup(Group $group): self
+    {
+        if (!$this->groups->contains($group)) {
+            $this->groups[] = $group;
+            $group->addTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroup(Group $group): self
+    {
+        if ($this->groups->contains($group)) {
+            $this->groups->removeElement($group);
+            $group->removeTrick($this);
+        }
+
+        return $this;
+    }
 
 }

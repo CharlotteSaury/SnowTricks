@@ -59,6 +59,12 @@ class User
      */
     private $tricks;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="users")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $role;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -200,6 +206,18 @@ class User
                 $trick->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRole(): ?Role
+    {
+        return $this->role;
+    }
+
+    public function setRole(?Role $role): self
+    {
+        $this->role = $role;
 
         return $this;
     }

@@ -285,6 +285,22 @@ footer {
     resize: none;
  }
 
+/*************************
+****** Login Page ********
+*************************/
 
+.login-div {
+    height: 79vh;
+}
 
+.login-form {
+    border: black 1px solid;
+    box-shadow: grey 1px 1px 6px 0px;
+    padding: 2rem 3rem;
+    border-radius: 10px;
+    background-color: whitesmoke;
+}
 
+.login-form input {
+    margin-bottom: 2rem;
+}

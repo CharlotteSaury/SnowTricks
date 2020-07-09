@@ -30,7 +30,8 @@ class UserRoleFixtures extends Fixture
             for ($i = $j ; $i < ($j + 10); $i++) {
                 $user = new User();
                 $password = $this->encoder->encodePassword($user, $faker->word);
-                $user->setEmail($faker->email)
+                $user->setUsername($faker->word)
+                    ->setEmail($faker->email)
                     ->setPassword($password)
                     ->setCreatedAt($faker->dateTime('now', null))
                     ->setAvatar($faker->imageUrl)

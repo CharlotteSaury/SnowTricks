@@ -18,7 +18,7 @@ class CommentFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 30; $i++) {
             $comment = new Comment();
 
-            $comment->setContent($faker->text(mt_rand(2, 300)))
+            $comment->setContent($faker->text(mt_rand(5, 300)))
                 ->setAuthor($this->getReference('user' . mt_rand(0, 29)))
                 ->setTrick($this->getReference('trick' . mt_rand(0, 29)))
                 ->setCreatedAt($faker->dateTime('-30 days', '-15 days', null));

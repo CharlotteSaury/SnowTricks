@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une figure
+{% endblock %}
+
+
+{% block body %}
+	<div class="container-fluid py-5 trick-bg">
+		{{ form_start(form) }}
+		<div class="container px-0" id="editPage">
+			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('/media/images/home.jpg');">
+				<div class="py-2 px-3 mr-auto return-btn">
+					<a href="{{ path('trick.index') }}" class="btn btn-info">
+						<i class="fas fa-undo-alt mr-2"></i>Retour
+					</a>
+				</div>
+				<div class="text-center">
+					<h1>Nouvelle Figure</h1>
+				</div>
+			</div>
+			<div class="row py-3" id="newTrickMedia"></div>
+			<div class="row py-3 d-flex flex-column align-items-center pb-0" id="newTrickInfos">
+				<div class="form-group w-75 mr-auto">
+					{{ form_widget(form.name, {'attr': {'placeholder': 'Nom de la figure *'}}) }}
+				</div>
+				<div class="form-group w-100">
+					{{ form_widget(form.description, {'attr': {'placeholder': 'Description de la figure *'}}) }}
+				</div>
+				<div class="form-group w-25 mr-auto">
+					{{ form_widget(form.groups) }}
+				</div>
+				<button type="submit" class="btn btn-info ml-auto">Enregistrer</button>
+
+			</div>
+
+		</div>
+
+		{{ form_end(form) }}
+	</div>
+</div>{% endblock %}

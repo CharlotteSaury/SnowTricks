@@ -23,7 +23,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
                 array_push($groups, $this->getReference('group' . mt_rand(0, 5)));
             }
 
-            $trick->setName($faker->sentence)
+            $trick->setName($faker->word)
                 ->setDescription($faker->text(mt_rand(200, 3000)))
                 ->setAuthor($this->getReference('user' . mt_rand(0, 29)))
                 ->setCreatedAt($faker->dateTimeBetween('-30 days', '-15 days', null))

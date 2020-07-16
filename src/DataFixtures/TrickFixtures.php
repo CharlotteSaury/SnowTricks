@@ -19,7 +19,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 30; $i++) {
             $trick = new Trick();
             $groups = [];
-            for ($j = 1; $j < mt_rand(0,4); $j++) {
+            for ($j = 1; $j < mt_rand(1,4); $j++) {
                 array_push($groups, $this->getReference('group' . mt_rand(0, 5)));
             }
 

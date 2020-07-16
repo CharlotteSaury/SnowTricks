@@ -172,7 +172,7 @@ footer {
     transition: color 0.3s;
 }
 
-#loadMoreBtn, #loadLessBtn {
+.loadMoreBtn, .loadLessBtn {
     border : black 1px solid;
     box-shadow: 1px 1px 3px 1px;
 }
@@ -230,6 +230,24 @@ footer {
     padding-left: 7rem;
 }
 
+#trickInfos .badge {
+    padding: 0.4rem !important;
+    letter-spacing: 0.05rem;
+}
+
+#trickGroup {
+    position: relative;
+}
+
+#trickGroup::before {
+    content: "";
+    position: absolute;
+    left: -1rem;
+    height: 100%;
+    width: 2px;
+    background-color:#89ACAA
+}
+
 #trickPage hr {
     border-top: rgba(137, 172, 170, 0.2) 1px solid;
     margin-right: 9rem;
@@ -253,23 +271,82 @@ footer {
     color: black;
 }
 
-#trickInfos .badge {
-    padding: 0.4rem !important;
-    letter-spacing: 0.05rem;
-}
-
-#trickGroup {
+.trick-comment-content {
+    background-color: rgba(137, 172, 170, 0.1);
+    border-radius: 5px;
+    padding: 1rem;
     position: relative;
+    width: 85%;
 }
 
-#trickGroup::before {
-    content: "";
+.trick-comment-content::before {
+    content: '';
     position: absolute;
     left: -1rem;
-    height: 100%;
-    width: 2px;
-    background-color:#89ACAA
+    top: -0.3rem;
+    border-top: white solid 1rem;
+    border-bottom: rgba(137, 172, 170, 0.1) solid 1rem;
+    border-left: white solid 1rem;
 }
+
+.trick-comment-content p:last-child {
+    font-style: italic;
+    font-weight: bold;
+    font-size: 0.75rem;
+    text-align: right;
+}
+
+.trick-comment-avatar {
+    width: 15%;
+}
+
+.avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+}
+
+@media (max-width:991px) {
+    #trickInfos, #trickCommentForm, #trickComments {
+        padding-right: 4rem;
+        padding-left: 4rem;
+    }
+    #trickPage hr {
+        margin-right: 4rem;
+        margin-left: 4rem;
+    }
+}
+
+@media (max-width:768px) {
+    #trickInfos, #trickCommentForm, #trickComments {
+        padding-right: 2rem;
+        padding-left: 2rem;
+    }
+    #trickPage hr {
+        margin-right: 2rem;
+        margin-left: 2rem;
+    }
+    .avatar {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+    }
+}
+
+@media (max-width:576px) {
+    .avatar {
+        width: 3rem;
+        height: 3rem;
+    }
+    .trick-comment-avatar {
+        width: 20%;
+    }
+    #trickCommentForm a {
+        font-size: 1rem;
+    }
+    
+}
+
 
 /*************************
 ****** New Trick Page ********

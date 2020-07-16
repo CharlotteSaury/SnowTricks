@@ -30,7 +30,7 @@ class CommentFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return array(
-            UserRoleFixtures::class,
+            UserFixtures::class,
             TrickFixtures::class
         );
     }

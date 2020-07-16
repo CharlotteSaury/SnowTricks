@@ -45,7 +45,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return array(
-            UserRoleFixtures::class,
+            UserFixtures::class,
             GroupFixtures::class
         );
     }

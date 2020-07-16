@@ -6,10 +6,14 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface, \Serializable
 {
@@ -22,13 +26,25 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Length(min="5", max="30")
+     */
+    private $username;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Email
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min="6", max="30")
      */
     private $password;
+
+    private $confirmPassword;
 
     /**
      * @ORM\Column(type="datetime")
@@ -41,12 +57,14 @@ class User implements UserInterface, \Serializable
     private $avatar;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(min="2", max="30")
      */
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(min="2", max="30")
      */
     private $lastName;
 
@@ -61,23 +79,18 @@ class User implements UserInterface, \Serializable
     private $tricks;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="users", )
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="boolean")
      */
-    private $role;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $username;
+    private $isVerified = false;
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tricks = new ArrayCollection();
+        $this->createdAt = new \DateTime();
     }
 
-      public function getId(): ?int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -166,6 +179,18 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
+    public function getConfirmPassword(): ?string
+    {
+        return $this->confirmPassword;
+    }
+
+    public function setConfirmPassword(string $confirmPassword): self
+    {
+        $this->confirmPassword = $confirmPassword;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Comment[]
      */
@@ -228,26 +253,8 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function getRole(): ?Role
-    {
-        return $this->role;
-    }
-
-    public function setRole(?Role $role): self
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
     /**
      * Returns the roles granted to the user.
-     *
-     *     public function getRoles()
-     *     {
-     *         return ['ROLE_USER'];
-     *     
-     *
      * Alternatively, the roles might be stored on a ``roles`` property,
      * and populated in any number of different ways when the user object
      * is created.
@@ -256,7 +263,7 @@ class User implements UserInterface, \Serializable
      */
     public function getRoles()
     {
-        return $this->getRole();
+        return ['ROLE_USER'];
     }
 
     /**
@@ -266,7 +273,7 @@ class User implements UserInterface, \Serializable
      *
      * @return string|null The salt
      */
-    public function getSalt() 
+    public function getSalt()
     {
         return null;
     }
@@ -280,13 +287,13 @@ class User implements UserInterface, \Serializable
     public function eraseCredentials()
     {
     }
-     
-     /**
-      * String representation of object
-      *
-      * @return string the string representation of the object or null
-      */
-    public function serialize ()
+
+    /**
+     * String representation of object
+     *
+     * @return string the string representation of the object or null
+     */
+    public function serialize()
     {
         return $this->serialize([
             $this->id,
@@ -303,13 +310,22 @@ class User implements UserInterface, \Serializable
      */
     public function unserialize($serialized)
     {
-        list (
+        list(
             $this->id,
             $this->username,
-            $this->password 
-            )= \unserialize($serialized, ['allowad_classes' => false]);
+            $this->password
+        ) = \unserialize($serialized, ['allowed_classes' => false]);
     }
 
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
 
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
 
+        return $this;
+    }
 }

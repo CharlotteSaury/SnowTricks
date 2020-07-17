@@ -271,6 +271,19 @@ footer {
     color: black;
 }
 
+#trickCommentForm form {
+    width: 100%;
+}
+
+#trickCommentForm textarea {
+    height: 5rem;
+}
+
+.textarea-comment {
+    width: 70%;
+    margin-bottom: 0;
+}
+
 .trick-comment-content {
     background-color: rgba(137, 172, 170, 0.1);
     border-radius: 5px;
@@ -330,6 +343,9 @@ footer {
         width: 4rem;
         height: 4rem;
         border-radius: 50%;
+    }
+    .textarea-comment {
+        width: 100%;
     }
 }
 

@@ -1,16 +1,15 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        users_in_memory: { memory: null }
-        in_database:
+        from_database:
             entity:
                 class: App\Entity\User
                 property: username
     
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+        # dev:
+            # pattern: ^/(_(profiler|wdt)|css|images|js)/
+            # security: false
         main:
             anonymous: true
             lazy: true
@@ -22,7 +21,7 @@ security:
                 # where to redirect after logout
                 target: trick.index
             
-            provider : in_database
+            provider : from_database
             form_login:
                 login_path: app_login
                 check_path: app_login
@@ -36,7 +35,8 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # - { path: ^/trick, roles: ROLE_USER }
     encoders:
-        App\Entity\User:
+        entity: 
+            class: App\Entity\User
             algorithm: auto

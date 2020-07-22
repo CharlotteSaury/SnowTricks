@@ -4,22 +4,24 @@ namespace App\Form;
 
 use App\Entity\Group;
 use App\Entity\Trick;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType as TypeEntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType as TypeEntityType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class TrickType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $trick = new Trick;
         $builder
             ->add('name', null, [
                 'required' => true,
                 'label' => false
             ])
-            ->add('description', null, [
+            ->add('description', TextareaType::class, [
                 'required' => true,
                 'label' => false
             ])
@@ -30,9 +32,20 @@ class TrickType extends AbstractType
                 'choice_label' => 'name',
                 'multiple' => true
             ])
-            ->add('author', )
-            //->add('mainImage')
-        ;
+            ->add('mainImage', FileType::class, [
+                'label' => 'Define the main image',
+                'mapped' => false,
+                'required' => false
+            ])
+            ->add('images', CollectionType::class, [
+                'entry_type'   		=> ImageType::class,
+                'prototype'			=> true,
+                'allow_add'			=> true,
+                'allow_delete'		=> true,
+                'by_reference' 		=> false,
+                'required'			=> false,
+                'label'			=> false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -35,7 +35,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/trick, roles: ROLE_USER }
+        - { path: ^/user, roles: ROLE_USER }
     encoders:
         entity: 
             class: App\Entity\User

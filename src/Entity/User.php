@@ -41,6 +41,7 @@ class User implements UserInterface, \Serializable
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Length(min="6", max="30")
+     * @Assert\EqualTo(propertyPath="confirmPassword")
      */
     private $password;
 
@@ -88,6 +89,7 @@ class User implements UserInterface, \Serializable
         $this->comments = new ArrayCollection();
         $this->tricks = new ArrayCollection();
         $this->createdAt = new \DateTime();
+        $this->avatar = '/media/images/snowboarder.png';
     }
 
     public function getId(): ?int

@@ -7,7 +7,7 @@
 {% block body %}
 	<div class="container-fluid py-5 trick-bg">
 		<div class="container-lg px-0" id="trickPage">
-			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{{ trick.mainImage }}');">
+			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/'~trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
 				<div class="py-2 px-3 mr-auto return-btn">
 					<a href="{{ path('trick.index') }}#trickList" class="btn btn-info">
 						<i class="fas fa-undo-alt mr-2"></i>Retour
@@ -24,12 +24,21 @@
 						</a>
 					</div>
 				{% endif %}
-
 				<div class="text-center">
 					<h1>{{ trick.name }}</h1>
 				</div>
 			</div>
-			<div class="row py-3" id="trickMedia"></div>
+
+			<div class="row py-5 px-5 justify-content-center" id="trickMedia">
+				{% if trick.images is not null %}
+					{% for image in trick.images %}
+						<div class="col-md-2">
+							<a href="{{ asset('media/uploads/'~image.name) }}"><img class="img-thumbnail" src="{{ asset('media/uploads/'~image.name) }}" alt="{{ trick.name }}"/></a>
+						</div>
+					{% endfor %}
+				{% endif %}
+			</div>
+			
 			<div class="row py-3 d-flex flex-column align-items-center pb-0 text-justify" id="trickInfos">
 				<p>{{ trick.description | nl2br }}</p>
 				<div class="row py-3 justify-content-center">
@@ -53,13 +62,8 @@
 							{% endfor %}
 						</div>
 					{% endif %}
-
-
 				</div>
-			</div>
-			<hr>
-			<div class="row py-3 justify-content-center text-center" id="trickCommentForm">
-				
+			</div><hr><div class="row py-3 justify-content-center text-center" id="trickCommentForm">
 				{% if app.user %}
 					{{ form_start(form) }}
 					<div class='d-flex flex-column flex-md-row justify-content-center align-items-center'>
@@ -82,10 +86,7 @@
 						{{ message }}
 					</div>
 				{% endfor %}
-
-			</div>
-			<hr>
-			<div class="row py-3 justify-content-center" id="trickComments">
+			</div><hr><div class="row py-3 justify-content-center" id="trickComments">
 				{% if trick.comments is not empty %}
 					{% for comment in trick.comments %}
 						<div class="d-flex justify-content-start align-items-center mb-3 w-100 trick-comment">
@@ -111,11 +112,8 @@
 					<p>No comments. Be the first to discuss about this trick !</p>
 				{% endif %}
 				<button type="button" class="btn btn-light loadMoreBtn" id="loadMoreCommentsBtn">
-					<i class="fas fa-spinner mr-3"></i>Load more
-				</button>
-
+					<i class="fas fa-spinner mr-3"></i>Load more</button>
 			</div>
-
 		</div>
 	</div>
 </div>{% endblock %}

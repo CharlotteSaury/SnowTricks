@@ -190,7 +190,7 @@ footer {
 ****** Trick Page ********
 *************************/
 
-#trickPage {
+#trickPage, #editPage {
     box-shadow: grey 1px 1px 10px -4px;
     border-radius: 10px;
     background-color: white;
@@ -223,6 +223,19 @@ footer {
     position: absolute;
     top: 0.5rem;
     left: 0.5rem;
+}
+
+#trickMedia .img-thumbnail {
+    height: 10rem;
+    object-fit: cover;
+    border: none !important;
+    padding: 0;
+    box-shadow: grey 1px 1px 5px -1px;
+}
+
+#trickMedia .img-thumbnail:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s;
 }
 
 #trickInfos {
@@ -367,7 +380,7 @@ footer {
 /*************************
 ****** New Trick Page ********
 *************************/
-#newTrickInfos {
+#newTrickInfos, #newTrickMainImage, #newTrickImages {
     padding-right: 8rem;
     padding-left: 8rem;
 } 
@@ -376,6 +389,14 @@ footer {
     overflow-y: scroll;
     height: 200px;
     resize: none;
+ }
+
+ #image-fields-list {
+     padding-left: 0rem;
+ }
+
+ #image-fields-list li {
+     list-style-type: none;
  }
 
 /*************************

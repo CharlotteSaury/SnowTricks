@@ -59,6 +59,11 @@ class UserTrickController extends AbstractController
                 $trick->addImage($image);
             }
 
+            $videos = $form->get('videos')->getData();
+            foreach($videos as $video) {
+                $trick->addVideo($video);
+            }
+
             $this->em->persist($trick);
             $this->em->flush();
             $this->addFlash('success', 'Your trick is posted !');

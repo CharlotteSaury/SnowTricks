@@ -223,20 +223,25 @@ footer {
     position: absolute;
     top: 0.5rem;
     left: 0.5rem;
-}
+} 
 
-#trickMedia .img-thumbnail {
+/* ////// Media div /////// */
+
+.trick-media {
     height: 10rem;
     object-fit: cover;
     border: none !important;
     padding: 0;
     box-shadow: grey 1px 1px 5px -1px;
+    border-radius: 5px;
 }
 
-#trickMedia .img-thumbnail:hover {
+.trick-media:hover {
     transform: scale(1.05);
     transition: transform 0.3s;
 }
+
+/* ////// Trick infos div /////// */
 
 #trickInfos {
     padding-right: 7rem;
@@ -266,6 +271,8 @@ footer {
     margin-right: 9rem;
     margin-left: 9rem;
 }
+
+/* ////// Comment div /////// */
 
 #trickCommentForm, #trickComments {
     padding-right: 10rem;
@@ -380,7 +387,7 @@ footer {
 /*************************
 ****** New Trick Page ********
 *************************/
-#newTrickInfos, #newTrickMainImage, #newTrickImages {
+#newTrickInfos, #newTrickMainImage, #newMedia {
     padding-right: 8rem;
     padding-left: 8rem;
 } 
@@ -391,11 +398,11 @@ footer {
     resize: none;
  }
 
- #image-fields-list {
+ #image-fields-list, #video-fields-list {
      padding-left: 0rem;
  }
 
- #image-fields-list li {
+ #image-fields-list li, #video-fields-list li {
      list-style-type: none;
  }
 

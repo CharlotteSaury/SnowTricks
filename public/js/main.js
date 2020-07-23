@@ -87,7 +87,4 @@ $(function () {
         newElem.appendTo(list);
     });
 
-
-
-
 });

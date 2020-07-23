@@ -19,17 +19,31 @@
 					{{ form_row(form.mainImage) }}
 				</div>
 			</div>
-			<div class="row py-5 d-flex flex-column" id="newTrickImages">
-				<ul id="image-fields-list" data-prototype="{{ form_widget(form.images.vars.prototype)|e }}" data-widget-tags="{{ '<li></li>'|e }}" data-widget-counter="{{ form.images|length }}">
-					{% for imageField in form.images %}
-						<li>
-							{{ form_errors(imageField) }}
-							{{ form_widget(imageField) }}
-						</li>
-					{% endfor %}
-				</ul>
-				<button type="button" class="add-another-collection-widget" data-list-selector="#image-fields-list">Add an image</button>
+			<div class="row d-flex justify-content-center" id="newMedia">
+				<div class="col py-5 d-flex flex-column" id="newTrickImages">
+					<ul id="image-fields-list" data-prototype="{{ form_widget(form.images.vars.prototype)|e }}" data-widget-tags="{{ '<li></li>'|e }}" data-widget-counter="{{ form.images|length }}">
+						{% for imageField in form.images %}
+							<li>
+								{{ form_errors(imageField) }}
+								{{ form_widget(imageField) }}
+							</li>
+						{% endfor %}
+					</ul>
+					<button type="button" class="add-another-collection-widget btn btn-info" data-list-selector="#image-fields-list">Add an image</button>
+				</div>
+				<div class="col py-5 d-flex flex-column" id="newTrickVideos">
+					<ul id="video-fields-list" data-prototype="{{ form_widget(form.videos.vars.prototype)|e }}" data-widget-tags="{{ '<li></li>'|e }}" data-widget-counter="{{ form.videos|length }}">
+						{% for videoField in form.videos %}
+							<li>
+								{{ form_errors(videoField) }}
+								{{ form_widget(videoField) }}
+							</li>
+						{% endfor %}
+					</ul>
+					<button type="button" class="add-another-collection-widget btn btn-info" data-list-selector="#video-fields-list">Add a video (youtube url only)</button>
+				</div>
 			</div>
+
 
 			<div class="row py-3 d-flex flex-column align-items-center pb-0" id="newTrickInfos">
 				<div class="form-group w-75 mr-auto">

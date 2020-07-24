@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit trick
+{% endblock %}
+
+
+{% block body %}
+	<div class="container-fluid py-5 trick-bg">
+		{{ form_start(form) }}
+		<div class="container px-0 pb-5" id="editPage">
+			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/'~trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
+				<div class="py-2 px-3 mr-auto return-btn">
+					<a href="{{ path('trick.index') }}" class="btn btn-info">
+						<i class="fas fa-undo-alt mr-2"></i>Back
+					</a>
+				</div>
+				<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
+
+					<button class="edit-mainImg" type="button" title="Edit main image">
+						<i class="fas fa-pencil-alt"></i>
+					</button>
+					<button class="ml-3 delete-mainImg" type="button" title="Delete main image">
+						<i class="fas fa-trash-alt"></i>
+					</button>
+				</div>
+				<div class="text-center">
+					<h1 class="mb-5">{{ trick.name }}</h1>
+					<div class="mainImg-input">
+						{{ form_widget(form.mainImage) }}
+					</div>
+				</div>
+			</div>
+			<div class="row pt-5 pb-2s px-2 justify-content-center" id="trickMedia">
+				{% if trick.images is not null %}
+					{% for image in form.images %}
+						<div class="col-2 media-slider mb-3 mx-2 px-0">
+							<img class="img-thumbnail trick-media" src="{{ asset('media/uploads/'~image.vars.value.name) }}" alt="{{ trick.name }}"/>
+							<div class="edit-media-input">
+								{{ form_errors(image) }}
+								{{ form_widget(image, {'attr': {'value': 'image.vars.value'}}) }}
+							</div>
+							<div class="card-actions trick-media-actions py-2 px-3 mt-2 ml-auto mr-2">
+								<button class="edit-media-button" type="button">
+									<i class="fas fa-pencil-alt"></i>
+								</button>
+								<button class="delete-media-button ml-3" type="button">
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</div>
+						</div>
+
+					{% endfor %}
+				{% endif %}
+				{% if trick.videos is not null %}
+					{% for video in form.videos %}
+						<div class="col-3 media-slider mb-3 mx-2 px-0">
+							<iframe class="trick-media" src="https://www.youtube.com/embed/{{ video.vars.value.name[32:] }}" width="100%" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							<div class="edit-media-input">
+								{{ form_errors(video) }}
+								{{ form_widget(video) }}
+							</div>
+							<div class="card-actions trick-media-actions py-2 px-3 mt-2 ml-auto mr-2">
+								<button class="edit-media-button" type="button">
+									<i class="fas fa-pencil-alt"></i>
+								</button>
+								<button class="delete-media-button ml-3" type="button">
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</div>
+						</div>
+					{% endfor %}
+				{% endif %}
+			</div>
+			<div class="row d-flex justify-content-center" id="newMedia">
+				<div class="col pt-2 pb-5 d-flex flex-column" id="newTrickImages">
+					<ul id="image-fields-list" data-prototype="{{ form_widget(form.images.vars.prototype)|e }}" data-widget-tags="{{ '<li></li>'|e }}" data-widget-counter="{{ form.images|length }}">
+						{% for imageField in form.images %}
+							{% if image.vars.value.name is not defined %}{% endif %}
+						{% endfor %}
+					</ul>
+					<button type="button" class="add-another-collection-widget btn btn-info" data-list-selector="#image-fields-list">Add an image</button>
+				</div>
+				<div class="col pt-2 pb-5 d-flex flex-column" id="newTrickVideos">
+					<ul id="video-fields-list" data-prototype="{{ form_widget(form.videos.vars.prototype)|e }}" data-widget-tags="{{ '<li></li>'|e }}" data-widget-counter="{{ form.videos|length }}">
+						{% for videoField in form.videos %}
+							{% if image.vars.value.name is not defined %}{% endif %}
+
+						{% endfor %}
+					</ul>
+					<button type="button" class="add-another-collection-widget btn btn-info" data-list-selector="#video-fields-list">Add a video (youtube url only)</button>
+				</div>
+			</div>
+
+
+			<div class="row py-3 d-flex flex-column align-items-center pb-0" id="newTrickInfos">
+				<div class="form-group w-75 mr-auto">
+					{{ form_errors(form.name) }}
+					{{ form_widget(form.name, {'attr': {'placeholder': 'Trick name *'}}) }}
+				</div>
+				<div class="form-group w-100">
+					{{ form_errors(form.description) }}
+					{{ form_widget(form.description, {'attr': {'placeholder': 'Trick description *'}}) }}
+				</div>
+				<div class="form-group w-25 mr-auto">
+					{{ form_widget(form.groups) }}
+				</div>
+				<div class="d-flex ml-auto">
+					<a href="" class="btn btn-danger ml-auto">Delete</a>
+					<button type="submit" class="btn btn-info ml-2">Save</button>
+				</div>
+
+			</div>
+
+		</div>
+
+		{{ form_end(form) }}
+	</div>
+</div>{% endblock %}

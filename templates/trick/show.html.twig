@@ -6,43 +6,69 @@
 
 {% block body %}
 	<div class="container-fluid py-5 trick-bg">
-		<div class="container px-0" id="trickPage">
-			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{{ trick.mainImage }}');">
+		<div class="container-lg px-0" id="trickPage">
+			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/'~trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
 				<div class="py-2 px-3 mr-auto return-btn">
 					<a href="{{ path('trick.index') }}#trickList" class="btn btn-info">
-							<i class="fas fa-undo-alt mr-2"></i>Retour
+						<i class="fas fa-undo-alt mr-2"></i>Retour
 					</a>
 				</div>
-				<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
-					
-						<a href="">
+				{% if app.user %}
+					<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
+
+						<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
 							<i class="fas fa-pencil-alt"></i>
 						</a>
 						<a class="ml-3" href="#">
 							<i class="fas fa-trash-alt"></i>
 						</a>
-				</div>
+					</div>
+				{% endif %}
 				<div class="text-center">
 					<h1>{{ trick.name }}</h1>
 				</div>
 			</div>
-			<div class="row py-3" id="trickMedia"></div>
-			<div class="row py-3 d-flex flex-column align-items-center pb-0" id="trickInfos">
+
+			<div class="row py-5 px-2 justify-content-center" id="trickMedia">
+				{% if trick.images is not null %}
+					{% for image in trick.images %}
+						<div class="media-slider mb-3 mx-2">
+							<img class="img-thumbnail trick-media" width="175" src="{{ asset('media/uploads/'~image.name) }}" alt="{{ trick.name }}"/>
+						</div>
+					{% endfor %}
+				{% endif %}
+				{% if trick.videos is not null %}
+					{% for video in trick.videos %}
+						<div class="media-slider mb-3 mx-2">
+							<iframe class="trick-media" src="https://www.youtube.com/embed/{{ video.name[32:] }}" width="250" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						</div>
+					{% endfor %}
+				{% endif %}
+			</div>
+
+			<div class="row py-3 d-flex flex-column align-items-center pb-0 text-justify" id="trickInfos">
 				<p>{{ trick.description | nl2br }}</p>
-				<div class="row py-4">
+				<div class="row py-3 justify-content-center">
 					<div class="badge badge-light mr-2">
-						Crée le:
-						{{ trick.createdAt|date('d/m/Y') }}
+					By : 
+						{% if trick.author.firstName is not null and trick.author.lastName is not null %}
+							{{ trick.author.firstName }} {{ trick.author.lastName }}
+						{% else %}
+							{{ trick.author.username }}
+						{% endif %}
+					</div>
+					<div class="badge badge-light ml-4 mr-2" id="trickDates">
+						Created at:
+						{{ trick.createdAt|format_datetime() }}
+						<br>
+						{% if trick.updatedAt != trick.createdAt %}
+							<span>(Updated at:
+								{{ trick.updatedAt|format_datetime() }})</span>
+						{% endif %}
 					</div>
 
-					{% if trick.updatedAt != trick.createdAt %}
-						<div class="badge badge-light mr-2">
-							Modifiée le:
-							{{ trick.updatedAt|date('d/m/Y') }}
-						</div>
-					{% endif %}
 					{% if trick.groups is not empty %}
-						<div class="ml-4 d-flex" id="trickGroup">
+						<div class="ml-4 mr-2 d-flex" id="trickGroup">
 							{% for group in trick.groups %}
 								<div class="badge badge-info ml-2">
 									{{ group.name }}
@@ -50,22 +76,58 @@
 							{% endfor %}
 						</div>
 					{% endif %}
-
-
 				</div>
-			</div>
-			<hr>
-			<div class="row py-3 justify-content-center" id="trickCommentForm">
-				<p>
-					<a href="">Inscrivez-vous</a>
-					ou
-					<a href="">connectez-vous</a>
-					pour participer à la discussion !
-				</p>
-			</div>
-			<hr>
-			<div class="row py-3 justify-content-center" id="trickComments"></div>
+			</div><hr><div class="row py-3 justify-content-center text-center" id="trickCommentForm">
+				{% if app.user %}
+					{{ form_start(form) }}
+					<div class='d-flex flex-column flex-md-row justify-content-center align-items-center'>
+						{{ form_row(form.content) }}
+						<button type="submit" class="btn btn-info ml-4">Leave a comment</button>
+					</div>
+					{{ form_end(form) }}
+				{% else %}
+					<p>
+						<a href="{{ path('app_register') }}">Sign up
+						</a>
+						or
+						<a href="{{ path('app_login') }}">sign in
+						</a>
+						to leave a comment !
+					</p>
+				{% endif %}
+				{% for message in app.flashes('success') %}
+					<div class="alert alert-info w-100 mt-3">
+						{{ message }}
+					</div>
+				{% endfor %}
+			</div><hr><div class="row py-3 justify-content-center" id="trickComments">
+				{% if trick.comments is not empty %}
+					{% for comment in trick.comments %}
+						<div class="d-flex justify-content-start align-items-center mb-3 w-100 trick-comment">
+							<div class="trick-comment-avatar">
+								<img class="avatar mr-4" src="{{ comment.author.getAvatar() }}"/>
+							</div>
+							<div class="text-justify trick-comment-content mb-2">
+								<p>{{ comment.content }}</p>
+								<p class="pr-2 mb-0">
+									{% if comment.author.getFirstName() is not null and comment.author.getLastName() is not null %}
+										{{ comment.author.getFirstName() }}
+										{{ comment.author.getLastName() }}
+									{% else %}
+										{{ comment.author.getusername() }}
+									{% endif %}
+									-
+									{{ comment.createdAt|format_datetime(locale='us') }}</p>
+							</div>
 
+						</div>
+					{% endfor %}
+				{% else %}
+					<p>No comments. Be the first to discuss about this trick !</p>
+				{% endif %}
+				<button type="button" class="btn btn-light loadMoreBtn" id="loadMoreCommentsBtn">
+					<i class="fas fa-spinner mr-3"></i>Load more</button>
+			</div>
 		</div>
 	</div>
 </div>{% endblock %}

@@ -6,11 +6,16 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
-class User
+class User implements UserInterface, \Serializable
 {
     /**
      * @ORM\Id()
@@ -21,13 +26,26 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Length(min="5", max="30")
+     */
+    private $username;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Email
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min="6", max="30")
+     * @Assert\EqualTo(propertyPath="confirmPassword")
      */
     private $password;
+
+    private $confirmPassword;
 
     /**
      * @ORM\Column(type="datetime")
@@ -40,12 +58,14 @@ class User
     private $avatar;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(min="2", max="30")
      */
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(min="2", max="30")
      */
     private $lastName;
 
@@ -60,18 +80,19 @@ class User
     private $tricks;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="users")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="boolean")
      */
-    private $role;
+    private $isVerified = false;
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tricks = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->avatar = '/media/images/snowboarder.png';
     }
 
-      public function getId(): ?int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -148,6 +169,30 @@ class User
         return $this;
     }
 
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function getConfirmPassword(): ?string
+    {
+        return $this->confirmPassword;
+    }
+
+    public function setConfirmPassword(string $confirmPassword): self
+    {
+        $this->confirmPassword = $confirmPassword;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Comment[]
      */
@@ -210,16 +255,79 @@ class User
         return $this;
     }
 
-    public function getRole(): ?Role
+    /**
+     * Returns the roles granted to the user.
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return string[] The user roles
+     */
+    public function getRoles()
     {
-        return $this->role;
+        return ['ROLE_USER'];
     }
 
-    public function setRole(?Role $role): self
+    /**
+     * Returns the salt that was originally used to encode the password.
+     *
+     * This can return null if the password was not encoded using a salt.
+     *
+     * @return string|null The salt
+     */
+    public function getSalt()
     {
-        $this->role = $role;
+        return null;
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     */
+    public function eraseCredentials()
+    {
+    }
+
+    /**
+     * String representation of object
+     *
+     * @return string the string representation of the object or null
+     */
+    public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->username,
+            $this->password
+        ]);
+    }
+
+    /**
+     * Construct the object
+     *
+     * @param string $serialized <p> The string representation of the object </p>
+     * @return void
+     */
+    public function unserialize($serialized)
+    {
+        list(
+            $this->id,
+            $this->username,
+            $this->password
+        ) = \unserialize($serialized, ['allowed_classes' => false]);
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }
-
 }

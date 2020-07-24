@@ -16,7 +16,7 @@
 				{% if app.user %}
 					<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
 
-						<a href="">
+						<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
 							<i class="fas fa-pencil-alt"></i>
 						</a>
 						<a class="ml-3" href="#">
@@ -29,41 +29,48 @@
 				</div>
 			</div>
 
-			<div class="row py-5 px-auto justify-content-center" id="trickMedia">
-					{% if trick.images is not null %}
-						{% for image in trick.images %}
-							<div class="media-slider mb-3 mx-2">
-								<img class="img-thumbnail trick-media" width="175" src="{{ asset('media/uploads/'~image.name) }}" alt="{{ trick.name }}"/>
-							</div>
-						{% endfor %}
-					{% endif %}
-					{% if trick.videos is not null %}
-						{% for video in trick.videos %}
-							<div class="media-slider mb-3 mx-2">
-								<iframe class="trick-media" src="https://www.youtube.com/embed/{{ video.name[32:] }}" width="250" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-							</div>
-						{% endfor %}
-					{% endif %}
+			<div class="row py-5 px-2 justify-content-center" id="trickMedia">
+				{% if trick.images is not null %}
+					{% for image in trick.images %}
+						<div class="media-slider mb-3 mx-2">
+							<img class="img-thumbnail trick-media" width="175" src="{{ asset('media/uploads/'~image.name) }}" alt="{{ trick.name }}"/>
+						</div>
+					{% endfor %}
+				{% endif %}
+				{% if trick.videos is not null %}
+					{% for video in trick.videos %}
+						<div class="media-slider mb-3 mx-2">
+							<iframe class="trick-media" src="https://www.youtube.com/embed/{{ video.name[32:] }}" width="250" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						</div>
+					{% endfor %}
+				{% endif %}
 			</div>
 
 			<div class="row py-3 d-flex flex-column align-items-center pb-0 text-justify" id="trickInfos">
 				<p>{{ trick.description | nl2br }}</p>
 				<div class="row py-3 justify-content-center">
-					<div class="badge badge-light mr-2 mb-2">
+					<div class="badge badge-light mr-2">
+					By : 
+						{% if trick.author.firstName is not null and trick.author.lastName is not null %}
+							{{ trick.author.firstName }} {{ trick.author.lastName }}
+						{% else %}
+							{{ trick.author.username }}
+						{% endif %}
+					</div>
+					<div class="badge badge-light ml-4 mr-2" id="trickDates">
 						Created at:
-						{{ trick.createdAt|date('d/m/Y') }}
+						{{ trick.createdAt|format_datetime() }}
+						<br>
+						{% if trick.updatedAt != trick.createdAt %}
+							<span>(Updated at:
+								{{ trick.updatedAt|format_datetime() }})</span>
+						{% endif %}
 					</div>
 
-					{% if trick.updatedAt != trick.createdAt %}
-						<div class="badge badge-light mr-2 mb-2">
-							Updated at:
-							{{ trick.updatedAt|date('d/m/Y') }}
-						</div>
-					{% endif %}
 					{% if trick.groups is not empty %}
-						<div class="ml-4 d-flex" id="trickGroup">
+						<div class="ml-4 mr-2 d-flex" id="trickGroup">
 							{% for group in trick.groups %}
-								<div class="badge badge-info ml-2 mb-2">
+								<div class="badge badge-info ml-2">
 									{{ group.name }}
 								</div>
 							{% endfor %}

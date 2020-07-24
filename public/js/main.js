@@ -19,7 +19,7 @@ $(function () {
     $('#loadMoreTricksBtn').on('click', function (e) {
         e.preventDefault();
         tricksPerPage += 5;
-        for (var i = 0; i <= tricksPerPage -1; i++) {
+        for (var i = 0; i <= tricksPerPage - 1; i++) {
             $('#trickList').append(tricks[i]);
         }
         if (tricks.length <= tricksPerPage) {
@@ -40,7 +40,7 @@ $(function () {
         $('#loadLessTricksBtn').hide();
         $('#loadMoreTricksBtn').show();
         $('#arrowUp').hide();
-        
+
     });
 
     // LoadMoreComments button
@@ -56,7 +56,7 @@ $(function () {
     $('#loadMoreCommentsBtn').on('click', function (e) {
         e.preventDefault();
         commentsPerPage += 5;
-        for (var i = 0; i <= commentsPerPage -1; i++) {
+        for (var i = 0; i <= commentsPerPage - 1; i++) {
             $('#trickComments').append(comments[i]);
         }
         if (comments.length <= commentsPerPage) {
@@ -65,6 +65,11 @@ $(function () {
     });
 
     // Trick images upload
+
+    $(document).on('change', '.custom-file-input', function () {
+        let fileName = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
+        $(this).parent('.custom-file').find('.custom-file-label').text(fileName);
+    });
 
     $('.add-another-collection-widget').click(function (e) {
         var list = $($(this).attr('data-list-selector'));
@@ -85,6 +90,45 @@ $(function () {
         // create a new list element and add it to the list
         var newElem = $(list.attr('data-widget-tags')).html(newWidget);
         newElem.appendTo(list);
+        handleDeleteButtons();
+        updateCounterImage();
+        updateCounterVideo();
     });
+
+    function handleDeleteButtons() {
+        $('button[data-action="delete"]').click(function () {
+            var target = $(this).attr('data-target');
+            $(target).parent().remove();
+            updateCounterImage();
+            updateCounterVideo();
+        })
+    }
+
+    function updateCounterImage() {
+        var count = +$('#image-fields-list').children().length;
+        $('#image-counter').val(count);
+    }
+
+    function updateCounterVideo() {
+        var count = +$('#video-fields-list').children().length;
+        $('#video-counter').val(count);
+    }
+
+    $('.edit-mainImg').click(function (e) {
+        $('.mainImg-input').css('display', 'block');
+    })
+
+    $('.delete-mainImg').click(function (e) {
+        $('#trickMainImg').css('background', 'none').css('background-color', 'grey');
+        $('.mainImg-input').css('display', 'block');
+    })
+
+    $('.edit-media-button').click(function (e) {
+        $(this).parent().parent().find('.edit-media-input').css('display', 'block');
+    })
+
+    $('.delete-media-button').click(function (e) {
+        $(this).parent().parent().remove();
+    })
 
 });

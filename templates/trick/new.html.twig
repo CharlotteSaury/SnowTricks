@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter une figure
+{% block title %}Add new trick
 {% endblock %}
 
 
@@ -19,9 +19,9 @@
 					{{ form_row(form.mainImage) }}
 				</div>
 			</div>
-			<div class="row d-flex justify-content-center" id="newMedia">
-				<div class="col py-5 d-flex flex-column" id="newTrickImages">
-					<ul id="image-fields-list" data-prototype="{{ form_widget(form.images.vars.prototype)|e }}" data-widget-tags="{{ '<li></li>'|e }}" data-widget-counter="{{ form.images|length }}">
+			<div class="row d-flex justify-content-center pt-3" id="newMedia">
+				<div class="col pt-2 pb-5 d-flex flex-column" id="newTrickImages">
+					<ul id="image-fields-list" data-prototype="{{ form_widget(form.images.vars.prototype)|e }}" data-widget-tags="{{ '<li></li>'|e }}" data-widget-counter="">
 						{% for imageField in form.images %}
 							<li>
 								{{ form_errors(imageField) }}
@@ -29,9 +29,10 @@
 							</li>
 						{% endfor %}
 					</ul>
-					<button type="button" class="add-another-collection-widget btn btn-info" data-list-selector="#image-fields-list">Add an image</button>
+					<input type="hidden" id="image-counter">
+					<button type="button" id="add-image" class="add-another-collection-widget btn btn-info" data-list-selector="#image-fields-list">Add an image</button>
 				</div>
-				<div class="col py-5 d-flex flex-column" id="newTrickVideos">
+				<div class="col pt-2 pb-5 d-flex flex-column" id="newTrickVideos">
 					<ul id="video-fields-list" data-prototype="{{ form_widget(form.videos.vars.prototype)|e }}" data-widget-tags="{{ '<li></li>'|e }}" data-widget-counter="{{ form.videos|length }}">
 						{% for videoField in form.videos %}
 							<li>
@@ -40,7 +41,8 @@
 							</li>
 						{% endfor %}
 					</ul>
-					<button type="button" class="add-another-collection-widget btn btn-info" data-list-selector="#video-fields-list">Add a video (youtube url only)</button>
+					<input type="hidden" id="video-counter">
+					<button type="button"  id="add-video" class="add-another-collection-widget btn btn-info" data-list-selector="#video-fields-list">Add a video (youtube url only)</button>
 				</div>
 			</div>
 

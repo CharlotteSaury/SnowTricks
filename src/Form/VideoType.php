@@ -4,9 +4,10 @@ namespace App\Form;
 
 use App\Entity\Video;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
 class VideoType extends AbstractType
 {
@@ -17,6 +18,14 @@ class VideoType extends AbstractType
                 'label' => false,
                 'required' => false
             ])
+            ->add('delete', ButtonType::class, [
+                'label_html' => true,
+                'label' => '<i class="fas fa-times"></i>',
+                'attr' => [
+                    'data-action' => 'delete',
+                    'data-target' => '#trick_videos___name__'
+                ]
+            ]);
         ;
     }
 

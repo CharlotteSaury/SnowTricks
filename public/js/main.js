@@ -131,4 +131,11 @@ $(function () {
         $(this).parent().parent().remove();
     })
 
+    /* ********** Passing trick infos to modal ********* */
+
+    $('#deleteTrickModal').on('show.bs.modal', function (e) {
+        $(this).find('#trick_deletion').attr('action', $(e.relatedTarget).data('action'));
+        $(this).find('#csrf_deletion').attr('value', $(e.relatedTarget).data('token'));
+    });
+
 });

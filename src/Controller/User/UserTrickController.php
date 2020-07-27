@@ -86,13 +86,11 @@ class UserTrickController extends AbstractController
     /**
      * @Route("/user/trick/edit{id}", name="user.trick.edit")
      */
-    public function edit($id, Request $request)
+    public function edit(Trick $trick, Request $request)
     {
-        $trick = $this->trickRepository->find($id);
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
-        
         if ($form->isSubmitted() && $form->isValid()) {
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
@@ -125,15 +123,27 @@ class UserTrickController extends AbstractController
             $this->addFlash('success', 'Your trick has been modified !');
 
             return $this->redirectToRoute('trick.show', [
-                'id' => $id,
+                'id' => $trick->getId(),
                 'slug' => $trick->getName()
             ]);
         }
-
 
         return $this->render('trick/edit.html.twig', [
             'trick' => $trick,
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/user/trick/delete{id}", name="user.trick.delete", methods="DELETE")
+     */
+    public function delete(Request $request, Trick $trick)
+    {
+        if ($this->isCsrfTokenValid('trick_deletion_' . $trick->getId(), $request->get('_token'))) {
+            $this->em->remove($trick);
+            $this->em->flush();
+            $this->addFlash('success', 'Your trick has been deleted !');
+        }
+        return $this->redirectToRoute('trick.index');
     }
 }

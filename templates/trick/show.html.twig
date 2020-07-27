@@ -19,9 +19,9 @@
 						<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
 							<i class="fas fa-pencil-alt"></i>
 						</a>
-						<a class="ml-3" href="#">
+						<button class="btn btn-info ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
 							<i class="fas fa-trash-alt"></i>
-						</a>
+						</button>
 					</div>
 				{% endif %}
 				<div class="text-center">
@@ -50,9 +50,10 @@
 				<p>{{ trick.description | nl2br }}</p>
 				<div class="row py-3 justify-content-center">
 					<div class="badge badge-light mr-2">
-					By : 
+						By :
 						{% if trick.author.firstName is not null and trick.author.lastName is not null %}
-							{{ trick.author.firstName }} {{ trick.author.lastName }}
+							{{ trick.author.firstName }}
+							{{ trick.author.lastName }}
 						{% else %}
 							{{ trick.author.username }}
 						{% endif %}

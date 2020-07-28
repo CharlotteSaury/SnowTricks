@@ -1,0 +1,56 @@
+
+/*************************
+******* Global ********
+*************************/
+
+
+#dashboard-nav {
+    background-color: whitesmoke;
+}
+#dashboard-nav .nav-item {
+    padding-left: 1rem;
+}
+
+#dashboard-nav li a{
+    color: #89ACAA;
+    text-decoration: none;
+}
+
+#dashboard-nav li:hover, #dashboard-nav .active{
+    background-color: white;
+    border-left: 3px solid #89ACAA;
+}
+
+#dashboard-top {
+    background-color: whitesmoke;
+    height: 59px;
+}
+
+#dashboard-top a {
+    height: fit-content;
+}
+
+#dashboard-content {
+    height: 85vh;
+}
+
+/*************************
+******* My Tricks page ********
+*************************/
+
+.user-trick-mainImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#userTricks .trick-description {
+    font-size: 0.90rem;
+}
+
+@media (min-width:576px) {
+    #userTricks {
+        max-height: 83vh;
+        overflow-y: scroll;
+    }
+}

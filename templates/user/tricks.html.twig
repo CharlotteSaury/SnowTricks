@@ -1,0 +1,49 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}My tricks
+{% endblock %}
+
+
+{% block body %}
+	<div class="px-5 py-4" id="userTricks">
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-info w-100 mt-3 text-center">
+				{{ message }}
+			</div>
+		{% endfor %}
+		{% for trick in tricks %}
+			<div class="card mb-3">
+				<div class="row no-gutters">
+					<div class="col-md-4">
+						<a href="{{ path('trick.show', {id: trick.id, slug: (trick.name|lower|replace({' ':'_'})) }) }}"><img class="user-trick-mainImage" src="{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/'~trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}"></a>
+					</div>
+					<div class="col-md-8">
+						<div class="card-body">
+							<div class="d-flex justify-content-between align-items-center">
+								<h5 class="card-title"><a href="{{ path('trick.show', {id: trick.id, slug: trick.slug}) }}">{{ trick.name }}<a/></h5>
+								<div class="card-actions trick-actions px-2 py-1">
+									<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
+										<i class="fas fa-pencil-alt"></i>
+									</a>
+									<button class="ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}" data-name="{{ trick.name }}">
+										<i class="fas fa-trash-alt"></i>
+									</button>
+								</div>
+							</div>
+							<p class="card-text trick-description">{{ trick.description|slice(0,100) }}...</p>
+							<p class="card-text">
+								<small class="text-muted">Created at:
+									{{ trick.createdAt|format_datetime() }}
+									{% if trick.createdAt != trick.updatedAt %}
+										<br> Last update: {{ trick.updatedAt|format_datetime() }}
+									{% endif %}
+								</small>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+
+{% endblock %}

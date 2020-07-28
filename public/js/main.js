@@ -136,6 +136,7 @@ $(function () {
     $('#deleteTrickModal').on('show.bs.modal', function (e) {
         $(this).find('#trick_deletion').attr('action', $(e.relatedTarget).data('action'));
         $(this).find('#csrf_deletion').attr('value', $(e.relatedTarget).data('token'));
+        $(this).find('.modal-title').text('Trick deletion : ' + $(e.relatedTarget).data('name'));
     });
 
 });

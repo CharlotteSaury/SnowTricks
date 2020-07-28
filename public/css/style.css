@@ -169,12 +169,12 @@ footer {
     font-size: 1rem;
 }
 
-#trickList .card-title a {
+#trickList .card-title a, #userTricks .card-title a {
     text-decoration: none;
     color: black;
 }
 
-#trickList .card-title a:hover {
+#trickList .card-title a:hover, #userTricks .card-title a:hover {
     color: #89ACAA;
     transition: color 0.3s;
 }

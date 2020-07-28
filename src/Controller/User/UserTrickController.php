@@ -5,10 +5,11 @@ namespace App\Controller\User;
 use App\Entity\Image;
 use App\Entity\Trick;
 use App\Form\TrickType;
-use App\Repository\TrickRepository;
 use App\Repository\UserRepository;
+use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -74,7 +75,7 @@ class UserTrickController extends AbstractController
             $this->em->persist($trick);
             $this->em->flush();
             $this->addFlash('success', 'Your trick is posted !');
-            return $this->redirectToRoute('trick.index');
+            return $this->redirectToRoute('user.tricks');
         }
 
         return $this->render('trick/new.html.twig', [
@@ -120,12 +121,9 @@ class UserTrickController extends AbstractController
 
             $this->em->persist($trick);
             $this->em->flush();
-            $this->addFlash('success', 'Your trick has been modified !');
+            $this->addFlash('success', 'Your trick has been edited !');
 
-            return $this->redirectToRoute('trick.show', [
-                'id' => $trick->getId(),
-                'slug' => $trick->getName()
-            ]);
+            return $this->redirectToRoute('user.tricks');
         }
 
         return $this->render('trick/edit.html.twig', [
@@ -146,4 +144,19 @@ class UserTrickController extends AbstractController
         }
         return $this->redirectToRoute('trick.index');
     }
+
+    /**
+     * @Route("user/tricks", name="user.tricks")
+     * @return Response
+     */
+    public function index(): Response
+    {    
+        $tricks = $this->trickRepository->findByAuthor($this->getUser()->getId());
+
+        return $this->render('user/tricks.html.twig', [
+            'tricks' => $tricks,
+            'nav' => 'myTricks'
+        ]);
+    }
+
 }

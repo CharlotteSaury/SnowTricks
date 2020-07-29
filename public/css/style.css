@@ -306,6 +306,21 @@ footer {
     margin-left: 9rem;
 }
 
+#userModal .modal-dialog {
+    max-width: 75%;
+}
+
+#userModalAvatar {
+    max-width: 100%;
+}
+
+@media (max-width:767px) {
+    #userModalInfos {
+        text-align: center;
+    }
+}
+
+
 /* ////// Comment div /////// */
 
 #trickCommentForm, #trickComments {

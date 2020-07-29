@@ -131,6 +131,14 @@ $(function () {
         $(this).parent().parent().remove();
     })
 
+    /* ********** Passing user infos to modal ********* */
+
+    $('#userModal').on('show.bs.modal', function (e) {
+        $(this).find('#userModalName').text($(e.relatedTarget).data('name'));
+        $(this).find('#userModalAvatar').attr('src', $(e.relatedTarget).data('avatar'));
+        $(this).find('#userModalEmail').text($(e.relatedTarget).data('description'));
+    });
+
     /* ********** Passing trick infos to modal ********* */
 
     $('#deleteTrickModal').on('show.bs.modal', function (e) {

@@ -4,9 +4,6 @@ namespace App\Controller\User;
 
 use App\Entity\User;
 use App\Form\UserType;
-use App\Repository\UserRepository;
-use App\Repository\TrickRepository;
-use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,26 +16,8 @@ class UserController extends AbstractController
      */
     private $em;
 
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * @var TrickRepository
-     */
-    private $trickRepository;
-
-        /**
-     * @var TrickRepository
-     */
-    private $commentRepository;
-
-    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, CommentRepository $commentRepository, EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->userRepository = $userRepository;
-        $this->trickRepository = $trickRepository;
-        $this->commentRepository = $commentRepository;
         $this->em = $em;
     }
 
@@ -59,11 +38,9 @@ class UserController extends AbstractController
     public function profile(Request $request, User $user)
     {
         $form = $this->createForm(UserType::class, $user);
-        $password = $user->getPassword();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword($password);
             $this->em->persist($user);
             $this->em->flush();
             $this->addFlash('success', 'Your profile has been updated !');

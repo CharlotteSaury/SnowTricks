@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,10 +29,16 @@ class UserController extends AbstractController
      */
     private $trickRepository;
 
-    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, EntityManagerInterface $em)
+        /**
+     * @var TrickRepository
+     */
+    private $commentRepository;
+
+    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, CommentRepository $commentRepository, EntityManagerInterface $em)
     {
         $this->userRepository = $userRepository;
         $this->trickRepository = $trickRepository;
+        $this->commentRepository = $commentRepository;
         $this->em = $em;
     }
 
@@ -72,4 +79,5 @@ class UserController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
 }

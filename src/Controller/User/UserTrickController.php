@@ -142,7 +142,7 @@ class UserTrickController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Your trick has been deleted !');
         }
-        return $this->redirectToRoute('trick.index');
+        return $this->redirectToRoute('user.tricks');
     }
 
     /**

@@ -33,14 +33,14 @@
 									<a href="{{ path('trick.show', {id: trick.id, slug: trick.slug }) }}">{{ trick.name }}</a>
 								</h5>
 							</div>
-							{% if app.user %}
+							{% if app.user.id == trick.author.id %}
 								<div class="col-4 px-0 text-center card-actions d-flex align-items-center">
 									<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
 										<i class="fas fa-pencil-alt"></i>
 									</a>
-									<button class="btn btn-info ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
+									<a class="ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
 										<i class="fas fa-trash-alt"></i>
-									</button>
+									</a>
 								</div>
 							{% endif %}
 

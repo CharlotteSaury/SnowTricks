@@ -1,0 +1,49 @@
+<!-- Modal Trick deletion-->
+		<div class="modal fade" id="deleteTrickModal" tabindex="-1" role="dialog" aria-labelledby="deleteTrickModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteTrickModalTitle"></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						Do you really want to delete this trick ?
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+						<form method="post" id="trick_deletion">
+							<input type="hidden" name="_method" value="DELETE">
+							<input type="hidden" name="_token" id="csrf_deletion">
+							<button class="btn btn-danger ml-2">Delete trick</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal Comment deletion-->
+		<div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteTrickModal">Comment deletion</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						Do you really want to delete this comment ?
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+						<form method="post" id="comment_deletion">
+							<input type="hidden" name="_method" value="DELETE">
+							<input type="hidden" name="_token" id="csrf_deletion">
+							<button class="btn btn-danger ml-2">Delete comment</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>

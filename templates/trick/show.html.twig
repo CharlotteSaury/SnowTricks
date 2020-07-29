@@ -19,9 +19,9 @@
 						<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
 							<i class="fas fa-pencil-alt"></i>
 						</a>
-						<button class="btn btn-info ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
+						<a class="ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
 							<i class="fas fa-trash-alt"></i>
-						</button>
+						</a>
 					</div>
 				{% endif %}
 				<div class="text-center">
@@ -106,7 +106,7 @@
 					{% for comment in trick.comments %}
 						<div class="d-flex justify-content-start align-items-center mb-3 w-100 trick-comment">
 							<div class="trick-comment-avatar">
-								<img class="avatar mr-4" src="{{ comment.author.getAvatar() }}"/>
+								<img class="avatar mr-4" src="{%if comment.author.avatar is not null %}{{ comment.author.getAvatar() }}{% else %}{{ asset('media/images/snowboarder.png') }}{% endif %}"/>
 							</div>
 							<div class="text-justify trick-comment-content mb-2">
 								<p>{{ comment.content }}</p>
@@ -118,7 +118,15 @@
 										{{ comment.author.getusername() }}
 									{% endif %}
 									-
-									{{ comment.createdAt|format_datetime(locale='us') }}</p>
+									{{ comment.createdAt|format_datetime(locale='us') }}
+									{% if app.user.id == comment.author.id %}
+										-
+										<a class="ml-2" data-toggle="modal" data-target="#deleteCommentModal" data-action="{{ path('user.comment.delete', {id: comment.id}) }}" data-token="{{ csrf_token('comment_deletion_' ~ comment.id) }}">
+											<i class="fas fa-trash-alt"></i>
+										</a>
+									{% endif %}
+
+								</p>
 							</div>
 
 						</div>

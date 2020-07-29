@@ -139,6 +139,13 @@ $(function () {
         $(this).find('.modal-title').text('Trick deletion : ' + $(e.relatedTarget).data('name'));
     });
 
+    /* ********** Passing comment infos to modal ********* */
+
+    $('#deleteCommentModal').on('show.bs.modal', function (e) {
+        $(this).find('#comment_deletion').attr('action', $(e.relatedTarget).data('action'));
+        $(this).find('#csrf_deletion').attr('value', $(e.relatedTarget).data('token'));
+    });
+
     /* ******** user profile page ****** */
 
     $('#editAvatarBtn').click(function (e) {

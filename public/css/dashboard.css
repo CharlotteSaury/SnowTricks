@@ -58,7 +58,7 @@
 }
 
 @media (min-width:576px) {
-    #userTricks {
+    #userTricks, #userComments {
         max-height: 83vh;
         overflow-y: scroll;
     }

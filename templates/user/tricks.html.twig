@@ -15,7 +15,7 @@
 			<div class="card mb-3">
 				<div class="row no-gutters">
 					<div class="col-md-4">
-						<a href="{{ path('trick.show', {id: trick.id, slug: (trick.name|lower|replace({' ':'_'})) }) }}"><img class="user-trick-mainImage" src="{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/'~trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}"></a>
+						<a href="{{ path('trick.show', {id: trick.id, slug: trick.slug}) }}"><img class="user-trick-mainImage" src="{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/'~trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}"></a>
 					</div>
 					<div class="col-md-8">
 						<div class="card-body">

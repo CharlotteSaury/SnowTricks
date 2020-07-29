@@ -58,7 +58,7 @@
 								<a class="dropdown-item" href="{{ path('user.profile', {username: app.user.username }) }}">Profile</a>
 								<a class="dropdown-item" href="{{ path('user.tricks') }}">My tricks</a>
 								<a class="dropdown-item" href="{{ path('user.trick.new') }}">Add trick</a>
-								<a class="dropdown-item" href="#">My comments</a>
+								<a class="dropdown-item" href="{{ path('user.comments') }}">My comments</a>
 								<div class="dropdown-divider"></div>
 								<a class="dropdown-item" href="{{ path('user.dashboard', {id: app.user.id }) }}">Dashboard</a>
 							</div>
@@ -72,30 +72,7 @@
 
 		{% block body %}{% endblock %}
 
-		<!-- Modal -->
-		<div class="modal fade" id="deleteTrickModal" tabindex="-1" role="dialog" aria-labelledby="deleteTrickModal" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="deleteTrickModalTitle"></h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						Do you really want to delete this trick ?
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-						<form method="post" id="trick_deletion">
-							<input type="hidden" name="_method" value="DELETE">
-							<input type="hidden" name="_token" id="csrf_deletion">
-							<button class="btn btn-danger ml-2">Delete trick</button>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
+		{% include "modal.html.twig" %}
 
 		<footer class="row mx-0 py-3 text-left">
 			<p class="mb-0 ml-4">Copyright

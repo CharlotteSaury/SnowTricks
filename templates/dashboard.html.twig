@@ -34,7 +34,7 @@
 
 	<body data-spy="scroll" data-target="#dashboard-nav">
 		<div class="container-fluid px-0" class="d-flex" id="dashboard">
-			<div class="row d-flex justify-content-between align-items-center" id="dashboard-top" >
+			<div class="row d-flex justify-content-between align-items-center" id="dashboard-top">
 				<a href="{{ path('trick.index') }}" class="btn btn-info mx-4">
 					<i class="fas fa-undo-alt mr-2"></i>Back to SnowTricks
 				</a>
@@ -62,7 +62,7 @@
 								<i class="fas fa-plus-square mr-2"></i>Add trick</a>
 						</li>
 						<li class="nav-item {% if nav is defined and nav == 'myComments' %}active{% endif %}">
-							<a class="nav-link" href="#">
+							<a class="nav-link" href="{{ path('user.comments') }}">
 								<i class="fas fa-comment-dots mr-2"></i>My comments</a>
 						</li>
 						<li class="nav-item">
@@ -71,39 +71,14 @@
 						</li>
 					</ul>
 				</nav>
-				<div class="col-sm-9 px-0">
-				
-					{% block body %}{% endblock %}
+				<div class="col-sm-9 px-0"> {% block body %}{% endblock %}
 
-				</div>
-			</div>
-
-		</div>
-
-			<!-- Modal -->
-			<div class="modal fade" id="deleteTrickModal" tabindex="-1" role="dialog" aria-labelledby="deleteTrickModal" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="deleteTrickModal">Trick deletion</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							Do you really want to delete this trick ?
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-							<form method="post" id="trick_deletion">
-								<input type="hidden" name="_method" value="DELETE">
-								<input type="hidden" name="_token" id="csrf_deletion">
-								<button class="btn btn-danger ml-2">Delete trick</button>
-							</form>
-						</div>
 					</div>
 				</div>
+
 			</div>
+
+			{% include "modal.html.twig" %}
 
 			<footer class="row mx-0 py-3 text-left">
 				<p class="mb-0 ml-4">Copyright

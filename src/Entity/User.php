@@ -40,8 +40,8 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Length(min="6", max="30")
-     * @Assert\EqualTo(propertyPath="confirmPassword")
+     * @Assert\Length(min="6", max="30", groups={"registration"})
+     * @Assert\EqualTo(propertyPath="confirmPassword", groups={"registration"})
      */
     private $password;
 
@@ -84,12 +84,16 @@ class User implements UserInterface, \Serializable
      */
     private $isVerified = false;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tricks = new ArrayCollection();
         $this->createdAt = new \DateTime();
-        $this->avatar = '/media/images/snowboarder.png';
     }
 
     public function getId(): ?int
@@ -327,6 +331,18 @@ class User implements UserInterface, \Serializable
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

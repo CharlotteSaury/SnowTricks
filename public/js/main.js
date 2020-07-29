@@ -139,4 +139,11 @@ $(function () {
         $(this).find('.modal-title').text('Trick deletion : ' + $(e.relatedTarget).data('name'));
     });
 
+    /* ******** user profile page ****** */
+
+    $('#editAvatarBtn').click(function (e) {
+        $('.avatar-input').css('display', 'block');
+        $(this).css('display', 'none');
+    })
+
 });

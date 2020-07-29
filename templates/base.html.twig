@@ -55,7 +55,7 @@
 								Profile
 							</a>
 							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-								<a class="dropdown-item" href="#">Profile</a>
+								<a class="dropdown-item" href="{{ path('user.profile', {username: app.user.username }) }}">Profile</a>
 								<a class="dropdown-item" href="{{ path('user.tricks') }}">My tricks</a>
 								<a class="dropdown-item" href="{{ path('user.trick.new') }}">Add trick</a>
 								<a class="dropdown-item" href="#">My comments</a>

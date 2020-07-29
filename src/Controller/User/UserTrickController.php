@@ -121,7 +121,7 @@ class UserTrickController extends AbstractController
 
             $this->em->persist($trick);
             $this->em->flush();
-            $this->addFlash('success', 'Your trick has been edited !');
+            $this->addFlash('success', 'Your trick has been updated !');
 
             return $this->redirectToRoute('user.tricks');
         }

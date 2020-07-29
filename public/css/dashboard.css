@@ -30,9 +30,18 @@
     height: fit-content;
 }
 
-#dashboard-content {
-    height: 85vh;
+@media (min-width:768px) {
+    #dashboard-content {
+        height: 85vh;
+    }
 }
+
+@media (max-width:767px) {
+    #userInfos {
+        margin-top: 3rem;
+    }
+}
+
 
 /*************************
 ******* My Tricks page ********
@@ -54,3 +63,11 @@
         overflow-y: scroll;
     }
 }
+
+/*************************
+******* Profile page ********
+*************************/
+
+ .avatar-input{
+     display: none;
+ }

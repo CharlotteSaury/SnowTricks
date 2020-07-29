@@ -28,7 +28,8 @@ class UserFixtures extends Fixture
                 ->setCreatedAt($faker->dateTime('now', null))
                 ->setAvatar($faker->imageUrl(200, 200, 'people'))
                 ->setFirstName($faker->firstName(null))
-                ->setLastName($faker->lastName);
+                ->setLastName($faker->lastName)
+                ->setDescription($faker->text(mt_rand(50, 2000)));
             $manager->persist($user);
 
             $this->addReference('user' . $i, $user);

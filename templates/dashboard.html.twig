@@ -46,11 +46,11 @@
 			<div class="row" id="dashboard-content">
 				<nav class="col-sm-3 px-0 pt-4 text-center" id="dashboard-nav">
 					<ul class="nav flex-column text-left">
-						<li class="nav-item">
-							<a class="nav-link {% if nav is defined and nav == 'dashboard' %}active{% endif %}" href="#">Dashboard</a>
+						<li class="nav-item {% if nav is defined and nav == 'dashboard' %}active{% endif %}">
+							<a class="nav-link" href="#">Dashboard</a>
 						</li>
-						<li class="nav-item ">
-							<a class="nav-link {% if nav is defined and nav == 'profile' %}active{% endif %}" href="#">
+						<li class="nav-item {% if nav is defined and nav == 'profile' %}active{% endif %}">
+							<a class="nav-link" href="{{ path('user.profile', {username: app.user.username }) }}">
 								<i class="fas fa-user mr-2"></i>Profile</a>
 						</li>
 						<li class="nav-item {% if nav is defined and nav == 'myTricks' %}active{% endif %}">
@@ -71,7 +71,7 @@
 						</li>
 					</ul>
 				</nav>
-				<div class="col-sm-9 px-0"> 
+				<div class="col-sm-9 px-0">
 				
 					{% block body %}{% endblock %}
 

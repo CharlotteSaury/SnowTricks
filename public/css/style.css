@@ -116,15 +116,13 @@ footer {
 
 .homeHeader {
     background: url("../media/images/home.jpg") no-repeat fixed;
-    background-position: right;
+    background-position: top;
     position: relative;
     height: 94vh;
 }
 
 .homeHeader .homeTitle {
     position: relative;
-    top: 10%;
-    background-color: rgba(137, 172, 170, 0.5);
     width: 100%; 
 }
 

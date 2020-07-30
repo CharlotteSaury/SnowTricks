@@ -29,6 +29,17 @@ class UserRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findActivated()
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.isVerified = :val')
+            ->setParameter('val', 1)
+            ->orderBy('u.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return User[] Returns an array of User objects
     //  */

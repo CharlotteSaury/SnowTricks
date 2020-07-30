@@ -71,3 +71,14 @@
  .avatar-input{
      display: none;
  }
+
+ 
+/*************************
+******* stats page ********
+*************************/
+
+.stats-card img {
+    width: 75%;
+    align-self: center;
+    margin-top: 1rem;
+}

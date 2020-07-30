@@ -6,8 +6,8 @@
 
 {% block body %}
 	<div class="row" id="home">
-		<div class="container-fluid  homeHeader d-flex justify-content-center align-items-center px-0 mx-0">
-			<div class="homeTitle text-center py-4">
+		<div class="container-fluid  homeHeader d-flex px-0 mx-0">
+			<div class="homeTitle py-4 pl-5">
 				<h1>SnowTricks</h1>
 				<h2>Communauté d'apprentissage de figures de snowboard</h2>
 			</div>
@@ -30,17 +30,17 @@
 						<div class="card-body d-flex flex-row {% if app.user %}justify-content-between{% else %}justify-content-center{% endif %} px-2">
 							<div class="{% if app.user %}col-8{% else %}col-12{% endif %} px-1 text-center">
 								<h5 class="card-title mb-0">
-									<a href="{{ path('trick.show', {id: trick.id, slug: (trick.name|lower|replace({' ':'_'})) }) }}">{{ trick.name }}</a>
+									<a href="{{ path('trick.show', {id: trick.id, slug: trick.slug }) }}">{{ trick.name }}</a>
 								</h5>
 							</div>
-							{% if app.user %}
+							{% if app.user and app.user.id == trick.author.id %}
 								<div class="col-4 px-0 text-center card-actions d-flex align-items-center">
 									<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
 										<i class="fas fa-pencil-alt"></i>
 									</a>
-									<button class="btn btn-info ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
+									<a class="ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
 										<i class="fas fa-trash-alt"></i>
-									</button>
+									</a>
 								</div>
 							{% endif %}
 

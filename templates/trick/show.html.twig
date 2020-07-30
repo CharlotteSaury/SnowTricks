@@ -13,15 +13,15 @@
 						<i class="fas fa-undo-alt mr-2"></i>Retour
 					</a>
 				</div>
-				{% if app.user %}
+				{% if app.user.id == trick.author.id %}
 					<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
 
 						<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
 							<i class="fas fa-pencil-alt"></i>
 						</a>
-						<button class="btn btn-info ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
+						<a class="ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
 							<i class="fas fa-trash-alt"></i>
-						</button>
+						</a>
 					</div>
 				{% endif %}
 				<div class="text-center">
@@ -49,7 +49,23 @@
 			<div class="row py-3 d-flex flex-column align-items-center pb-0 text-justify" id="trickInfos">
 				<p>{{ trick.description | nl2br }}</p>
 				<div class="row py-3 justify-content-center">
-					<div class="badge badge-light mr-2">
+					<a href="#" class="badge badge-light mr-2"
+						title="More about author"
+						data-toggle="modal" 
+						data-target="#userModal" 
+						{% if trick.author.avatar is not null %} 
+							data-avatar="{{ trick.author.avatar }}" 
+						{% else %} 
+							data-avatar="{{ asset('media/images/snowboarder.png') }}" 
+						{% endif %}
+						{% if trick.author.description is not null %} 
+							data-description="{{ trick.author.description }}" 
+						{% endif %} 
+						{% if trick.author.firstName is not null and trick.author.lastName is not null %} 
+							data-name="{{ trick.author.firstName }} {{ trick.author.lastName }} as {{ trick.author.username }}" 
+						{% else %} 
+							data-name="{{ trick.author.username }}" 
+						{% endif %}>
 						By :
 						{% if trick.author.firstName is not null and trick.author.lastName is not null %}
 							{{ trick.author.firstName }}
@@ -57,7 +73,7 @@
 						{% else %}
 							{{ trick.author.username }}
 						{% endif %}
-					</div>
+					</a>
 					<div class="badge badge-light ml-4 mr-2" id="trickDates">
 						Created at:
 						{{ trick.createdAt|format_datetime() }}
@@ -106,19 +122,44 @@
 					{% for comment in trick.comments %}
 						<div class="d-flex justify-content-start align-items-center mb-3 w-100 trick-comment">
 							<div class="trick-comment-avatar">
-								<img class="avatar mr-4" src="{{ comment.author.getAvatar() }}"/>
+								<img class="avatar mr-4" src="{%if comment.author.avatar is not null %}{{ comment.author.getAvatar() }}{% else %}{{ asset('media/images/snowboarder.png') }}{% endif %}"/>
 							</div>
 							<div class="text-justify trick-comment-content mb-2">
 								<p>{{ comment.content }}</p>
 								<p class="pr-2 mb-0">
-									{% if comment.author.getFirstName() is not null and comment.author.getLastName() is not null %}
-										{{ comment.author.getFirstName() }}
-										{{ comment.author.getLastName() }}
-									{% else %}
-										{{ comment.author.getusername() }}
-									{% endif %}
+									<a href="#" class="custom-link" title="More about author"
+										data-toggle="modal" 
+										data-target="#userModal" 
+										{% if comment.author.avatar is not null %} 
+											data-avatar="{{ comment.author.avatar }}" 
+										{% else %} 
+											data-avatar="{{ asset('media/images/snowboarder.png') }}" 
+										{% endif %}
+										{% if comment.author.description is not null %} 
+											data-description="{{ comment.author.description }}" 
+										{% endif %} 
+										{% if comment.author.firstName is not null and comment.author.lastName is not null %} 
+											data-name="{{ comment.author.firstName }} {{ comment.author.lastName }} as {{ trick.author.username }}" 
+										{% else %} 
+											data-name="{{ comment.author.username }}" 
+										{% endif %}>
+										{% if comment.author.firstName is not null and comment.author.lastName is not null %}
+											{{ comment.author.firstName }}
+											{{ comment.author.lastName }}
+										{% else %}
+											{{ comment.author.username }}
+										{% endif %}
+									</a>
 									-
-									{{ comment.createdAt|format_datetime(locale='us') }}</p>
+									{{ comment.createdAt|format_datetime(locale='us') }}
+									{% if app.user.id == comment.author.id %}
+										-
+										<a class="ml-2" data-toggle="modal" data-target="#deleteCommentModal" data-action="{{ path('user.comment.delete', {id: comment.id}) }}" data-token="{{ csrf_token('comment_deletion_' ~ comment.id) }}">
+											<i class="fas fa-trash-alt"></i>
+										</a>
+									{% endif %}
+
+								</p>
 							</div>
 
 						</div>

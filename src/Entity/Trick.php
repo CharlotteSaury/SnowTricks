@@ -102,6 +102,11 @@ class Trick
         return $this;
     }
 
+    public function getSlug(): ?string
+    {
+        return strtolower(str_replace(' ', '_', $this->name));
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;

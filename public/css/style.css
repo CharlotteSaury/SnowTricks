@@ -29,16 +29,18 @@ h2 {
     font-style: italic;
 }
 
-.fa-pencil-alt, .fa-trash-alt {
+.fa-pencil-alt, .fa-trash-alt, .custom-link {
     color: #89ACAA;
-    text-decoration: none;
 }
 
-.fa-pencil-alt:hover, .fa-trash-alt:hover {
+.fa-pencil-alt:hover, .fa-trash-alt:hover, .custom-link:hover {
     color: black;
     transform: scale(1.2);
     transition: transform 200ms;
+    text-decoration: none;
 }
+
+
 
 /******* Nav *********/
 .navbar-brand {
@@ -114,15 +116,13 @@ footer {
 
 .homeHeader {
     background: url("../media/images/home.jpg") no-repeat fixed;
-    background-position: right;
+    background-position: top;
     position: relative;
     height: 94vh;
 }
 
 .homeHeader .homeTitle {
     position: relative;
-    top: 10%;
-    background-color: rgba(137, 172, 170, 0.5);
     width: 100%; 
 }
 
@@ -169,12 +169,12 @@ footer {
     font-size: 1rem;
 }
 
-#trickList .card-title a {
+#trickList .card-title a, #userTricks .card-title a {
     text-decoration: none;
     color: black;
 }
 
-#trickList .card-title a:hover {
+#trickList .card-title a:hover, #userTricks .card-title a:hover {
     color: #89ACAA;
     transition: color 0.3s;
 }
@@ -303,6 +303,21 @@ footer {
     margin-right: 9rem;
     margin-left: 9rem;
 }
+
+#userModal .modal-dialog {
+    max-width: 75%;
+}
+
+#userModalAvatar {
+    max-width: 100%;
+}
+
+@media (max-width:767px) {
+    #userModalInfos {
+        text-align: center;
+    }
+}
+
 
 /* ////// Comment div /////// */
 

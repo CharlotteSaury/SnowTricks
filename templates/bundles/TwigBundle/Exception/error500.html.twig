@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Error500
+{% endblock %}
+
+
+{% block body %}
+	<div class="container-fluid py-5 trick-bg">
+		<div class="container px-0 pb-5 text-center" id="editPage">
+			
+        <h1>{{ exception.getMessage() }}</h1>
+
+		</div>
+	</div>
+</div>{% endblock %}

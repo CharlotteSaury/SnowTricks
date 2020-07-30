@@ -40,12 +40,13 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Length(min="6", max="30")
-     * @Assert\EqualTo(propertyPath="confirmPassword")
      */
     private $password;
 
-    private $confirmPassword;
+    /**
+     * @Assert\Length(min="6", max="30", groups={"registration"})
+     */
+    private $plainPassword;
 
     /**
      * @ORM\Column(type="datetime")
@@ -84,12 +85,22 @@ class User implements UserInterface, \Serializable
      */
     private $isVerified = false;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tricks = new ArrayCollection();
         $this->createdAt = new \DateTime();
-        $this->avatar = '/media/images/snowboarder.png';
+        $this->roles = ['ROLE_USER'];
     }
 
     public function getId(): ?int
@@ -181,14 +192,14 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function getConfirmPassword(): ?string
+    public function getPlainPassword()
     {
-        return $this->confirmPassword;
+        return $this->plainPassword;
     }
-
-    public function setConfirmPassword(string $confirmPassword): self
+ 
+    public function setPlainPassword($plainPassword)
     {
-        $this->confirmPassword = $confirmPassword;
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }
@@ -255,17 +266,17 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    /**
-     * Returns the roles granted to the user.
-     * Alternatively, the roles might be stored on a ``roles`` property,
-     * and populated in any number of different ways when the user object
-     * is created.
-     *
-     * @return string[] The user roles
-     */
-    public function getRoles()
+    public function getRoles() : array
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
+        return $this;
     }
 
     /**
@@ -330,4 +341,17 @@ class User implements UserInterface, \Serializable
 
         return $this;
     }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
 }

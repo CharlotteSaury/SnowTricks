@@ -40,7 +40,7 @@ class SecurityController extends AbstractController
             $user->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,
-                    $form->get('password')->getData()
+                    $form->get('plainPassword')->getData()
                 )
             );
 
@@ -109,9 +109,9 @@ class SecurityController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername, 
+            'last_username' => $lastUsername,
             'error' => $error
-            ]);
+        ]);
     }
 
     /**
@@ -122,5 +122,4 @@ class SecurityController extends AbstractController
         throw new \LogicException();
     }
 
-    
 }

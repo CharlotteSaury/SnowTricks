@@ -40,12 +40,12 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
         ;
     }
 
-    public function findActivated()
+    public function findVerified($value)
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.isVerified = :val')
-            ->setParameter('val', 1)
-            ->orderBy('u.id', 'ASC')
+            ->setParameter('val', $value)
+            ->orderBy('u.createdAt', 'DESC')
             ->getQuery()
             ->getResult()
         ;

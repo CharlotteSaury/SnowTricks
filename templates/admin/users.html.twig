@@ -1,0 +1,93 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}Statistics
+{% endblock %}
+
+
+{% block body %}
+	<div class="row px-4 py-4 dashboard-div" id="adminUsers">
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-info w-100 mt-3 text-center">
+				{{ message }}
+			</div>
+		{% endfor %}
+		<h5 class="mb-4">Verified users</h5>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Username</th>
+					<th>Email</th>
+					<th>Created at</th>
+					<th>Role</th>
+					<th>Tricks</th>
+					<th>Comments</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for user in verifiedUsers %}
+					<tr>
+						<td scope="row">{{ user.username }}</td>
+						<td>{{ user.email }}</td>
+						<td>{{ user.createdAt|format_date }}</td>
+						<td>
+							{% for role in user.roles %}
+								{% if role == "ROLE_USER" %}
+									User
+								{% elseif role == "ROLE_MODERATOR" %}
+									Moderator
+								{% else %}
+									Admin
+								{% endif %}
+							{% endfor %}
+							<a class="ml-2" href="{{ path('user.edit', {username: user.username}) }}">
+								<i class="fas fa-pencil-alt"></i>
+							</a>
+						</td>
+						<td>{{ user.tricks|length }}</td>
+						<td>{{ user.comments|length }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<h5 class="mt-5 mb-4">Unverified users</h5>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Username</th>
+					<th>Email</th>
+					<th>Created at</th>
+					<th>Role</th>
+					<th>Tricks</th>
+					<th>Comments</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for user in unverifiedUsers %}
+					<tr>
+						<td scope="row">{{ user.username }}</td>
+						<td>{{ user.email }}</td>
+						<td>{{ user.createdAt|format_date }}</td>
+						<td>
+							{% for role in user.roles %}
+								{% if role == "ROLE_USER" %}
+									User
+								{% elseif role == "ROLE_MODERATOR" %}
+									Moderator
+								{% else %}
+									Admin
+								{% endif %}
+							{% endfor %}
+							<a class="ml-2" href="{{ path('user.edit', {username: user.username}) }}">
+								<i class="fas fa-pencil-alt"></i>
+							</a>
+						</td>
+						<td>{{ user.tricks|length }}</td>
+						<td>{{ user.comments|length }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+{% endblock %}

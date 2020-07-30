@@ -18,6 +18,7 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $faker = \Faker\Factory::create();
+        $roles = [["ROLE_ADMIN"], ["ROLE_USER"], ["ROLE_MODERATOR"]];
 
         for ($i = 0; $i < 30; $i++) {
             $user = new User();

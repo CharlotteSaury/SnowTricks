@@ -65,10 +65,17 @@
 							<a class="nav-link" href="{{ path('user.comments') }}">
 								<i class="fas fa-comment-dots mr-2"></i>My comments</a>
 						</li>
-						<li class="nav-item {% if nav is defined and nav == 'statistics' %}active{% endif %}">
-							<a class="nav-link" href="{{ path('admin.statistics') }}">
-								<i class="fas fa-chart-bar mr-2"></i>Statistics</a>
-						</li>
+						{% if is_granted('ROLE_ADMIN') %}
+							<li class="nav-item {% if nav is defined and nav == 'statistics' %}active{% endif %}">
+								<a class="nav-link" href="{{ path('admin.statistics') }}">
+									<i class="fas fa-chart-bar mr-2"></i>Statistics</a>
+							</li>
+							<li class="nav-item {% if nav is defined and nav == 'users' %}active{% endif %}">
+								<a class="nav-link" href="{{ path('admin.users') }}">
+									<i class="fas fa-users mr-2"></i>Users</a>
+							</li>
+						{% endif %}
+
 						<li class="nav-item">
 							<a class="nav-link" href="{{ path('app_logout') }}">
 								<i class="fas fa-power-off mr-2"></i>Log out</a>

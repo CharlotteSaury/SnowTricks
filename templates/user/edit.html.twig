@@ -1,0 +1,66 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}Profile
+{% endblock %}
+
+
+{% block body %}
+	<div class="py-4 px-4 dashboard-div" id="editProfile">
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-info w-100 mt-1 text-center">
+				{{ message }}
+			</div>
+		{% endfor %}
+		{{ form_start(form) }}
+		<div class="row pt-2">
+			<div class="col-md-4 text-center" id="userAvatar">
+				<img src="{% if user.avatar is not null %}{{ asset('media/uploads' ~ user.avatar) }}{% else %}{{ asset('media/images/snowboarder.png') }}{% endif %}" width="100%" alt="profile picture"/>
+				<div class="avatar-input">
+					{{ form_row(form.avatar) }}
+				</div>
+				<button type="button" class="btn btn-info mt-3" id="editAvatarBtn">Edit profile picture</button>
+			</div>
+			<div class="col-md-8" id="userInfos">
+				<div class="row">
+					<div class="col-sm-6">
+						{{ form_row(form.username) }}
+					</div>
+					<div class="col-sm-6">
+						{{ form_row(form.email) }}
+					</div>
+
+
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						{{ form_row(form.firstName) }}
+					</div>
+					<div class="col-sm-6">
+						{{ form_row(form.lastName) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						{{ form_row(form.description) }}
+					</div>
+				</div>
+				{% if is_granted('ROLE_ADMIN') %}
+					<div class="row">
+						<div class="col-sm-12">
+							{{ form_row(form.roles) }}
+						</div>
+					</div>
+				{% endif %}
+
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<button type="submit" class="btn btn-info">Save changes</button>
+		</div>
+
+
+		{{ form_end(form) }}
+
+	</div>
+
+{% endblock %}

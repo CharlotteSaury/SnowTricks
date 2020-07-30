@@ -42,6 +42,13 @@
     }
 }
 
+@media (min-width:576px) {
+    .dashboard-div {
+        max-height: 83vh;
+        overflow-y: scroll;
+    }
+}
+
 
 /*************************
 ******* My Tricks page ********
@@ -57,12 +64,7 @@
     font-size: 0.90rem;
 }
 
-@media (min-width:576px) {
-    #userTricks, #userComments {
-        max-height: 83vh;
-        overflow-y: scroll;
-    }
-}
+
 
 /*************************
 ******* Profile page ********
@@ -70,6 +72,10 @@
 
  .avatar-input{
      display: none;
+ }
+
+ #profile li {
+     list-style-type: none;
  }
 
  
@@ -81,4 +87,12 @@
     width: 75%;
     align-self: center;
     margin-top: 1rem;
+}
+
+/*************************
+******* users page ********
+*************************/
+
+#adminUsers {
+    color: #89ACAA;
 }

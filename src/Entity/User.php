@@ -90,11 +90,17 @@ class User implements UserInterface, \Serializable
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tricks = new ArrayCollection();
         $this->createdAt = new \DateTime();
+        $this->roles = ['ROLE_USER'];
     }
 
     public function getId(): ?int
@@ -260,17 +266,17 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    /**
-     * Returns the roles granted to the user.
-     * Alternatively, the roles might be stored on a ``roles`` property,
-     * and populated in any number of different ways when the user object
-     * is created.
-     *
-     * @return string[] The user roles
-     */
-    public function getRoles()
+    public function getRoles() : array
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
+        return $this;
     }
 
     /**
@@ -347,6 +353,5 @@ class User implements UserInterface, \Serializable
 
         return $this;
     }
-
 
 }

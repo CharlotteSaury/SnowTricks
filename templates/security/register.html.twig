@@ -14,8 +14,8 @@
 			{% endfor %}
 			{{ form_row(form.username) }}
 			{{ form_row(form.email) }}
-			{{ form_row(form.password) }}
-			{{ form_row(form.confirmPassword) }}
+			{{ form_row(form.plainPassword.first) }}
+			{{ form_row(form.plainPassword.second) }}
 
 			<div class="form-group">
 				{{ form_widget(form.agreeTerms) }}

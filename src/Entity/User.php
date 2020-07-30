@@ -40,12 +40,13 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Length(min="6", max="30", groups={"registration"})
-     * @Assert\EqualTo(propertyPath="confirmPassword", groups={"registration"})
      */
     private $password;
 
-    private $confirmPassword;
+    /**
+     * @Assert\Length(min="6", max="30", groups={"registration"})
+     */
+    private $plainPassword;
 
     /**
      * @ORM\Column(type="datetime")
@@ -185,14 +186,14 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function getConfirmPassword(): ?string
+    public function getPlainPassword()
     {
-        return $this->confirmPassword;
+        return $this->plainPassword;
     }
-
-    public function setConfirmPassword(string $confirmPassword): self
+ 
+    public function setPlainPassword($plainPassword)
     {
-        $this->confirmPassword = $confirmPassword;
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }
@@ -346,4 +347,6 @@ class User implements UserInterface, \Serializable
 
         return $this;
     }
+
+
 }

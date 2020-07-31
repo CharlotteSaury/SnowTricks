@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,10 +24,12 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/user/dashboard/{id}", name="user.dashboard")
+     * @Route("/user/dashboard/{username}", name="user.dashboard")
      */
     public function dashboard(User $user)
     {
+        $this->denyAccessIfGranted('ROLE_UNVUSER');
+
         return $this->render('user/dashboard.html.twig', [
             'user' => $user,
             'nav' => 'dashboard'
@@ -38,6 +41,8 @@ class UserController extends AbstractController
      */
     public function profile(User $user)
     {
+        $this->denyAccessIfGranted('ROLE_UNVUSER');
+
         if ($this->getUser()->getUsername() == $user->getUsername() || $this->isGranted('ROLE_ADMIN')) {
             return $this->render('user/profile.html.twig', [
                 'user' => $user,
@@ -52,6 +57,8 @@ class UserController extends AbstractController
      */
     public function edit(Request $request, User $user)
     {
+        $this->denyAccessIfGranted('ROLE_UNVUSER');
+
         if ($this->getUser()->getUsername() == $user->getUsername() || $this->isGranted('ROLE_ADMIN')) {
             $form = $this->createForm(UserType::class, $user);
             $form->handleRequest($request);

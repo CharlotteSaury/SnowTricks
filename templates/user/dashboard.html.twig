@@ -5,6 +5,10 @@
 
 
 {% block body %}
-	
+	{% for message in app.flashes('success') %}
+			<div class="alert alert-info w-100 mt-3 text-center">
+				{{ message }}
+			</div>
+		{% endfor %}
 
 {% endblock %}

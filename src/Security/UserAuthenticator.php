@@ -47,6 +47,7 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
     public function getCredentials(Request $request)
     {
         $credentials = [
+            'email' => $request->request->get('_username'),
             'username' => $request->request->get('_username'),
             'password' => $request->request->get('_password'),
             'csrf_token' => $request->request->get('_csrf_token'),
@@ -84,9 +85,9 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        /*if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
-        }*/
+        }
         return new RedirectResponse($this->urlGenerator->generate('trick.index'));
     }
 

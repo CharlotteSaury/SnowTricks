@@ -49,17 +49,18 @@ class SecurityController extends AbstractController
             $entityManager->flush();
 
             // generate a signed url and email it to the user
-            /*$this->emailVerifier->sendEmailConfirmation(
+            $this->emailVerifier->sendEmailConfirmation(
                 'app_verify_email',
                 $user,
                 (new TemplatedEmail())
                     ->from(new Address('mailer@snowtricks.com', 'No-reply Snowtricks'))
-                    ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('security/confirmation_email.html.twig')
-            );*/
-            // do anything else you need here, like send an email
+                    ->to(new Address($user->getEmail(), $user->getUsername()))
+                    ->subject('Welcome to Snowtricks !')
+                    ->htmlTemplate('email/account_confirmation.html.twig')
+            );
 
+            $this->addFlash('success', 'A confirmation link has been sent to your email. Please follow the link to activate your account !');
+            
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,
                 $request,
@@ -90,9 +91,9 @@ class SecurityController extends AbstractController
         }
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
+        $this->addFlash('success', 'Your email address has been verified. You now have access to all functionalities !');
 
-        return $this->redirectToRoute('trick.index');
+        return $this->redirectToRoute('user.dashboard', ['username' => $this->getUser()->getUsername() ]);
     }
     /**
      * @Route("/login", name="app_login")

@@ -42,7 +42,7 @@
 			</button>
 			<div class="collapse navbar-collapse" id="mainNavBar">
 				<div class="navbar-nav ml-auto">
-					<a class="nav-item nav-link active" href="{{ path('trick.index') }}">Home
+					<a class="nav-item nav-link" href="{{ path('trick.index') }}">Home
 						<span class="sr-only">(current)</span>
 					</a>
 					<a class="nav-item nav-link nav-separator" href="{{ path('trick.index') }}#trickList">Tricks</a>
@@ -52,15 +52,16 @@
 					{% else %}
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle nav-separator" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Profile
+								{{ app.user.username}}
 							</a>
 							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-								<a class="dropdown-item" href="{{ path('user.profile', {username: app.user.username }) }}">Profile</a>
-								<a class="dropdown-item" href="{{ path('user.tricks') }}">My tricks</a>
-								<a class="dropdown-item" href="{{ path('user.trick.new') }}">Add trick</a>
-								<a class="dropdown-item" href="{{ path('user.comments') }}">My comments</a>
+								{% if not app.user.isVerified %}<div class="badge badge-light mx-1">Your account is not activated yet</div>{% endif %}
+								<a class="dropdown-item {% if not app.user.isVerified %}disabled{% endif %}" href="{{ path('user.profile', {username: app.user.username }) }}">Profile</a>
+								<a class="dropdown-item {% if not app.user.isVerified %}disabled{% endif %}" href="{{ path('user.tricks') }}">My tricks</a>
+								<a class="dropdown-item {% if not app.user.isVerified %}disabled{% endif %}" href="{{ path('user.trick.new') }}">Add trick</a>
+								<a class="dropdown-item {% if not app.user.isVerified %}disabled{% endif %}" href="{{ path('user.comments') }}">My comments</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="{{ path('user.dashboard', {id: app.user.id }) }}">Dashboard</a>
+								<a class="dropdown-item {% if not app.user.isVerified %}disabled{% endif %}" href="{{ path('user.dashboard', {username: app.user.username}) }}">Dashboard</a>
 							</div>
 						</li>
 						<a class="nav-item nav-link nav-separator" href="{{ path('app_logout') }}">Log out</a>

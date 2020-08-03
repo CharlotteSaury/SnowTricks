@@ -100,7 +100,7 @@ class User implements UserInterface, \Serializable
         $this->comments = new ArrayCollection();
         $this->tricks = new ArrayCollection();
         $this->createdAt = new \DateTime();
-        $this->roles = ['ROLE_USER'];
+        $this->roles = ['ROLE_UNVUSER'];
     }
 
     public function getId(): ?int

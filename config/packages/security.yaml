@@ -47,6 +47,10 @@ security:
         - { path: ^/moderator, roles: ROLE_MODERATOR }
         - { path: ^/user, roles: ROLE_USER }
 
+    access_decision_manager:
+        strategy: unanimous
+        allow_if_all_abstain: false
+
     role_hierarchy:
         ROLE_MODERATOR: ROLE_USER
         ROLE_ADMIN: ROLE_MODERATOR
@@ -56,3 +60,4 @@ security:
         entity: 
             class: App\Entity\User
             algorithm: auto
+

@@ -62,7 +62,6 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        var_dump('xxzz');
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
         if (!$this->csrfTokenManager->isTokenValid($token)) {
             throw new InvalidCsrfTokenException();
@@ -74,7 +73,6 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Username could not be found.');
         }
-        var_dump('xxx');
         return $user;
     }
 
@@ -86,6 +84,9 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+            if (stristr($targetPath, 'register')) {
+                return new RedirectResponse($this->urlGenerator->generate('trick.index'));
+            }
             return new RedirectResponse($targetPath);
         }
         return new RedirectResponse($this->urlGenerator->generate('trick.index'));

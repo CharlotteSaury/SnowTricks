@@ -5,6 +5,7 @@ namespace App\Controller\User;
 use App\Entity\Comment;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -43,6 +44,7 @@ class UserCommentController extends AbstractController
 
     /**
      * @Route("/user/comment/delete{id}", name="user.comment.delete", methods="DELETE")
+     * @IsGranted("delete", subject="comment", message="You are not allowed to delete other users comments")
      */
     public function delete(Request $request, Comment $comment)
     {

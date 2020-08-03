@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * @IsGranted("access", subject="user", message="Access denied")
+ */
 class UserController extends AbstractController
 {
     /**
@@ -43,13 +46,10 @@ class UserController extends AbstractController
     {
         $this->denyAccessIfGranted('ROLE_UNVUSER');
 
-        if ($this->getUser()->getUsername() == $user->getUsername() || $this->isGranted('ROLE_ADMIN')) {
-            return $this->render('user/profile.html.twig', [
-                'user' => $user,
-                'nav' => 'profile'
-            ]);
-        }
-        throw new \Exception("Vous n'avez pas accès à cette page");
+        return $this->render('user/profile.html.twig', [
+            'user' => $user,
+            'nav' => 'profile'
+        ]);
     }
 
     /**
@@ -59,26 +59,23 @@ class UserController extends AbstractController
     {
         $this->denyAccessIfGranted('ROLE_UNVUSER');
 
-        if ($this->getUser()->getUsername() == $user->getUsername() || $this->isGranted('ROLE_ADMIN')) {
-            $form = $this->createForm(UserType::class, $user);
-            $form->handleRequest($request);
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $this->em->persist($user);
-                $this->em->flush();
-                $this->addFlash('success', 'Your profile has been updated !');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($user);
+            $this->em->flush();
+            $this->addFlash('success', 'Your profile has been updated !');
 
-                return $this->redirectToRoute('user.profile', [
-                    'username' => $user->getUsername()
-                ]);
-            }
-
-            return $this->render('user/edit.html.twig', [
-                'user' => $user,
-                'nav' => 'profile',
-                'form' => $form->createView()
+            return $this->redirectToRoute('user.profile', [
+                'username' => $user->getUsername()
             ]);
         }
-        throw new \Exception("Vous n'avez pas accès à cette page");
+
+        return $this->render('user/edit.html.twig', [
+            'user' => $user,
+            'nav' => 'profile',
+            'form' => $form->createView()
+        ]);
     }
 }

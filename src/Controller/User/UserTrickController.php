@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class UserTrickController extends AbstractController
 {
@@ -43,6 +44,7 @@ class UserTrickController extends AbstractController
     public function new(Request $request)
     {
         $this->denyAccessIfGranted('ROLE_UNVUSER');
+
         $trick = new Trick();
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
@@ -87,10 +89,12 @@ class UserTrickController extends AbstractController
 
     /**
      * @Route("/user/trick/edit{id}", name="user.trick.edit")
+     * @IsGranted("edit", subject="trick", message="Access denied")
      */
     public function edit(Trick $trick, Request $request)
     {
         $this->denyAccessIfGranted('ROLE_UNVUSER');
+
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
@@ -136,10 +140,12 @@ class UserTrickController extends AbstractController
 
     /**
      * @Route("/user/trick/delete{id}", name="user.trick.delete", methods="DELETE")
+     * @IsGranted("edit", subject="trick", message="Access denied")
      */
     public function delete(Request $request, Trick $trick)
     {
         $this->denyAccessIfGranted('ROLE_UNVUSER');
+
         if ($this->isCsrfTokenValid('trick_deletion_' . $trick->getId(), $request->get('_token'))) {
             $this->em->remove($trick);
             $this->em->flush();

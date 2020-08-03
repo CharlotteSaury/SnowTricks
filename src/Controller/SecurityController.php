@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\RegistrationFormType;
+use App\Form\PasswordFormType;
 use App\Security\EmailVerifier;
+use App\Form\RegistrationFormType;
 use App\Security\UserAuthenticator;
+use Exception;
 use Symfony\Component\Mime\Address;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,9 +46,9 @@ class SecurityController extends AbstractController
                 )
             );
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
 
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation(
@@ -60,7 +62,7 @@ class SecurityController extends AbstractController
             );
 
             $this->addFlash('success', 'A confirmation link has been sent to your email. Please follow the link to activate your account !');
-            
+
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,
                 $request,
@@ -93,8 +95,9 @@ class SecurityController extends AbstractController
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Your email address has been verified. You now have access to all functionalities !');
 
-        return $this->redirectToRoute('user.dashboard', ['username' => $this->getUser()->getUsername() ]);
+        return $this->redirectToRoute('user.dashboard', ['username' => $this->getUser()->getUsername()]);
     }
+
     /**
      * @Route("/login", name="app_login")
      */
@@ -123,4 +126,39 @@ class SecurityController extends AbstractController
         throw new \LogicException();
     }
 
+    /**
+     * @Route("/user/reset_password", name="user.resetPass")
+     */
+    public function reset(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $user = $this->getUser();
+        $this->denyAccessIfGranted('ROLE_UNVUSER');
+
+        $form = $this->createForm(PasswordFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($passwordEncoder->isPasswordValid($this->getUser(), $form->get('oldPassword')->getData())) {
+                $user->setPassword(
+                    $passwordEncoder->encodePassword(
+                        $user,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();
+                $this->addFlash('success', 'Your password has been updated !');
+
+                return $this->redirectToRoute('user.resetPass');
+            }
+            throw new \Exception('Erreeeeeeur');
+        }
+
+        return $this->render('security/reset_password.html.twig', [
+            'user' => $user,
+            'nav' => 'resetPass',
+            'form' => $form->createView()
+        ]);
+    }
 }

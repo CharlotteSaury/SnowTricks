@@ -144,7 +144,7 @@
 											data-description="{{ comment.author.description }}" 
 										{% endif %} 
 										{% if comment.author.firstName is not null and comment.author.lastName is not null %} 
-											data-name="{{ comment.author.firstName }} {{ comment.author.lastName }} as {{ trick.author.username }}" 
+											data-name="{{ comment.author.firstName }} {{ comment.author.lastName }} as {{ comment.author.username }}" 
 										{% else %} 
 											data-name="{{ comment.author.username }}" 
 										{% endif %}>

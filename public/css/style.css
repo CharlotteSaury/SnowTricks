@@ -24,6 +24,11 @@ h1, h2, h5, h6, button, .navbar-brand {
     font-family: 'MuseoModerno', cursive;
 }
 
+h1 {
+    color: white;
+    text-shadow: 2px 0 0 black, 2px 2px 0 black, 0 2px 0 black, -2px 2px 0 black, -2px 0 0 black, -2px -2px 0 black, 0 -2px 0 black, 2px -2px 0 black;
+}
+
 h2 {
     font-size: 1.5rem;
     font-style: italic;
@@ -129,6 +134,11 @@ footer {
 .homeHeader h1 {
     font-size: 6rem;
     color: white;
+}
+
+.homeHeader .alert {
+    position: absolute;
+    bottom: 10%;
 }
 
 /******* Trick List *********/
@@ -492,5 +502,25 @@ footer {
 }
 
 .login-form input {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+}
+
+.login-form .checkbox input, .login-form .checkbox {
+    margin-bottom: 0 !important;
+}
+
+#forgotPass2 {
+    display: block;
+}
+
+@media (min-width:992px) {
+    #alreadyAccount, #registerLink, #forgotPass2 {
+        display: none;
+    }
+}
+
+@media (max-width:991px) {
+    #forgotPass {
+        display: none;
+    }
 }

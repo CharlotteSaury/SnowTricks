@@ -33,7 +33,6 @@ class UserCommentController extends AbstractController
      */
     public function userComments()
     {
-        $this->denyAccessIfGranted('ROLE_UNVUSER');
         $comments = $this->commentRepository->findByAuthor($this->getUser()->getId());
 
         return $this->render('user/comments.html.twig', [
@@ -48,7 +47,6 @@ class UserCommentController extends AbstractController
      */
     public function delete(Request $request, Comment $comment)
     {
-        $this->denyAccessIfGranted('ROLE_UNVUSER');
         if ($this->isCsrfTokenValid('comment_deletion_' . $comment->getId(), $request->get('_token'))) {
             $this->em->remove($comment);
             $this->em->flush();

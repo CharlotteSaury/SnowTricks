@@ -29,12 +29,12 @@
 					{{ form_label(form.agreeTerms) }}
 				</div>
 
-				<button type="submit" class="btn btn-info">Create an account</button>
+				<button type="submit" class="btn btn-info mb-2">Create an account</button>
 
 				{{ form_end(form) }}
 
 			{% endif %}
-
+			<a class="custom-link" href="{{ path('app_login') }}" id="alreadyAccount">Already an account ?</a>
 
 		</div>
 	</div>

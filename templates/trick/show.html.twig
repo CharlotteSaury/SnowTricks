@@ -13,7 +13,7 @@
 						<i class="fas fa-undo-alt mr-2"></i>Retour
 					</a>
 				</div>
-				{% if app.user.id == trick.author.id %}
+				{% if app.user and app.user.id == trick.author.id %}
 					<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
 
 						<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
@@ -96,16 +96,12 @@
 				</div>
 			</div><hr><div class="row py-3 justify-content-center text-center" id="trickCommentForm">
 				{% if app.user %}
-					{% if not app.user.isVerified %}
-						<p>You need to activate your account to add a comment !</p>
-					{% else %}
 						{{ form_start(form) }}
 						<div class='d-flex flex-column flex-md-row justify-content-center align-items-center'>
 							{{ form_row(form.content) }}
 							<button type="submit" class="btn btn-info ml-4">Leave a comment</button>
 						</div>
 						{{ form_end(form) }}
-					{% endif %}
 					
 				{% else %}
 					<p>
@@ -144,7 +140,7 @@
 											data-description="{{ comment.author.description }}" 
 										{% endif %} 
 										{% if comment.author.firstName is not null and comment.author.lastName is not null %} 
-											data-name="{{ comment.author.firstName }} {{ comment.author.lastName }} as {{ trick.author.username }}" 
+											data-name="{{ comment.author.firstName }} {{ comment.author.lastName }} as {{ comment.author.username }}" 
 										{% else %} 
 											data-name="{{ comment.author.username }}" 
 										{% endif %}>
@@ -157,7 +153,7 @@
 									</a>
 									-
 									{{ comment.createdAt|format_datetime(locale='us') }}
-									{% if app.user.id == comment.author.id %}
+									{% if app.user and app.user.id == comment.author.id %}
 										-
 										<a class="ml-2" data-toggle="modal" data-target="#deleteCommentModal" data-action="{{ path('user.comment.delete', {id: comment.id}) }}" data-token="{{ csrf_token('comment_deletion_' ~ comment.id) }}">
 											<i class="fas fa-trash-alt"></i>

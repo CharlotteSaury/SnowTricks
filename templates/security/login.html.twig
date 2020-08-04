@@ -5,47 +5,53 @@
 
 {% block body %}
 	<div class="container login-div">
-        <h1 class="h3 mb-3 font-weight-normal text-center my-4">Login</h1>
-        <div class="col-md-6 mx-auto mb-5 login-form text-center">
-            <form action="{{ path('app_login') }}" method="post">
-			{% if error %}
-				<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-			{% endif %}
-			{% for message in app.flashes('success') %}
+		<h1 class="h3 mb-3 font-weight-normal text-center my-4">Login</h1>
+		<div class="col-md-6 mx-auto mb-5 login-form text-center">
+			<form action="{{ path('app_login') }}" method="post">
+				{% if error %}
+					<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+				{% endif %}
+				{% for message in app.flashes('success') %}
 					<div class="alert alert-info w-100 mt-3">
 						{{ message }}
 					</div>
 				{% endfor %}
 
-			{% if app.user %}
-				<div class="mb-3">
-					Vous êtes connecté(e) en tant que
-					{{ app.user.username }},
-					<a href="{{ path('app_logout') }}">Logout</a>
+				{% if app.user %}
+					<div class="mb-3">
+						Vous êtes connecté(e) en tant que
+						{{ app.user.username }},
+						<a href="{{ path('app_logout') }}">Logout</a>
+					</div>
+				{% endif %}
+
+				<label for="inputUsername">Username</label>
+				<input type="text" value="{{ last_username }}" name="_username" id="inputUsername" class="form-control" required autofocus>
+				<label for="inputPassword">Password</label>
+				<input type="password" name="_password" id="inputPassword" class="form-control" required>
+
+				<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+				<div class="checkbox mb-3">
+					<label>
+						<input type="checkbox" name="_remember_me">
+						Remember me
+					</label>
 				</div>
-			{% endif %}
+				<a class="custom-link" href="{{ path('app_forgotten_password') }}" id="forgotPass">Forgot password ?</a>
 
-			<label for="inputUsername">Username</label>
-			<input type="text" value="{{ last_username }}" name="_username" id="inputUsername" class="form-control" required autofocus>
-			<label for="inputPassword">Password</label>
-			<input type="password" name="_password" id="inputPassword" class="form-control" required>
+				<div class="my-3">
+					<button class="btn btn-info" type="submit">
+						Login
+					</button>
+				</div> 
 
-			<input
-			type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-			
-			<div class="checkbox mb-3">
-			    <label>
-			        <input type="checkbox" name="_remember_me"> Remember me
-			    </label>
-			</div>
-	
+				<a class="custom-link" href="{{ path('app_register') }}" id="registerLink">Register</a>
+				<a class="custom-link" href="{{ path('app_forgotten_password') }}" id="forgotPass2">Forgot password ?</a>
+			</form>
 
-			<button class="btn btn-info" type="submit">
-				Login
-			</button>
-		</form>
-        </div>
-		
+		</div>
+
 	</div>
 
 {% endblock %}

@@ -26,6 +26,7 @@ security:
                 login_path: app_login
                 check_path: app_login
                 default_target_path: trick.index
+                csrf_token_generator: security.csrf.token_manager
             user_checker: App\Security\UserChecker
 
             remember_me:

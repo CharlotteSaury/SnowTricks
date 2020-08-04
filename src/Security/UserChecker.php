@@ -20,7 +20,7 @@ class UserChecker implements UserCheckerInterface
             return;
         }
  
-        if (!$user->isVerified()) {
+        if ($user->getActivationToken() != null) {
             throw new \Exception("Your account has not been verified. Check your email and follow the verification link !");
         }
     }

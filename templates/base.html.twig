@@ -55,13 +55,12 @@
 								{{ app.user.username}}
 							</a>
 							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-								{% if not app.user.isVerified %}<div class="badge badge-light mx-1">Your account is not activated yet</div>{% endif %}
-								<a class="dropdown-item {% if not app.user.isVerified %}disabled{% endif %}" href="{{ path('user.profile', {username: app.user.username }) }}">Profile</a>
-								<a class="dropdown-item {% if not app.user.isVerified %}disabled{% endif %}" href="{{ path('user.tricks') }}">My tricks</a>
-								<a class="dropdown-item {% if not app.user.isVerified %}disabled{% endif %}" href="{{ path('user.trick.new') }}">Add trick</a>
-								<a class="dropdown-item {% if not app.user.isVerified %}disabled{% endif %}" href="{{ path('user.comments') }}">My comments</a>
+								<a class="dropdown-item" href="{{ path('user.profile', {username: app.user.username }) }}">Profile</a>
+								<a class="dropdown-item" href="{{ path('user.tricks') }}">My tricks</a>
+								<a class="dropdown-item" href="{{ path('user.trick.new') }}">Add trick</a>
+								<a class="dropdown-item" href="{{ path('user.comments') }}">My comments</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item {% if not app.user.isVerified %}disabled{% endif %}" href="{{ path('user.dashboard', {username: app.user.username}) }}">Dashboard</a>
+								<a class="dropdown-item" href="{{ path('user.dashboard', {username: app.user.username}) }}">Dashboard</a>
 							</div>
 						</li>
 						<a class="nav-item nav-link nav-separator" href="{{ path('app_logout') }}">Log out</a>

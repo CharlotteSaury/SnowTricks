@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class NewPasswordType extends AbstractType
 {
@@ -29,6 +30,14 @@ class NewPasswordType extends AbstractType
                 'label' => 'Please confirm new password'
             ],
             'mapped' => false,
+            'constraints' => [
+                new Regex(
+                    [
+                    'pattern' => '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W)^', 
+                    'message' => 'password must contain at least a lowercase, an uppercase, a number and a special character'
+                    ]
+                )
+            ]
         ])
         ->add('submit', SubmitType::class, [
             'label' => 'Reset',

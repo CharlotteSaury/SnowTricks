@@ -5,14 +5,15 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\IsTrue;
+use Symfony\Component\Validator\Constraints\EqualTo;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Validator\Constraints\EqualTo;
 
 class RegistrationFormType extends AbstractType
 {
@@ -40,6 +41,14 @@ class RegistrationFormType extends AbstractType
                     'label' => 'Please confirm password'
                 ],
                 'mapped' => false,
+                'constraints' => [
+                    new Regex(
+                        [
+                        'pattern' => '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W)^', 
+                        'message' => 'password must contain at least a lowercase, an uppercase, a number and a special character'
+                        ]
+                    )
+                ]
             ])
             ;
     }

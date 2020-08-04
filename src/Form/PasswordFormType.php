@@ -28,6 +28,14 @@ class PasswordFormType extends AbstractType
                     'label' => 'Please confirm new password'
                 ],
                 'mapped' => false,
+                'constraints' => [
+                    new Regex(
+                        [
+                        'pattern' => '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W)^', 
+                        'message' => 'password must contain at least a lowercase, an uppercase, a number and a special character'
+                        ]
+                    )
+                ]
             ])
         ;
     }

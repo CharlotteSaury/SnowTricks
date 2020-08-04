@@ -13,7 +13,7 @@
 						<i class="fas fa-undo-alt mr-2"></i>Retour
 					</a>
 				</div>
-				{% if app.user.id == trick.author.id %}
+				{% if app.user and app.user.id == trick.author.id %}
 					<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
 
 						<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
@@ -157,7 +157,7 @@
 									</a>
 									-
 									{{ comment.createdAt|format_datetime(locale='us') }}
-									{% if app.user.id == comment.author.id %}
+									{% if app.user and app.user.id == comment.author.id %}
 										-
 										<a class="ml-2" data-toggle="modal" data-target="#deleteCommentModal" data-action="{{ path('user.comment.delete', {id: comment.id}) }}" data-token="{{ csrf_token('comment_deletion_' ~ comment.id) }}">
 											<i class="fas fa-trash-alt"></i>

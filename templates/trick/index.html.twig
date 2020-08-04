@@ -6,22 +6,24 @@
 
 {% block body %}
 	<div class="row" id="home">
-		<div class="container-fluid  homeHeader d-flex px-0 mx-0">
+		<div class="container-fluid homeHeader d-flex px-0 mx-0">
 			<div class="homeTitle py-4 pl-5">
 				<h1>SnowTricks</h1>
 				<h2>Communauté d'apprentissage de figures de snowboard</h2>
+				{% for message in app.flashes('success') %}
+					<div class="alert alert-info w-75 mt-5 text-center mx-auto">
+						{{ message }}
+					</div>
+				{% endfor %}
 			</div>
+
 		</div>
+
 		<a href="#trickList">
 			<i class="fas fa-arrow-down"></i>
 		</a>
 	</div>
 	<div class="container-fluid">
-		{% for message in app.flashes('success') %}
-			<div class="alert alert-info w-75 mt-5 text-center mx-auto">
-				{{ message }}
-			</div>
-		{% endfor %}
 		<div class="row justify-content-center pb-0" id="trickList">
 			{% for trick in tricks %}
 				<div class="col-md-2 col-sm-4 mx-1 mb-4 trick-card-div">

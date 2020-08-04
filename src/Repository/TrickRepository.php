@@ -19,17 +19,6 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
-    public function findByAuthor($author)
-    {
-        return $this->createQueryBuilder('trick')
-            ->andWhere('trick.author = :author')
-            ->setParameter('author', $author)
-            ->orderBy('trick.id', 'DESC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
     // /**
     //  * @return Trick[] Returns an array of Trick objects
     //  */

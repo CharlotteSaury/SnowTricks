@@ -47,7 +47,7 @@ class AdminController extends AbstractController
     public function statistics()
     {
         $usersNb = count($this->userRepository->findAll());
-        $activatedUsers = count($this->userRepository->findVerified(1));
+        $activatedUsers = count($this->userRepository->findBy(['activationToken' => null]));
         $tricksNb = count($this->trickRepository->findAll());
         $commentsNb = count($this->commentRepository->findAll());
 
@@ -65,8 +65,8 @@ class AdminController extends AbstractController
      */
     public function users()
     {
-        $verifiedUsers = $this->userRepository->findVerified(1);
-        $unverifiedUsers = $this->userRepository->findVerified(0);
+        $verifiedUsers = $this->userRepository->findBy(['activationToken' => null]);
+        $unverifiedUsers = $this->userRepository->findUnverified();
 
         return $this->render('admin/users.html.twig', [
             'verifiedUsers' => $verifiedUsers,

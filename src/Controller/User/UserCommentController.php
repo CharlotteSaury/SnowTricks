@@ -33,7 +33,7 @@ class UserCommentController extends AbstractController
      */
     public function userComments()
     {
-        $comments = $this->commentRepository->findByAuthor($this->getUser()->getId());
+        $comments = $this->commentRepository->findBy(['author' => $this->getUser()->getId()]);
 
         return $this->render('user/comments.html.twig', [
             'comments' => $comments,

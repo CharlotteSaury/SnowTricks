@@ -154,7 +154,7 @@ class UserTrickController extends AbstractController
      */
     public function index(): Response
     {    
-        $tricks = $this->trickRepository->findByAuthor($this->getUser()->getId());
+        $tricks = $this->trickRepository->findBy(['author' => $this->getUser()->getId()]);
 
         return $this->render('user/tricks.html.twig', [
             'tricks' => $tricks,

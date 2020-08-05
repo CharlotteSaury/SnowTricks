@@ -45,6 +45,12 @@ h2 {
     text-decoration: none;
 }
 
+@media (max-width: 576px) {
+    .container-fluid:not(.homeHeader) {
+        margin-bottom: 5rem;;
+    }
+}
+
 
 
 /******* Nav *********/
@@ -57,18 +63,27 @@ h2 {
     margin-left: 1rem;
 }
 
-.nav-separator::before {
-    content: "";
-    position: absolute;
-    left: -10%;
-    height: 60%;
-    width: 2px;
-    background-color:#89ACAA
-}
-
 .nav-link .active a {
     font-weight: bold !important;
     color: #89ACAA !important;
+}
+
+@media (min-width:576px) {
+    .nav-separator::before {
+        content: "";
+        position: absolute;
+        left: -10%;
+        height: 60%;
+        width: 2px;
+        background-color:#89ACAA
+    }
+}
+
+@media (max-width:576px) {
+    nav {
+        display:flex;
+        flex-direction:row;
+    }
 }
 
 /******* Footer *********/
@@ -78,6 +93,12 @@ footer {
     color: #89ACAA;
     font-style: italic;
     font-size: 0.7rem;
+}
+
+@media (max-width:576px) {
+    footer {
+        display: none !important;
+    }
 }
 
 /*************************
@@ -127,18 +148,29 @@ footer {
 }
 
 .homeHeader .homeTitle {
-    position: relative;
-    width: 100%; 
+    position: absolute;
+    top: 20%; 
 }
 
 .homeHeader h1 {
-    font-size: 6rem;
+    font-size: 2.7rem;
     color: white;
+}
+
+.homeHeader h2 {
+    color: #89ACAA;
 }
 
 .homeHeader .alert {
     position: absolute;
-    bottom: 10%;
+    bottom: 30%;
+    left: 1.5rem;
+}
+
+@media (min-width:650px) {
+    .homeHeader h1 {
+        font-size: 6rem;
+    }
 }
 
 /******* Trick List *********/
@@ -242,7 +274,15 @@ footer {
     left: 0.5rem;
 } 
 
+#trickPage h1 {
+    font-size: 2rem;
+}
+
 /* ////// Media div /////// */
+
+#trickPage #trickMedia button {
+    display: none;
+}
 
 .trick-media {
     height: 10rem;
@@ -270,6 +310,15 @@ footer {
     color: #89ACAA;
 }
 
+@media (max-width:576px) {
+    #trickPage #trickMedia button {
+        display: block;
+    }
+    #trickPage .media-slider {
+        display: none;
+    }
+}
+
 /* ////// Trick infos div /////// */
 
 #trickInfos {
@@ -295,15 +344,6 @@ footer {
     position: relative;
 }
 
-#trickGroup::before, #trickDates::before {
-    content: "";
-    position: absolute;
-    left: -1rem;
-    height: 100%;
-    width: 2px;
-    background-color:#89ACAA
-}
-
 #trickDates::before {
     top: 0;
 }
@@ -325,6 +365,17 @@ footer {
 @media (max-width:767px) {
     #userModalInfos {
         text-align: center;
+    }
+    #trickBadges {
+        display:flex;
+        flex-direction:column;
+        align-items: center;
+    }
+    #trickBadges .badge {
+        margin-bottom: 1rem;
+    }
+    #userModal .modal-dialog {
+        max-width: 95%;
     }
 }
 
@@ -438,6 +489,14 @@ footer {
         font-size: 1rem;
     }
     
+    #trickCommentForm button {
+        margin-top: 1rem;
+    }
+    
+    #trickComments {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
 }
 
 
@@ -463,6 +522,16 @@ footer {
      list-style-type: none;
  }
 
+ @media (max-width:576px) {
+    #newTrickInfos, #newTrickMainImage, #newMedia {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    } 
+    #newMedia {
+        display: none;
+    }
+}
+
  /*************************
 **** edit Trick Page ******
 **************************/
@@ -484,6 +553,19 @@ footer {
     background: none;
 }
 
+#editPage #trickMedia .btn {
+    display: none;
+}
+
+@media (max-width:576px) {
+    #editPage #trickMedia .btn {
+        display: block;
+    }
+    #editPage .media-slider {
+        display: none;
+    }
+}
+
 
 /*************************
 ****** Login Page ********
@@ -497,7 +579,7 @@ footer {
     border: black 1px solid;
     box-shadow: grey 1px 1px 6px 0px;
     padding: 2rem 3rem;
-    border-radius: 10px;
+    border-radius: 2px;
     background-color: whitesmoke;
 }
 
@@ -522,5 +604,11 @@ footer {
 @media (max-width:991px) {
     #forgotPass {
         display: none;
+    }
+}
+
+@media (max-width:576px) {
+    .login-div {
+        margin-bottom:5rem;
     }
 }

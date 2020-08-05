@@ -63,7 +63,7 @@ class TrickController extends AbstractController
             $em->persist($comment);
             $em->flush();
 
-            $this->addFlash('success', 'Your comment is posted !');
+            $this->addFlash('successComment', 'Your comment is posted !');
 
             return $this->redirect($this->generateUrl('trick.show', [
                 '_fragment' => 'trickCommentForm',

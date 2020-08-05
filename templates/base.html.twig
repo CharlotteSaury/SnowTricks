@@ -26,31 +26,28 @@
 			href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
 			<!-- Favicon -->
-			<link rel="icon" type="image/svg" href="/media/images/snowboarding-solid.svg"/>
+			<link rel="icon" type="image/svg" href="{{ asset("/media/images/snowboarding-solid.svg") }}"/>
 
 		{% endblock %}
 	</head>
 
 	<body data-spy="scroll" data-target="#mainNav">
 
-		<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" id="mainNav">
+		<nav class="navbar navbar-expand-sm navbar-light bg-light sticky-top" id="mainNav">
 			<a class="navbar-brand" href="{{ path('trick.index') }}">
 				<i class="fas fa-snowboarding"></i>
 				SnowTricks</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavBar" aria-controls="mainNavBar" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="mainNavBar">
+			<div class="ml-auto" id="mainNavBar">
 				<div class="navbar-nav ml-auto">
-					<a class="nav-item nav-link" href="{{ path('trick.index') }}">Home
+					<a class="nav-item nav-link" href="{{ path('trick.index') }}" id="navHome">Home
 						<span class="sr-only">(current)</span>
 					</a>
-					<a class="nav-item nav-link nav-separator" href="{{ path('trick.index') }}#trickList">Tricks</a>
+					<a class="nav-item nav-link nav-separator" href="{{ path('trick.index') }}#trickList"  id="navTricks">Tricks</a>
 					{% if not app.user %}
-						<a class="nav-item nav-link nav-separator" href="{{ path('app_login') }}">Sign in</a>
-						<a class="nav-item nav-link nav-separator" href="{{ path('app_register') }}">Sign up</a>
+						<a class="nav-item nav-link nav-separator" href="{{ path('app_login') }}" id="navLogin">Sign in</a>
+						<a class="nav-item nav-link nav-separator" href="{{ path('app_register') }}" id="navSignup">Sign up</a>
 					{% else %}
-						<li class="nav-item dropdown">
+						<li class="nav-item dropdown" id="profileDropdown">
 							<a class="nav-link dropdown-toggle nav-separator" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								{{ app.user.username}}
 							</a>
@@ -60,10 +57,10 @@
 								<a class="dropdown-item" href="{{ path('user.trick.new') }}">Add trick</a>
 								<a class="dropdown-item" href="{{ path('user.comments') }}">My comments</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="{{ path('user.dashboard', {username: app.user.username}) }}">Dashboard</a>
+								<a class="dropdown-item" href="{{ path('user.dashboard', {username: app.user.username}) }}" id="navDashboard">Dashboard</a>
 							</div>
 						</li>
-						<a class="nav-item nav-link nav-separator" href="{{ path('app_logout') }}">Log out</a>
+						<a class="nav-item nav-link nav-separator" href="{{ path('app_logout') }}" id="navLogout">Log out</a>
 					{% endif %}
 
 				</div>

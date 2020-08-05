@@ -7,15 +7,16 @@
 {% block body %}
 	<div class="row" id="home">
 		<div class="container-fluid homeHeader d-flex px-0 mx-0">
-			<div class="homeTitle py-4 pl-5">
+			<div class="homeTitle py-4 px-4">
 				<h1>SnowTricks</h1>
-				<h2>Communauté d'apprentissage de figures de snowboard</h2>
-				{% for message in app.flashes('success') %}
+				<h2>Learning snowboard tricks together</h2>
+				
+			</div>
+			{% for message in app.flashes('success') %}
 					<div class="alert alert-info w-75 mt-5 text-center mx-auto">
 						{{ message }}
 					</div>
 				{% endfor %}
-			</div>
 
 		</div>
 

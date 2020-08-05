@@ -7,18 +7,11 @@
 #dashboard-nav {
     background-color: whitesmoke;
 }
-#dashboard-nav .nav-item {
-    padding-left: 1rem;
-}
 
 #dashboard-nav li a{
     color: #89ACAA;
     text-decoration: none;
-}
-
-#dashboard-nav li:hover, #dashboard-nav .active{
-    background-color: white;
-    border-left: 3px solid #89ACAA;
+    font-size: 0.9rem;
 }
 
 #dashboard-top {
@@ -46,6 +39,26 @@
     .dashboard-div {
         max-height: 83vh;
         overflow-y: scroll;
+    }
+    .btn-small {
+        display: none;
+    }
+    #dashboard-nav li:hover, #dashboard-nav .active{
+        background-color: white;
+        border-left: 3px solid #89ACAA;
+    }
+    
+    #dashboard-nav .nav-item {
+        padding-left: 1rem;
+    }
+}
+
+@media (max-width:576px) {    
+    #dashboard-nav .nav-link {
+        padding: .5rem .75rem;
+    }
+    #dashboard-nav {
+        justify-content:center;
     }
 }
 
@@ -96,6 +109,21 @@
 #adminUsers {
     color: #89ACAA;
 }
+
+#adminUsers .table {
+    font-size: 0.8rem;
+}
+
+@media (max-width: 576px) {
+    .responsive-table-custom {
+        display: none;
+    }
+
+    #adminUsers .table {
+        font-size: 0.8rem;
+    }
+}
+
 
 /*************************
 ******* reset password page ********

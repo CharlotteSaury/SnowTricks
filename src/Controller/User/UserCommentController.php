@@ -50,8 +50,16 @@ class UserCommentController extends AbstractController
         if ($this->isCsrfTokenValid('comment_deletion_' . $comment->getId(), $request->get('_token'))) {
             $this->em->remove($comment);
             $this->em->flush();
-            $this->addFlash('success', 'Your comment has been deleted !');
+            if ($comment->getAuthor() == $this->getUser()) {
+                $this->addFlash('successComment', 'Your comment has been deleted !');
+            } else {
+                $this->addFlash('successComment', $comment->getAuthor()->getUsername() . '\'s comment has been deleted !');
+            }
         }
-        return $this->redirectToRoute('user.comments');
+        return $this->redirectToRoute('trick.show', [
+            'id' => $comment->getTrick()->getId(),
+            'slug' => $comment->getTrick()->getSlug(),
+            '_fragment' => 'trickCommentForm',
+            ]);
     }
 }

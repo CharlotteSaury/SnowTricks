@@ -13,7 +13,7 @@
 						<i class="fas fa-undo-alt mr-2"></i>Retour
 					</a>
 				</div>
-				{% if app.user and app.user.id == trick.author.id %}
+				{% if app.user and app.user.id == trick.author.id or is_granted('ROLE_ADMIN') %}
 					<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
 
 						<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
@@ -27,9 +27,18 @@
 				<div class="text-center">
 					<h1>{{ trick.name }}</h1>
 				</div>
+				{% for message in app.flashes('success') %}
+					<div class="alert alert-info w-100 mt-3">
+						{{ message }}
+					</div>
+				{% endfor %}
 			</div>
 
 			<div class="row py-5 px-2 justify-content-center" id="trickMedia">
+				{% if trick.images is not empty or trick.videos is not empty %}
+					<button type="button" class="btn btn-info">See medias</button>
+				{% endif %}
+
 				{% if trick.images is not null %}
 					{% for image in trick.images %}
 						<div class="media-slider mb-3 mx-2">
@@ -48,24 +57,8 @@
 
 			<div class="row py-3 d-flex flex-column align-items-center pb-0 text-justify" id="trickInfos">
 				<p>{{ trick.description | nl2br }}</p>
-				<div class="row py-3 justify-content-center">
-					<a href="#" class="badge badge-light mr-2"
-						title="More about author"
-						data-toggle="modal" 
-						data-target="#userModal" 
-						{% if trick.author.avatar is not null %} 
-							data-avatar="{{ trick.author.avatar }}" 
-						{% else %} 
-							data-avatar="{{ asset('media/images/snowboarder.png') }}" 
-						{% endif %}
-						{% if trick.author.description is not null %} 
-							data-description="{{ trick.author.description }}" 
-						{% endif %} 
-						{% if trick.author.firstName is not null and trick.author.lastName is not null %} 
-							data-name="{{ trick.author.firstName }} {{ trick.author.lastName }} as {{ trick.author.username }}" 
-						{% else %} 
-							data-name="{{ trick.author.username }}" 
-						{% endif %}>
+				<div class="row py-3 justify-content-center" id="trickBadges">
+					<a href="#" class="badge badge-light mr-2" title="More about author" data-toggle="modal" data-target="#userModal" {% if trick.author.avatar is not null %} data-avatar="{{ trick.author.avatar }}" {% else %} data-avatar="{{ asset('media/images/snowboarder.png') }}" {% endif %} {% if trick.author.description is not null %} data-description="{{ trick.author.description }}" {% endif %} {% if trick.author.firstName is not null and trick.author.lastName is not null %} data-name="{{ trick.author.firstName }} {{ trick.author.lastName }} as {{ trick.author.username }}" {% else %} data-name="{{ trick.author.username }}" {% endif %}>
 						By :
 						{% if trick.author.firstName is not null and trick.author.lastName is not null %}
 							{{ trick.author.firstName }}
@@ -96,13 +89,13 @@
 				</div>
 			</div><hr><div class="row py-3 justify-content-center text-center" id="trickCommentForm">
 				{% if app.user %}
-						{{ form_start(form) }}
-						<div class='d-flex flex-column flex-md-row justify-content-center align-items-center'>
-							{{ form_row(form.content) }}
-							<button type="submit" class="btn btn-info ml-4">Leave a comment</button>
-						</div>
-						{{ form_end(form) }}
-					
+					{{ form_start(form) }}
+					<div class='d-flex flex-column flex-md-row justify-content-center align-items-center'>
+						{{ form_row(form.content) }}
+						<button type="submit" class="btn btn-info ml-4">Leave a comment</button>
+					</div>
+					{{ form_end(form) }}
+
 				{% else %}
 					<p>
 						<a href="{{ path('app_register') }}">Sign up
@@ -113,7 +106,7 @@
 						to leave a comment !
 					</p>
 				{% endif %}
-				{% for message in app.flashes('success') %}
+				{% for message in app.flashes('successComment') %}
 					<div class="alert alert-info w-100 mt-3">
 						{{ message }}
 					</div>
@@ -128,22 +121,7 @@
 							<div class="text-justify trick-comment-content mb-2">
 								<p>{{ comment.content }}</p>
 								<p class="pr-2 mb-0">
-									<a href="#" class="custom-link" title="More about author"
-										data-toggle="modal" 
-										data-target="#userModal" 
-										{% if comment.author.avatar is not null %} 
-											data-avatar="{{ comment.author.avatar }}" 
-										{% else %} 
-											data-avatar="{{ asset('media/images/snowboarder.png') }}" 
-										{% endif %}
-										{% if comment.author.description is not null %} 
-											data-description="{{ comment.author.description }}" 
-										{% endif %} 
-										{% if comment.author.firstName is not null and comment.author.lastName is not null %} 
-											data-name="{{ comment.author.firstName }} {{ comment.author.lastName }} as {{ comment.author.username }}" 
-										{% else %} 
-											data-name="{{ comment.author.username }}" 
-										{% endif %}>
+									<a href="#" class="custom-link" title="More about author" data-toggle="modal" data-target="#userModal" {% if comment.author.avatar is not null %} data-avatar="{{ comment.author.avatar }}" {% else %} data-avatar="{{ asset('media/images/snowboarder.png') }}" {% endif %} {% if comment.author.description is not null %} data-description="{{ comment.author.description }}" {% endif %} {% if comment.author.firstName is not null and comment.author.lastName is not null %} data-name="{{ comment.author.firstName }} {{ comment.author.lastName }} as {{ comment.author.username }}" {% else %} data-name="{{ comment.author.username }}" {% endif %}>
 										{% if comment.author.firstName is not null and comment.author.lastName is not null %}
 											{{ comment.author.firstName }}
 											{{ comment.author.lastName }}

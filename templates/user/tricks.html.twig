@@ -3,6 +3,9 @@
 {% block title %}My tricks
 {% endblock %}
 
+{% block subtitle %}
+	Your tricks
+{% endblock %}
 
 {% block body %}
 	<div class="px-5 py-4 dashboard-div" id="userTricks">
@@ -11,6 +14,9 @@
 				{{ message }}
 			</div>
 		{% endfor %}
+		<div class="row justify-content-center btn-small mb-3">
+			<a href="{{ path('user.trick.new') }}" class="btn btn-info">Add trick</a>
+		</div>
 		{% for trick in tricks %}
 			<div class="card mb-3">
 				<div class="row no-gutters">

@@ -131,6 +131,61 @@ $(function () {
         $(this).parent().parent().remove();
     })
 
+    /* ********** Responsive ********* */
+    
+    if (window.matchMedia('(max-width: 576px)').matches) {
+
+        // Navbar
+        $('#mainNav').removeClass('sticky-top').addClass('fixed-bottom');
+        $('#mainNavBar').removeClass('ml-auto');
+        $('.navbar-brand').remove();
+        $('#navHome').html('<i class="fas fa-home"></i>');
+        $('#navLogin').html('<i class="fas fa-sign-in-alt"></i>');
+        $('#navSignup').remove();
+        $('#navLogout').html('<i class="fas fa-sign-out-alt"></i>').removeClass('nav-separator');
+        $('#navTricks').html('<i class="fas fa-bookmark"></i>').removeClass('nav-separator');
+        $('#navDashboard').html('<i class="fas fa-user"></i>').removeClass('dropdown-item').addClass('nav-item nav-link');
+        $('#profileDropdown').replaceWith($('#navDashboard'));
+        $('.navbar-nav').css('flex-direction', 'row').css('justify-content', 'between');
+        $('.navbar').css('justify-content', 'center');
+        $('.navbar-nav a:not(".navbar-nav a:last")').css('margin-right', '4rem');
+
+        // Dashboard navbar
+        $('#dashboard-nav').addClass('fixed-bottom');
+        $('#dashNavLogout').html('<i class="fas fa-sign-out-alt"></i>');
+        $('#dashNavTricks').html('<i class="fas fa-list"></i>');
+        $('#dashNavDashboard').html('<i class="fas fa-home"></i>');
+        $('#dashNavProfile').html('<i class="fas fa-user"></i>');
+        $('#dashNavComments').html('<i class="fas fa-comment-dots"></i>');
+        $('#dashNavStats').html('<i class="fas fa-chart-bar"></i>');
+        $('#dashNavUsers').html('<i class="fas fa-users"></i>');
+        $('#dashNavPass, #dashNavAdd').parent().remove();
+        $('#dashboard-top a').html('<i class="fas fa-undo-alt mr-2"></i>');
+        
+        // Login, Registration, FogotPass
+        $('.login-form').prepend($('.login-div h1')).css('margin-top', '3rem');
+
+        $('#newTrickImages button').html('<i class="fas fa-plus mr-2"></i><i class="fas fa-images"></i>');
+        $('#newTrickVideos button').html('<i class="fas fa-plus mr-2"></i><i class="fas fa-video"></i>');
+    }
+
+    /* ******** trick page ****** */
+
+    $('#trickPage #trickMedia button').click(function (e) {
+        $('#trickPage #trickMedia .media-slider').css('display', 'block');
+        $(this).css('display', 'none');
+    })
+
+    /* ******** new/edit trick page ****** */
+
+    $('#editPage #trickMedia button').click(function (e) {
+        $('#editPage #trickMedia .media-slider').css('display', 'block');
+        $(this).css('display', 'none');
+        $('#newMedia').css('display', 'block !important')
+    })
+
+
+
     /* ********** Passing user infos to modal ********* */
 
     $('#userModal').on('show.bs.modal', function (e) {

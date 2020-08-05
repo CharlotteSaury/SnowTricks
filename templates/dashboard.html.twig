@@ -39,49 +39,51 @@
 					<i class="fas fa-undo-alt mr-2"></i>Back to SnowTricks
 				</a>
 				<div class="px-4 d-flex justify-content-center">
-					<h6 class="ml-auto my-auto">Bonjour,
-						{{ app.user.username }}</h6>
+					<h6 class="ml-auto my-auto">
+						{% block subtitle %}
+						{% endblock %}
+					</h6>
 				</div>
 			</div>
 			<div class="row" id="dashboard-content">
 				<nav class="col-sm-3 px-0 pt-4 text-center" id="dashboard-nav">
-					<ul class="nav flex-column text-left">
+					<ul class="nav d-flex flex-sm-column text-left">
 						<li class="nav-item {% if nav is defined and nav == 'dashboard' %}active{% endif %}">
-							<a class="nav-link" href="{{ path('user.dashboard', {username: app.user.username}) }}">Dashboard</a>
+							<a class="nav-link" id="dashNavDashboard" href="{{ path('user.dashboard', {username: app.user.username}) }}">Dashboard</a>
 						</li>
 						<li class="nav-item {% if nav is defined and nav == 'profile' %}active{% endif %}">
-							<a class="nav-link" href="{{ path('user.profile', {username: app.user.username }) }}">
+							<a class="nav-link" id="dashNavProfile" href="{{ path('user.profile', {username: app.user.username }) }}">
 								<i class="fas fa-user mr-2"></i>Profile</a>
 						</li>
 						<li class="nav-item {% if nav is defined and nav == 'resetPass' %}active{% endif %}">
-							<a class="nav-link" href="{{ path('user.resetPass') }}">
+							<a class="nav-link" id="dashNavPass" href="{{ path('user.resetPass') }}">
 								<i class="fas fa-cog mr-2"></i></i>Reset password</a>
 						</li>
 						<li class="nav-item {% if nav is defined and nav == 'myTricks' %}active{% endif %}">
-							<a class="nav-link" href="{{ path('user.tricks') }}">
+							<a class="nav-link" id="dashNavTricks" href="{{ path('user.tricks') }}">
 								<i class="fas fa-list mr-2"></i>My tricks</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{{ path('user.trick.new') }}">
+							<a class="nav-link" id="dashNavAdd" href="{{ path('user.trick.new') }}">
 								<i class="fas fa-plus-square mr-2"></i>Add trick</a>
 						</li>
 						<li class="nav-item {% if nav is defined and nav == 'myComments' %}active{% endif %}">
-							<a class="nav-link" href="{{ path('user.comments') }}">
+							<a class="nav-link" id="dashNavComments" href="{{ path('user.comments') }}">
 								<i class="fas fa-comment-dots mr-2"></i>My comments</a>
 						</li>
 						{% if is_granted('ROLE_ADMIN') %}
 							<li class="nav-item {% if nav is defined and nav == 'statistics' %}active{% endif %}">
-								<a class="nav-link" href="{{ path('admin.statistics') }}">
+								<a class="nav-link" id="dashNavStats" href="{{ path('admin.statistics') }}">
 									<i class="fas fa-chart-bar mr-2"></i>Statistics</a>
 							</li>
 							<li class="nav-item {% if nav is defined and nav == 'users' %}active{% endif %}">
-								<a class="nav-link" href="{{ path('admin.users') }}">
+								<a class="nav-link" id="dashNavUsers" href="{{ path('admin.users') }}">
 									<i class="fas fa-users mr-2"></i>Users</a>
 							</li>
 						{% endif %}
 
 						<li class="nav-item">
-							<a class="nav-link" href="{{ path('app_logout') }}">
+							<a class="nav-link" id="dashNavLogout" href="{{ path('app_logout') }}">
 								<i class="fas fa-power-off mr-2"></i>Log out</a>
 						</li>
 					</ul>

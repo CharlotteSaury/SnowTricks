@@ -4,6 +4,8 @@ namespace App\Controller\User;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\CommentRepository;
+use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,10 +30,15 @@ class UserController extends AbstractController
     /**
      * @Route("/user/dashboard/{username}", name="user.dashboard")
      */
-    public function dashboard(User $user)
+    public function dashboard(User $user, TrickRepository $trickRepository, CommentRepository $commentRepository)
     {
+        $tricksNb = count($trickRepository->findBy(['author' => $user->getId()]));
+        $commentsNb = count($commentRepository->findBy(['author' => $user->getId()]));
+
         return $this->render('user/dashboard.html.twig', [
             'user' => $user,
+            'tricksNb' => $tricksNb,
+            'commentsNb' => $commentsNb,
             'nav' => 'dashboard'
         ]);
     }

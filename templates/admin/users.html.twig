@@ -3,6 +3,9 @@
 {% block title %}Statistics
 {% endblock %}
 
+{% block subtitle %}
+	Users
+{% endblock %}
 
 {% block body %}
 	<div class="row px-4 py-4 dashboard-div" id="adminUsers">
@@ -16,19 +19,19 @@
 			<thead>
 				<tr>
 					<th>Username</th>
-					<th>Email</th>
-					<th>Created at</th>
+					<th class="responsive-table-custom">Email</th>
+					<th class="responsive-table-custom">Created at</th>
 					<th>Role</th>
-					<th>Tricks</th>
-					<th>Comments</th>
+					<th><i class="fas fa-list"></i></th>
+					<th><i class="fas fa-comment-dots"></i></th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for user in verifiedUsers %}
 					<tr>
-						<td scope="row">{{ user.username }}</td>
-						<td>{{ user.email }}</td>
-						<td>{{ user.createdAt|format_date }}</td>
+						<td scope="row"><a class="custom-link" href="{{ path('user.profile', {username: user.username}) }}">{{ user.username }}</a></td>
+						<td class="responsive-table-custom">{{ user.email }}</td>
+						<td class="responsive-table-custom">{{ user.createdAt|format_date }}</td>
 						<td>
 							{% for role in user.roles %}
 								{% if role == "ROLE_USER" %}
@@ -55,19 +58,19 @@
 			<thead>
 				<tr>
 					<th>Username</th>
-					<th>Email</th>
-					<th>Created at</th>
+					<th class="responsive-table-custom">Email</th>
+					<th class="responsive-table-custom">Created at</th>
 					<th>Role</th>
-					<th>Tricks</th>
-					<th>Comments</th>
+					<th><i class="fas fa-list"></i></th>
+					<th><i class="fas fa-comment-dots"></i></th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for user in unverifiedUsers %}
 					<tr>
-						<td scope="row">{{ user.username }}</td>
-						<td>{{ user.email }}</td>
-						<td>{{ user.createdAt|format_date }}</td>
+						<td scope="row"><a class="custom-link" href="{{ path('user.profile', {username: user.username}) }}">{{ user.username }}</a></td>
+						<td class="responsive-table-custom">{{ user.email }}</td>
+						<td class="responsive-table-custom">{{ user.createdAt|format_date }}</td>
 						<td>
 							{% for role in user.roles %}
 								{% if role == "ROLE_USER" %}

@@ -3,6 +3,10 @@
 {% block title %}Profile
 {% endblock %}
 
+{% block subtitle %}
+	Your profile
+{% endblock %}
+
 
 {% block body %}
 	<div class="py-4 px-4 dashboard-div" id="profile">
@@ -51,6 +55,9 @@
 		</div>
 		<div class="row justify-content-center">
 			<a href="{{ path('user.edit', {username: user.username}) }}" class="btn btn-info">Edit profile</a>
+		</div>
+		<div class="row justify-content-center btn-small mt-2">
+			<a href="{{ path('user.resetPass') }}" class="btn btn-info">Reset Password</a>
 		</div>
 
 

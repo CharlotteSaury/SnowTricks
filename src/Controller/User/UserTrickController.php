@@ -91,6 +91,7 @@ class UserTrickController extends AbstractController
      */
     public function edit(Trick $trick, Request $request)
     {
+        $author = $trick->getAuthor();
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
@@ -119,13 +120,23 @@ class UserTrickController extends AbstractController
                 $trick->addVideo($video);
             }
 
-            $trick->setUpdatedAt(new \DateTime());
+            $trick->setUpdatedAt(new \DateTime())
+                ->setAuthor($author);
 
             $this->em->persist($trick);
             $this->em->flush();
-            $this->addFlash('success', 'Your trick has been updated !');
 
-            return $this->redirectToRoute('user.tricks');
+            if ($author == $this->getUser()) {
+                $this->addFlash('success', 'Your trick has been updated !');
+            } else {
+                $this->addFlash('success', $author->getUsername() . '\'s trick has been updated !');
+            }
+            
+            return $this->redirectToRoute('trick.show', [
+                'id' => $trick->getId(),
+                'slug' => $trick->getSlug()
+            ]);
+            
         }
 
         return $this->render('trick/edit.html.twig', [
@@ -142,10 +153,16 @@ class UserTrickController extends AbstractController
     {
         if ($this->isCsrfTokenValid('trick_deletion_' . $trick->getId(), $request->get('_token'))) {
             $this->em->remove($trick);
-            $this->em->flush();
-            $this->addFlash('success', 'Your trick has been deleted !');
+            $this->em->flush(); 
         }
-        return $this->redirectToRoute('user.tricks');
+        if ($trick->getAuthor() == $this->getUser()) {
+            $this->addFlash('success', 'Your trick has been deleted !');
+            return $this->redirectToRoute('user.tricks');
+        } else {
+            $this->addFlash('success', $trick->getAuthor()->getUsername() . '\'s trick has been deleted !');
+            return $this->redirectToRoute('trick.index');
+        }
+        
     }
 
     /**
@@ -154,7 +171,7 @@ class UserTrickController extends AbstractController
      */
     public function index(): Response
     {    
-        $tricks = $this->trickRepository->findByAuthor($this->getUser()->getId());
+        $tricks = $this->trickRepository->findBy(['author' => $this->getUser()->getId()]);
 
         return $this->render('user/tricks.html.twig', [
             'tricks' => $tricks,

@@ -3,12 +3,37 @@
 {% block title %}Dashboard
 {% endblock %}
 
+{% block subtitle %}
+	Bonjour, {{ app.user.username }}
+{% endblock %}
 
 {% block body %}
-	{% for message in app.flashes('success') %}
+	<div class="row px-4 py-4 dashboard-div">
+		{% for message in app.flashes('success') %}
 			<div class="alert alert-info w-100 mt-3 text-center">
 				{{ message }}
 			</div>
 		{% endfor %}
+		<div class="col-md-4 mb-3 stats-card" id="adminTrickCard">
+			<div class="card">
+				<img src="{{ asset('media/images/snowboard.svg') }}" class="card-img-top" alt="users">
+				<div class="card-body">
+					<h5 class="card-title">Tricks</h5>
+					<p class="card-text">{{ tricksNb }}
+						tricks</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4 mb-3 stats-card" id="adminCommentCard">
+			<div class="card">
+				<img src="{{ asset('media/images/comment.svg') }}" class="card-img-top" alt="users">
+				<div class="card-body">
+					<h5 class="card-title">Comments</h5>
+					<p class="card-text">{{ commentsNb }}
+						comments</p>
+				</div>
+			</div>
+		</div>
+	</div>
 
 {% endblock %}

@@ -6,11 +6,12 @@ use App\Entity\Group;
 use App\Entity\Trick;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType as TypeEntityType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType as TypeEntityType;
 
 class TrickType extends AbstractType
 {
@@ -35,7 +36,10 @@ class TrickType extends AbstractType
             ->add('mainImage', FileType::class, [
                 'label' => 'Define the main image',
                 'mapped' => false,
-                'required' => false
+                'required' => false,
+                'constraints' => [
+                    new Image()
+                ]
             ])
             ->add('images', CollectionType::class, [
                 'entry_type'   		=> ImageType::class,
@@ -44,7 +48,7 @@ class TrickType extends AbstractType
                 'allow_delete'		=> true,
                 'by_reference' 		=> false,
                 'required'			=> false,
-                'label'			=> false,
+                'label'			=> false
             ])
             ->add('videos', CollectionType::class, [
                 'entry_type'   		=> VideoType::class,
@@ -53,7 +57,7 @@ class TrickType extends AbstractType
                 'allow_delete'		=> true,
                 'by_reference' 		=> false,
                 'required'			=> false,
-                'label'			=> false,
+                'label'			=> false
             ]);
     }
 

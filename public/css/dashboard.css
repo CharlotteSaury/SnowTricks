@@ -83,7 +83,7 @@
 ******* Profile page ********
 *************************/
 
- .avatar-input{
+ .avatar-input .custom-file{
      display: none;
  }
 

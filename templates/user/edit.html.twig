@@ -14,7 +14,7 @@
 		{{ form_start(form) }}
 		<div class="row pt-2">
 			<div class="col-md-4 text-center" id="userAvatar">
-				<img src="{% if user.avatar is not null %}{{ asset('media/uploads' ~ user.avatar) }}{% else %}{{ asset('media/images/snowboarder.png') }}{% endif %}" width="100%" alt="profile picture"/>
+				<img src="{% if user.avatar is not null %}{{ asset('media/uploads/' ~ user.avatar) }}{% else %}{{ asset('media/images/snowboarder.png') }}{% endif %}" width="100%" alt="profile picture"/>
 				<div class="avatar-input">
 					{{ form_row(form.avatar) }}
 				</div>

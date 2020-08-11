@@ -5,62 +5,62 @@ $(function () {
 
     // LoadMoreTricks and LoadLessTricks buttons
 
-    var tricks = $('div.trick-card-div');
-    $('#arrowUp').hide();
-    $('#loadLessTricksBtn').hide();
+    var tricks = $("div.trick-card-div");
+    $("#arrowUp").hide();
+    $("#loadLessTricksBtn").hide();
     if (tricks.length <= tricksPerPage) {
-        $('#loadMoreTricksBtn').hide();
+        $("#loadMoreTricksBtn").hide();
     }
 
     for (var i = tricksPerPage; i <= tricks.length - 1; i++) {
         tricks[i].remove();
     }
 
-    $('#loadMoreTricksBtn').on('click', function (e) {
+    $("#loadMoreTricksBtn").on("click", function (e) {
         e.preventDefault();
         tricksPerPage += 5;
         for (var i = 0; i <= tricksPerPage - 1; i++) {
-            $('#trickList').append(tricks[i]);
+            $("#trickList").append(tricks[i]);
         }
         if (tricks.length <= tricksPerPage) {
-            $('#loadLessTricksBtn').show();
-            $('#loadMoreTricksBtn').hide();
+            $("#loadLessTricksBtn").show();
+            $("#loadMoreTricksBtn").hide();
         }
         if (tricksPerPage >= 15) {
-            $('#arrowUp').show();
+            $("#arrowUp").show();
         }
     });
 
-    $('#loadLessTricksBtn').on('click', function (e) {
+    $("#loadLessTricksBtn").on("click", function (e) {
         e.preventDefault();
         tricksPerPage = 5;
         for (var i = tricksPerPage; i <= tricks.length - 1; i++) {
             tricks[i].remove();
         }
-        $('#loadLessTricksBtn').hide();
-        $('#loadMoreTricksBtn').show();
-        $('#arrowUp').hide();
+        $("#loadLessTricksBtn").hide();
+        $("#loadMoreTricksBtn").show();
+        $("#arrowUp").hide();
 
     });
 
     // LoadMoreComments button
-    var comments = $('div.trick-comment');
+    var comments = $("div.trick-comment");
     if (comments.length <= commentsPerPage) {
-        $('#loadMoreCommentsBtn').hide();
+        $("#loadMoreCommentsBtn").hide();
     }
 
     for (var i = commentsPerPage; i <= comments.length - 1; i++) {
         comments[i].remove();
     }
 
-    $('#loadMoreCommentsBtn').on('click', function (e) {
+    $("#loadMoreCommentsBtn").on("click", function (e) {
         e.preventDefault();
         commentsPerPage += 5;
         for (var i = 0; i <= commentsPerPage - 1; i++) {
-            $('#trickComments').append(comments[i]);
+            $("#trickComments").append(comments[i]);
         }
         if (comments.length <= commentsPerPage) {
-            $('#loadMoreCommentsBtn').hide();
+            $("#loadMoreCommentsBtn").hide();
         }
     });
 
@@ -68,75 +68,75 @@ $(function () {
 
     /* ********** Responsive ********* */
     
-    if (window.matchMedia('(max-width: 576px)').matches) {
+    if (window.matchMedia("(max-width: 576px)").matches) {
 
         // Navbar
-        $('#mainNav').removeClass('sticky-top').addClass('fixed-bottom');
-        $('#mainNavBar').removeClass('ml-auto');
-        $('.navbar-brand').remove();
-        $('#navHome').html('<i class="fas fa-home"></i>');
-        $('#navLogin').html('<i class="fas fa-sign-in-alt"></i>');
-        $('#navSignup').remove();
-        $('#navLogout').html('<i class="fas fa-sign-out-alt"></i>').removeClass('nav-separator');
-        $('#navTricks').html('<i class="fas fa-bookmark"></i>').removeClass('nav-separator');
-        $('#navDashboard').html('<i class="fas fa-user"></i>').removeClass('dropdown-item').addClass('nav-item nav-link');
-        $('#profileDropdown').replaceWith($('#navDashboard'));
-        $('.navbar-nav').css('flex-direction', 'row').css('justify-content', 'between');
-        $('.navbar').css('justify-content', 'center');
-        $('.navbar-nav a:not(".navbar-nav a:last")').css('margin-right', '4rem');
+        $("#mainNav").removeClass("sticky-top").addClass("fixed-bottom");
+        $("#mainNavBar").removeClass("ml-auto");
+        $(".navbar-brand").remove();
+        $("#navHome").html("<i class='fas fa-home'></i>");
+        $("#navLogin").html("<i class='fas fa-sign-in-alt'></i>");
+        $("#navSignup").remove();
+        $("#navLogout").html("<i class='fas fa-sign-out-alt'></i>").removeClass("nav-separator");
+        $("#navTricks").html("<i class='fas fa-bookmark'></i>").removeClass("nav-separator");
+        $("#navDashboard").html("<i class='fas fa-user'></i>").removeClass("dropdown-item").addClass("nav-item nav-link");
+        $("#profileDropdown").replaceWith($("#navDashboard"));
+        $(".navbar-nav").css("flex-direction", "row").css("justify-content", "between");
+        $(".navbar").css("justify-content", "center");
+        $(".navbar-nav a:not('.navbar-nav a:last')").css("margin-right", "4rem");
 
         // Dashboard navbar
-        $('#dashboard-nav').addClass('fixed-bottom');
-        $('#dashNavLogout').html('<i class="fas fa-sign-out-alt"></i>');
-        $('#dashNavTricks').html('<i class="fas fa-list"></i>');
-        $('#dashNavDashboard').html('<i class="fas fa-home"></i>');
-        $('#dashNavProfile').html('<i class="fas fa-user"></i>');
-        $('#dashNavComments').html('<i class="fas fa-comment-dots"></i>');
-        $('#dashNavStats').html('<i class="fas fa-chart-bar"></i>');
-        $('#dashNavUsers').html('<i class="fas fa-users"></i>');
-        $('#dashNavPass, #dashNavAdd').parent().remove();
-        $('#dashboard-top a').html('<i class="fas fa-undo-alt mr-2"></i>');
+        $("#dashboard-nav").addClass("fixed-bottom");
+        $("#dashNavLogout").html("<i class='fas fa-sign-out-alt'></i>");
+        $("#dashNavTricks").html("<i class='fas fa-list'></i>");
+        $("#dashNavDashboard").html("<i class='fas fa-home'></i>");
+        $("#dashNavProfile").html("<i class='fas fa-user'></i>");
+        $("#dashNavComments").html("<i class='fas fa-comment-dots'></i>");
+        $("#dashNavStats").html("<i class='fas fa-chart-bar'></i>");
+        $("#dashNavUsers").html("<i class='fas fa-users'></i>");
+        $("#dashNavPass, #dashNavAdd").parent().remove();
+        $("#dashboard-top a").html("<i class='fas fa-undo-alt mr-2'></i>");
         
         // Login, Registration, FogotPass
-        $('.login-form').prepend($('.login-div h1')).css('margin-top', '3rem');
+        $(".login-form").prepend($(".login-div h1")).css("margin-top", "3rem");
 
-        $('#newTrickImages button').html('<i class="fas fa-plus mr-2"></i><i class="fas fa-images"></i>');
-        $('#newTrickVideos button').html('<i class="fas fa-plus mr-2"></i><i class="fas fa-video"></i>');
+        $("#newTrickImages button").html("<i class='fas fa-plus mr-2'></i><i class='fas fa-images'></i>");
+        $("#newTrickVideos button").html("<i class='fas fa-plus mr-2'></i><i class='fas fa-video'></i>");
     }
 
     /* ******** trick page ****** */
 
-    $('#trickPage #trickMedia button').click(function (e) {
-        $('#trickPage #trickMedia .media-slider').css('display', 'block');
-        $(this).css('display', 'none');
+    $("#trickPage #trickMedia button").click(function (e) {
+        $("#trickPage #trickMedia .media-slider").css("display", "block");
+        $(this).css("display", "none");
     })
 
     /* ******** new/edit trick page ****** */
     // Trick images upload
 
-    $(document).on('change', '.custom-file-input', function () {
-        let fileName = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
-        $(this).parent('.custom-file').find('.custom-file-label').text(fileName);
+    $(document).on("change", ".custom-file-input", function () {
+        let fileName = $(this).val().replace(/\\/g, "/").replace(/.*\//, "");
+        $(this).parent(".custom-file").find(".custom-file-label").text(fileName);
     });
 
-    $('.add-another-collection-widget').click(function (e) {
-        var list = $($(this).attr('data-list-selector'));
+    $(".add-another-collection-widget").click(function (e) {
+        var list = $($(this).attr("data-list-selector"));
         // Try to find the counter of the list or use the length of the list
-        var counter = list.data('widget-counter') || list.children().length;
+        var counter = list.data("widget-counter") || list.children().length;
 
         // grab the prototype template
-        var newWidget = list.attr('data-prototype');
+        var newWidget = list.attr("data-prototype");
         // replace the "__name__" used in the id and name of the prototype
-        // with a number that's unique to your emails
+        // with a number that"s unique to your emails
         // end name attribute looks like name="contact[emails][2]"
         newWidget = newWidget.replace(/__name__/g, counter);
         // Increase the counter
         counter++;
         // And store it, the length cannot be used if deleting widgets is allowed
-        list.data('widget-counter', counter);
+        list.data("widget-counter", counter);
 
         // create a new list element and add it to the list
-        var newElem = $(list.attr('data-widget-tags')).html(newWidget);
+        var newElem = $(list.attr("data-widget-tags")).html(newWidget);
         newElem.appendTo(list);
         handleDeleteButtons();
         updateCounterImage();
@@ -144,8 +144,8 @@ $(function () {
     });
 
     function handleDeleteButtons() {
-        $('button[data-action="delete"]').click(function () {
-            var target = $(this).attr('data-target');
+        $("button[data-action='delete']").click(function () {
+            var target = $(this).attr("data-target");
             $(target).parent().remove();
             updateCounterImage();
             updateCounterVideo();
@@ -153,36 +153,36 @@ $(function () {
     }
 
     function updateCounterImage() {
-        var count = +$('#image-fields-list').children().length;
-        $('#image-counter').val(count);
+        var count = +$("#image-fields-list").children().length;
+        $("#image-counter").val(count);
     }
 
     function updateCounterVideo() {
-        var count = +$('#video-fields-list').children().length;
-        $('#video-counter').val(count);
+        var count = +$("#video-fields-list").children().length;
+        $("#video-counter").val(count);
     }
 
-    $('.edit-mainImg').click(function (e) {
-        $('.mainImg-input .custom-file').css('display', 'block');
+    $(".edit-mainImg").click(function (e) {
+        $(".mainImg-input .custom-file").css("display", "block");
     })    
 
-    $('.delete-mainImg').click(function (e) {
-        $('#trickMainImg').css('background', 'none').css('background-color', 'grey');
-        $('.mainImg-input').css('display', 'block');
+    $(".delete-mainImg").click(function (e) {
+        $("#trickMainImg").css("background", "none").css("background-color", "grey");
+        $(".mainImg-input").css("display", "block");
     })
 
-    $('.edit-media-button').click(function (e) {
-        $(this).parent().parent().find('.edit-media-input').css('display', 'block');
+    $(".edit-media-button").click(function (e) {
+        $(this).parent().parent().find(".edit-media-input").css("display", "block");
     })
 
-    $('.delete-media-button').click(function (e) {
+    $(".delete-media-button").click(function (e) {
         $(this).parent().parent().remove();
     })
 
-    $('#editPage #trickMedia button').click(function (e) {
-        $('#editPage #trickMedia .media-slider').css('display', 'block');
-        $(this).css('display', 'none');
-        $('#newMedia').css('display', 'block !important')
+    $("#editPage #trickMedia button").click(function (e) {
+        $("#editPage #trickMedia .media-slider").css("display", "block");
+        $(this).css("display", "none");
+        $("#newMedia").css("display", "block !important")
     })
 
     
@@ -191,32 +191,32 @@ $(function () {
 
     /* ********** Passing user infos to modal ********* */
 
-    $('#userModal').on('show.bs.modal', function (e) {
-        $(this).find('#userModalName').text($(e.relatedTarget).data('name'));
-        $(this).find('#userModalAvatar').attr('src', $(e.relatedTarget).data('avatar'));
-        $(this).find('#userModalEmail').text($(e.relatedTarget).data('description'));
+    $("#userModal").on("show.bs.modal", function (e) {
+        $(this).find("#userModalName").text($(e.relatedTarget).data("name"));
+        $(this).find("#userModalAvatar").attr("src", $(e.relatedTarget).data("avatar"));
+        $(this).find("#userModalEmail").text($(e.relatedTarget).data("description"));
     });
 
     /* ********** Passing trick infos to modal ********* */
 
-    $('#deleteTrickModal').on('show.bs.modal', function (e) {
-        $(this).find('#trick_deletion').attr('action', $(e.relatedTarget).data('action'));
-        $(this).find('#csrf_deletion').attr('value', $(e.relatedTarget).data('token'));
-        $(this).find('.modal-title').text('Trick deletion : ' + $(e.relatedTarget).data('name'));
+    $("#deleteTrickModal").on("show.bs.modal", function (e) {
+        $(this).find("#trick_deletion").attr("action", $(e.relatedTarget).data("action"));
+        $(this).find("#csrf_deletion").attr("value", $(e.relatedTarget).data("token"));
+        $(this).find(".modal-title").text("Trick deletion : " + $(e.relatedTarget).data("name"));
     });
 
     /* ********** Passing comment infos to modal ********* */
 
-    $('#deleteCommentModal').on('show.bs.modal', function (e) {
-        $(this).find('#comment_deletion').attr('action', $(e.relatedTarget).data('action'));
-        $(this).find('#csrf_deletion').attr('value', $(e.relatedTarget).data('token'));
+    $("#deleteCommentModal").on("show.bs.modal", function (e) {
+        $(this).find("#comment_deletion").attr("action", $(e.relatedTarget).data("action"));
+        $(this).find("#csrf_deletion").attr("value", $(e.relatedTarget).data("token"));
     });
 
     /* ******** user profile page ****** */
 
-    $('#editAvatarBtn').click(function (e) {
-        $('.avatar-input .custom-file').css('display', 'block');
-        $(this).css('display', 'none');
+    $("#editAvatarBtn").click(function (e) {
+        $(".avatar-input .custom-file").css("display", "block");
+        $(this).css("display", "none");
     })
 
 });

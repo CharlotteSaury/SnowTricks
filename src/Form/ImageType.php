@@ -4,10 +4,11 @@ namespace App\Form;
 
 use App\Entity\Image;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Image as ImageConstraint;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
 
 class ImageType extends AbstractType
@@ -17,7 +18,10 @@ class ImageType extends AbstractType
         $builder
             ->add('file', FileType::class, [
                 'label' => false,
-                'required' => false
+                'required' => false,
+                'constraints' => [
+                    new ImageConstraint()
+                ]
             ])
             ->add('delete', ButtonType::class, [
                 'label_html' => true,

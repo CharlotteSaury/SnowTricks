@@ -536,11 +536,11 @@ footer {
 **** edit Trick Page ******
 **************************/
 
-.mainImg-input {
+.mainImg-input .custom-file {
     display:none;
 }
 
-.edit-media-input, .edit-media-input button {
+.edit-media-input .custom-file, .edit-media-input button {
     display: none;
 }
 

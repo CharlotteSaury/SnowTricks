@@ -7,6 +7,7 @@ use App\Entity\Trick;
 use App\Form\TrickType;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
+use App\Service\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,7 +42,7 @@ class UserTrickController extends AbstractController
     /**
      * @Route("/user/trick/new", name="user.trick.new")
      */
-    public function new(Request $request)
+    public function new(Request $request, UploaderHelper $uploaderHelper)
     {
         $trick = new Trick();
         $form = $this->createForm(TrickType::class, $trick);
@@ -53,15 +54,13 @@ class UserTrickController extends AbstractController
 
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = md5(uniqid()) . '.' . $mainImage->guessExtension();
-                $mainImage->move($this->getParameter('media_directory'), $mainImageName);
+                $mainImageName = $uploaderHelper->uploadFile($mainImage);
                 $trick->setMainImage($mainImageName);
             }
 
             $images = $form->get('images')->getData();
             foreach ($images as $image) {
-                $imageName = md5(uniqid()) . '.' . $image->getFile()->guessExtension();
-                $image->getFile()->move($this->getParameter('media_directory'), $imageName);
+                $imageName = $uploaderHelper->uploadFile($image->getFile());
 
                 $image->setName($imageName)
                     ->setTrick($trick);
@@ -89,7 +88,7 @@ class UserTrickController extends AbstractController
      * @Route("/user/trick/edit{id}", name="user.trick.edit")
      * @IsGranted("edit", subject="trick", message="Access denied")
      */
-    public function edit(Trick $trick, Request $request)
+    public function edit(Trick $trick, Request $request, UploaderHelper $uploaderHelper)
     {
         $author = $trick->getAuthor();
         $form = $this->createForm(TrickType::class, $trick);
@@ -98,16 +97,15 @@ class UserTrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = md5(uniqid()) . '.' . $mainImage->guessExtension();
-                $mainImage->move($this->getParameter('media_directory'), $mainImageName);
+                $mainImageName = $uploaderHelper->uploadFile($mainImage);
                 $trick->setMainImage($mainImageName);
             }
 
             $images = $form->get('images')->getData();
+
             foreach ($images as $image) {
                 if ($image->getFile() != null) {
-                    $imageName = md5(uniqid()) . '.' . $image->getFile()->guessExtension();
-                    $image->getFile()->move($this->getParameter('media_directory'), $imageName);
+                    $imageName = $uploaderHelper->uploadFile($image->getFile());
 
                     $image->setName($imageName)
                         ->setTrick($trick);

@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
+use App\Service\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,12 +58,18 @@ class UserController extends AbstractController
     /**
      * @Route("/user/edit/{username}", name="user.edit")
      */
-    public function edit(Request $request, User $user)
+    public function edit(Request $request, User $user, UploaderHelper $uploaderHelper)
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $avatar = $form->get('avatar')->getData();
+            if (!empty($avatar)) {
+                $avatarName = $uploaderHelper->uploadFile($avatar);
+                $user->setAvatar($avatarName);
+            }
             $this->em->persist($user);
             $this->em->flush();
             $this->addFlash('success', 'Your profile has been updated !');

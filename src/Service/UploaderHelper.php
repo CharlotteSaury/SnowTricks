@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 
 class UploaderHelper
 {
@@ -12,11 +12,11 @@ class UploaderHelper
     {
         $this->uploadsPath = $uploadsPath;
     }
-    public function uploadFile(UploadedFile $uploadedFile, string $folderName): string
+    public function uploadFile(File $file, string $folderName): string
     {
         $destination = $this->uploadsPath . $folderName;
-        $newFileName =  md5(uniqid()) . '.' . $uploadedFile->guessExtension();
-        $uploadedFile->move($destination, $newFileName);
+        $newFileName =  md5(uniqid()) . '.' . $file->guessExtension();
+        $file->move($destination, $newFileName);
         return $newFileName;
     }
 }

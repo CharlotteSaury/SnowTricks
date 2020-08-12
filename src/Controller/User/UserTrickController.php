@@ -62,13 +62,13 @@ class UserTrickController extends AbstractController
 
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tmp_trick');
+                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks/tmp_trick/');
                 $trick->setMainImage($mainImageName);
             }
 
             $images = $form->get('images')->getData();
             foreach ($images as $image) {
-                $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tmp_trick');
+                $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks/tmp_trick/');
 
                 $image->setName($imageName)
                     ->setTrick($trick);
@@ -82,7 +82,8 @@ class UserTrickController extends AbstractController
 
             $this->entityManager->persist($trick);
             $this->entityManager->flush();
-            $this->fileSystem->rename($this->getParameter('media_directory') . 'tmp_trick', $this->getParameter('media_directory') . 'trick_' . $trick->getId());
+
+            $this->fileSystem->rename($this->getParameter('media_directory') . 'tricks/tmp_trick/', $this->getParameter('media_directory') . 'tricks/trick_' . $trick->getId());
             $this->addFlash('success', 'Your trick is posted !');
             return $this->redirectToRoute('trick.show', [
                 'id' => $trick->getId(),

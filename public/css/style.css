@@ -445,6 +445,7 @@ footer {
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
+    object-fit:cover;
 }
 
 @media (max-width:991px) {

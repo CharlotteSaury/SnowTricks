@@ -205,6 +205,13 @@ $(function () {
         $(this).find(".modal-title").text("Trick deletion : " + $(e.relatedTarget).data("name"));
     });
 
+        /* ********** Passing trick infos to main image deletion modal ********* */
+
+        $("#deleteMainImageModal").on("show.bs.modal", function (e) {
+            $(this).find("#mainImage_deletion").attr("action", $(e.relatedTarget).data("action"));
+            $(this).find("#csrf_deletion").attr("value", $(e.relatedTarget).data("token"));
+        });
+
     /* ********** Passing comment infos to modal ********* */
 
     $("#deleteCommentModal").on("show.bs.modal", function (e) {

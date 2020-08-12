@@ -173,12 +173,46 @@ class UserTrickController extends AbstractController
     }
 
     /**
+     * @Route("/user/trick/deleteMainImage{id}", name="user.trick.delete.mainImage", methods="DELETE")
+     * @IsGranted("edit", subject="trick", message="Access denied")
+     */
+    public function deleteMainImage(Trick $trick, Request $request)
+    {
+        if ($this->isCsrfTokenValid('mainImage_deletion_' . $trick->getId(), $request->get('_token'))) {
+            // remove deleted image file from uploads folder
+            if ($directory = $this->getParameter('media_directory') . 'tricks/trick_' . $trick->getId()) {
+                if (opendir($directory)) {
+                    foreach (scandir($directory) as $file) {
+                        if ($file != '.' && $file != '..') {
+                            if ($file == $trick->getMainImage()) {
+                                $this->fileSystem->remove($directory . '/' . $file);
+                            }
+                        }
+                    }
+                }
+            }
+            $trick->setMainImage(null);
+            $this->entityManager->persist($trick);
+            $this->entityManager->flush(); 
+        }
+
+        $this->addFlash('success', 'Main image has been deleted !');
+        return $this->redirectToRoute('user.trick.edit', [
+                'id' => $trick->getId()
+            ]);
+            
+    }
+
+    /**
      * @Route("/user/trick/delete{id}", name="user.trick.delete", methods="DELETE")
      * @IsGranted("edit", subject="trick", message="Access denied")
      */
     public function delete(Request $request, Trick $trick)
     {
         if ($this->isCsrfTokenValid('trick_deletion_' . $trick->getId(), $request->get('_token'))) {
+            if ($directory = $this->getParameter('media_directory') . 'tricks/trick_' . $trick->getId()) {
+                $this->fileSystem->remove($directory);
+            }
             $this->entityManager->remove($trick);
             $this->entityManager->flush(); 
         }

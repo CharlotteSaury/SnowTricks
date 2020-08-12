@@ -109,7 +109,7 @@ class UserTrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'trick_' . $trick->getId());
+                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks/trick_' . $trick->getId());
                 $trick->setMainImage($mainImageName);
             }
 
@@ -117,7 +117,7 @@ class UserTrickController extends AbstractController
 
             foreach ($images as $image) {
                 if ($image->getFile() != null) {
-                    $imageName = $uploaderHelper->uploadFile($image->getFile(), 'trick_' . $trick->getId());
+                    $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks/trick_' . $trick->getId());
 
                     $image->setName($imageName)
                         ->setTrick($trick);
@@ -141,8 +141,7 @@ class UserTrickController extends AbstractController
             foreach ($trick->getImages() as $image) {
                 array_push($trickImages, $image->getName());
             }
-            $directory = $this->getParameter('media_directory') . 'trick_' . $trick->getId();
-            if ($directory) {
+            if ($directory = $this->getParameter('media_directory') . 'tricks/trick_' . $trick->getId()) {
                 if (opendir($directory)) {
                     foreach (scandir($directory) as $oldImage) {
                         if ($oldImage != '.' && $oldImage != '..') {

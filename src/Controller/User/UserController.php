@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @IsGranted("access", subject="user", message="Access denied")
@@ -58,7 +59,7 @@ class UserController extends AbstractController
     /**
      * @Route("/user/edit/{username}", name="user.edit")
      */
-    public function edit(Request $request, User $user, UploaderHelper $uploaderHelper)
+    public function edit(Request $request, User $user, UploaderHelper $uploaderHelper, Filesystem $fileSystem)
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -67,11 +68,26 @@ class UserController extends AbstractController
 
             $avatar = $form->get('avatar')->getData();
             if (!empty($avatar)) {
-                $avatarName = $uploaderHelper->uploadFile($avatar);
+                $avatarName = $uploaderHelper->uploadFile($avatar, 'users/user_' . $user->getId());
                 $user->setAvatar($avatarName);
             }
             $this->em->persist($user);
             $this->em->flush();
+
+            // remove deleted avatar from uploads folder
+            
+            if ($directory = $this->getParameter('media_directory') . 'users/user_' . $user->getId()) {
+                if (opendir($directory)) {
+                    foreach (scandir($directory) as $file) {
+                        if ($file != '.' && $file != '..') {
+                            if ($file != $avatarName) {
+                                $fileSystem->remove($directory . '/' . $file);
+                            }
+                        }
+                    }
+                }
+            }
+
             $this->addFlash('success', 'Your profile has been updated !');
 
             return $this->redirectToRoute('user.profile', [

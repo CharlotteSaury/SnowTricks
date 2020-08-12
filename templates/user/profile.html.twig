@@ -17,10 +17,7 @@
 		{% endfor %}
 		<div class="row pt-2">
 			<div class="col-md-4 text-center" id="userAvatar">
-				<img src="{% if user.avatar is not null %}{{ asset('media/uploads/' ~ user.avatar) }}{% else %}{{ asset('media/images/snowboarder.png') }}{% endif %}" width="100%" alt="profile picture"/>
-				<div class="avatar-input">
-					{{ user.avatar }}
-				</div>
+				<img src="{% if user.avatar is not null %}{{ asset('media/uploads/users/user_' ~ user.id ~ '/' ~ user.avatar) }}{% else %}{{ asset('media/images/snowboarder.png') }}{% endif %}" width="100%" alt="profile picture"/>
 			</div>
 			<div class="col-md-8" id="userInfos">
 				<div class="row d-flex flex-column">

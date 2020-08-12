@@ -8,7 +8,7 @@
 	<div class="container-fluid py-5 trick-bg" id="editTrick">
 		{{ form_start(form) }}
 		<div class="container px-0 pb-5" id="editPage">
-			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
+			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/trick_' ~ trick.id ~ '/' ~ trick.mainImage) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
 				<div class="py-2 px-3 mr-auto return-btn">
 					<a href="{{ path('trick.index') }}" class="btn btn-info">
 						<i class="fas fa-undo-alt mr-2"></i>Back
@@ -44,7 +44,7 @@
 				{% if trick.images is not null %}
 					{% for image in form.images %}
 						<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0">
-							<img class="img-thumbnail trick-media" src="{{ asset('media/uploads/'~image.vars.value.name) }}" alt="{{ trick.name }}"/>
+							<img class="img-thumbnail trick-media" src="{{ asset('media/uploads/trick_' ~ trick.id ~ '/' ~ image.vars.value.name) }}" alt="{{ trick.name }}"/>
 							<div class="edit-media-input">
 								{{ form_errors(image) }}
 								{{ form_widget(image, {'attr': {'value': 'image.vars.value'}}) }}

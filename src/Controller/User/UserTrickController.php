@@ -14,13 +14,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class UserTrickController extends AbstractController
 {
     /**
      * @var EntityManagerInterface
      */
-    private $em;
+    private $entityManager;
 
     /**
      * @var UserRepository
@@ -32,11 +34,17 @@ class UserTrickController extends AbstractController
      */
     private $trickRepository;
 
-    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, EntityManagerInterface $em)
+    /**
+     * @var FileSystem
+     */
+    private $fileSystem;
+
+    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, EntityManagerInterface $entityManager, Filesystem $fileSystem)
     {
         $this->userRepository = $userRepository;
         $this->trickRepository = $trickRepository;
-        $this->em = $em;
+        $this->entityManager = $entityManager;
+        $this->fileSystem = $fileSystem;
     }
 
     /**
@@ -54,13 +62,13 @@ class UserTrickController extends AbstractController
 
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage);
+                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tmp_trick');
                 $trick->setMainImage($mainImageName);
             }
 
             $images = $form->get('images')->getData();
             foreach ($images as $image) {
-                $imageName = $uploaderHelper->uploadFile($image->getFile());
+                $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tmp_trick');
 
                 $image->setName($imageName)
                     ->setTrick($trick);
@@ -72,10 +80,14 @@ class UserTrickController extends AbstractController
                 $trick->addVideo($video);
             }
 
-            $this->em->persist($trick);
-            $this->em->flush();
+            $this->entityManager->persist($trick);
+            $this->entityManager->flush();
+            $this->fileSystem->rename($this->getParameter('media_directory') . 'tmp_trick', $this->getParameter('media_directory') . 'trick_' . $trick->getId());
             $this->addFlash('success', 'Your trick is posted !');
-            return $this->redirectToRoute('user.tricks');
+            return $this->redirectToRoute('trick.show', [
+                'id' => $trick->getId(),
+                'slug' => $trick->getSlug()
+            ]);
         }
 
         return $this->render('trick/new.html.twig', [
@@ -97,7 +109,7 @@ class UserTrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage);
+                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'trick_' . $trick->getId());
                 $trick->setMainImage($mainImageName);
             }
 
@@ -105,7 +117,7 @@ class UserTrickController extends AbstractController
 
             foreach ($images as $image) {
                 if ($image->getFile() != null) {
-                    $imageName = $uploaderHelper->uploadFile($image->getFile());
+                    $imageName = $uploaderHelper->uploadFile($image->getFile(), 'trick_' . $trick->getId());
 
                     $image->setName($imageName)
                         ->setTrick($trick);
@@ -121,9 +133,27 @@ class UserTrickController extends AbstractController
             $trick->setUpdatedAt(new \DateTime())
                 ->setAuthor($author);
 
-            $this->em->persist($trick);
-            $this->em->flush();
+            $this->entityManager->persist($trick);
+            $this->entityManager->flush();
 
+            // remove deleted image files from uploads folder
+            $trickImages = [$trick->getMainImage()];
+            foreach ($trick->getImages() as $image) {
+                array_push($trickImages, $image->getName());
+            }
+            $directory = $this->getParameter('media_directory') . 'trick_' . $trick->getId();
+            if ($directory) {
+                if (opendir($directory)) {
+                    foreach (scandir($directory) as $oldImage) {
+                        if ($oldImage != '.' && $oldImage != '..') {
+                            if (!in_array($oldImage, $trickImages)) {
+                                $this->fileSystem->remove($directory . '/' . $oldImage);
+                            }
+                        }
+                    }
+                }
+            }
+             
             if ($author == $this->getUser()) {
                 $this->addFlash('success', 'Your trick has been updated !');
             } else {
@@ -150,8 +180,8 @@ class UserTrickController extends AbstractController
     public function delete(Request $request, Trick $trick)
     {
         if ($this->isCsrfTokenValid('trick_deletion_' . $trick->getId(), $request->get('_token'))) {
-            $this->em->remove($trick);
-            $this->em->flush(); 
+            $this->entityManager->remove($trick);
+            $this->entityManager->flush(); 
         }
         if ($trick->getAuthor() == $this->getUser()) {
             $this->addFlash('success', 'Your trick has been deleted !');

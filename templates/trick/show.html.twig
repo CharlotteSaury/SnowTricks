@@ -7,7 +7,7 @@
 {% block body %}
 	<div class="container-fluid py-5 trick-bg">
 		<div class="container-lg px-0" id="trickPage">
-			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/'~trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
+			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/trick_' ~ trick.id ~ '/' ~ trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/' ~ trick.id ~ '/' ~ trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
 				<div class="py-2 px-3 mr-auto return-btn">
 					<a href="{{ path('trick.index') }}#trickList" class="btn btn-info">
 						<i class="fas fa-undo-alt mr-2"></i>Retour
@@ -42,7 +42,7 @@
 				{% if trick.images is not null %}
 					{% for image in trick.images %}
 						<div class="media-slider mb-3 mx-2">
-							<img class="img-thumbnail trick-media" width="175" src="{{ asset('media/uploads/'~image.name) }}" alt="{{ trick.name }}"/>
+							<img class="img-thumbnail trick-media" width="175" src="{{ asset('media/uploads/trick_' ~ trick.id ~ '/' ~ image.name) }}" alt="{{ trick.name }}"/>
 						</div>
 					{% endfor %}
 				{% endif %}

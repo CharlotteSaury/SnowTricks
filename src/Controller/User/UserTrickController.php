@@ -8,6 +8,7 @@ use App\Form\TrickType;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
 use App\Service\UploaderHelper;
+use App\Service\VideoLinkFormatter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,7 +43,7 @@ class UserTrickController extends AbstractController
     /**
      * @Route("/user/trick/new", name="user.trick.new")
      */
-    public function new(Request $request, UploaderHelper $uploaderHelper)
+    public function new(Request $request, UploaderHelper $uploaderHelper, VideoLinkFormatter $videoLinkFormatter)
     {
         $trick = new Trick();
         $form = $this->createForm(TrickType::class, $trick);
@@ -69,13 +70,8 @@ class UserTrickController extends AbstractController
 
             $videos = $form->get('videos')->getData();
             foreach ($videos as $video) {
-                if (preg_match('#(?:(?:youtube\.com|youtu\.be))(?:\/(?:[\w\-]+\?v=|embed\/)?)([\w\-]+)(?:\S+)?$#', $video->getLink(), $matches)) {
-                    $video->setName('https://www.youtube.com/embed/' . $matches[1]);
-                } elseif (preg_match('#(?:(?:dai\.ly|dailymotion\.com))(?:\/(?:video\/|embed\/video\/)?)([\w\-]+)(?:\S+)?$#', $video->getLink(), $matches)) {
-                    $video->setName('https://www.dailymotion.com/embed/video/' . $matches[1]);
-                } elseif (preg_match('#(?:(?:vimeo\.com|player\.vimeo\.com))(?:\/(?:video\/)?)([\w\-]+)(?:\S+)?$#', $video->getLink(), $matches)) {
-                    $video->setName('https://player.vimeo.com/video/' . $matches[1]);
-                }
+                $formattedName = $videoLinkFormatter->format($video->getLink());
+                $video->setName($formattedName);
                 $trick->addVideo($video);
             }
 
@@ -95,7 +91,7 @@ class UserTrickController extends AbstractController
      * @Route("/user/trick/edit{id}", name="user.trick.edit")
      * @IsGranted("edit", subject="trick", message="Access denied")
      */
-    public function edit(Trick $trick, Request $request, UploaderHelper $uploaderHelper)
+    public function edit(Trick $trick, Request $request, UploaderHelper $uploaderHelper, VideoLinkFormatter $videoLinkFormatter)
     {
         $author = $trick->getAuthor();
         $form = $this->createForm(TrickType::class, $trick);
@@ -122,13 +118,8 @@ class UserTrickController extends AbstractController
 
             $videos = $form->get('videos')->getData();
             foreach ($videos as $video) {
-                if (preg_match('#(?:(?:youtube\.com|youtu\.be))(?:\/(?:[\w\-]+\?v=|embed\/)?)([\w\-]+)(?:\S+)?$#', $video->getLink(), $matches)) {
-                    $video->setName('https://www.youtube.com/embed/' . $matches[1]);
-                } elseif (preg_match('#(?:(?:dai\.ly|dailymotion\.com))(?:\/(?:video\/|embed\/video\/)?)([\w\-]+)(?:\S+)?$#', $video->getLink(), $matches)) {
-                    $video->setName('https://www.dailymotion.com/embed/video/' . $matches[1]);
-                } elseif (preg_match('#(?:(?:vimeo\.com|player\.vimeo\.com))(?:\/(?:video\/)?)([\w\-]+)(?:\S+)?$#', $video->getLink(), $matches)) {
-                    $video->setName('https://player.vimeo.com/video/' . $matches[1]);
-                }
+                $formattedName = $videoLinkFormatter->format($video->getLink());
+                $video->setName($formattedName);
                 $trick->addVideo($video);
             }
 

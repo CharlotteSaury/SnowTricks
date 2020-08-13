@@ -35,6 +35,31 @@ class UserFixtures extends Fixture
 
             $this->addReference('user' . $i, $user);
         }
+
+        $fakeUsers = [
+            'User' => [
+                'User1*',
+                ["ROLE_USER"]
+            ],
+            'Moderator' => [
+                'Moderator1*',
+                ["ROLE_MODERATOR"]
+            ],
+            'Admin' => [
+                'Admin1*',
+                ["ROLE_ADMIN"]
+            ]
+            ];
+
+        foreach ($fakeUsers as $fakeUser) {
+            $user = new User();
+            $password = $this->encoder->encodePassword($user, $fakeUser[0]);
+            $user->setUsername(array_search($fakeUser, $fakeUsers))
+                ->setEmail($faker->email)
+                ->setPassword($password)
+                ->setRoles($fakeUser[1]);
+            $manager->persist($user);
+        }
         $manager->flush();
     }
 }

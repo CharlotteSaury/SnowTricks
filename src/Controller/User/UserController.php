@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
+use App\Service\ImageFileDeletor;
 use App\Service\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -59,7 +60,7 @@ class UserController extends AbstractController
     /**
      * @Route("/user/edit/{username}", name="user.edit")
      */
-    public function edit(Request $request, User $user, UploaderHelper $uploaderHelper, Filesystem $fileSystem)
+    public function edit(Request $request, User $user, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor)
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -73,20 +74,8 @@ class UserController extends AbstractController
             }
             $this->em->persist($user);
             $this->em->flush();
-
-            // remove deleted avatar from uploads folder
             
-            if ($directory = $this->getParameter('user_media_directory') . $user->getId()) {
-                if (opendir($directory)) {
-                    foreach (scandir($directory) as $file) {
-                        if ($file != '.' && $file != '..') {
-                            if ($file != $avatarName) {
-                                $fileSystem->remove($directory . '/' . $file);
-                            }
-                        }
-                    }
-                }
-            }
+            $imageFileDeletor->deleteFile('user', $user->getId(), [$avatarName]);
 
             $this->addFlash('success', 'Your profile has been updated !');
 

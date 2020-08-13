@@ -7,6 +7,7 @@ use App\Entity\Trick;
 use App\Form\TrickType;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
+use App\Service\ImageFileDeletor;
 use App\Service\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -101,7 +102,7 @@ class UserTrickController extends AbstractController
      * @Route("/user/trick/edit{id}", name="user.trick.edit")
      * @IsGranted("edit", subject="trick", message="Access denied")
      */
-    public function edit(Trick $trick, Request $request, UploaderHelper $uploaderHelper)
+    public function edit(Trick $trick, Request $request, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor)
     {
         $author = $trick->getAuthor();
         $form = $this->createForm(TrickType::class, $trick);
@@ -137,22 +138,12 @@ class UserTrickController extends AbstractController
             $this->entityManager->persist($trick);
             $this->entityManager->flush();
 
-            // remove deleted image files from uploads folder
             $trickImages = [$trick->getMainImage()];
             foreach ($trick->getImages() as $image) {
                 array_push($trickImages, $image->getName());
             }
-            if ($directory = $this->getParameter('trick_media_directory') . $trick->getId()) {
-                if (opendir($directory)) {
-                    foreach (scandir($directory) as $oldImage) {
-                        if ($oldImage != '.' && $oldImage != '..') {
-                            if (!in_array($oldImage, $trickImages)) {
-                                $this->fileSystem->remove($directory . '/' . $oldImage);
-                            }
-                        }
-                    }
-                }
-            }
+            $imageFileDeletor->deleteFile('trick', $trick->getId(), $trickImages);
+
              
             if ($author == $this->getUser()) {
                 $this->addFlash('success', 'Your trick has been updated !');
@@ -177,21 +168,11 @@ class UserTrickController extends AbstractController
      * @Route("/user/trick/deleteMainImage{id}", name="user.trick.delete.mainImage", methods="DELETE")
      * @IsGranted("edit", subject="trick", message="Access denied")
      */
-    public function deleteMainImage(Trick $trick, Request $request)
+    public function deleteMainImage(Trick $trick, Request $request, ImageFileDeletor $imageFileDeletor)
     {
         if ($this->isCsrfTokenValid('mainImage_deletion_' . $trick->getId(), $request->get('_token'))) {
-            // remove deleted image file from uploads folder
-            if ($directory = $this->getParameter('trick_media_directory') . $trick->getId()) {
-                if (opendir($directory)) {
-                    foreach (scandir($directory) as $file) {
-                        if ($file != '.' && $file != '..') {
-                            if ($file == $trick->getMainImage()) {
-                                $this->fileSystem->remove($directory . '/' . $file);
-                            }
-                        }
-                    }
-                }
-            }
+            $imageFileDeletor->deleteFile('trick', $trick->getId(), [$trick->getMainImage()], true);
+
             $trick->setMainImage(null);
             $this->entityManager->persist($trick);
             $this->entityManager->flush(); 

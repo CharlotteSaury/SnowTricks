@@ -77,6 +77,6 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
         $targetPath = sys_get_temp_dir().'/'.$randomImage;
         $fileSystem->copy(__DIR__.'/images/trick/'.$randomImage, $targetPath, true);
         return $this->uploaderHelper
-            ->uploadFile(new File($targetPath), 'tricks/trick_' . ($trickId + 1) . '/');
+            ->uploadFile(new File($targetPath), 'tricks', 'trick_' . ($trickId + 1) . '/');
     }
 }

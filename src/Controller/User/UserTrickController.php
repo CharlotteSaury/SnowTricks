@@ -62,13 +62,13 @@ class UserTrickController extends AbstractController
 
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks/tmp_trick/');
+                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks', 'trick_');
                 $trick->setMainImage($mainImageName);
             }
 
             $images = $form->get('images')->getData();
             foreach ($images as $image) {
-                $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks/tmp_trick/');
+                $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks', 'trick_');
 
                 $image->setName($imageName)
                     ->setTrick($trick);
@@ -83,7 +83,7 @@ class UserTrickController extends AbstractController
             $this->entityManager->persist($trick);
             $this->entityManager->flush();
 
-            $this->fileSystem->rename($this->getParameter('media_directory') . 'tricks/tmp_trick/', $this->getParameter('media_directory') . 'tricks/trick_' . $trick->getId());
+            $this->fileSystem->rename($this->getParameter('trick_media_directory'), $this->getParameter('trick_media_directory') . $trick->getId());
             $this->addFlash('success', 'Your trick is posted !');
             return $this->redirectToRoute('trick.show', [
                 'id' => $trick->getId(),
@@ -110,7 +110,7 @@ class UserTrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks/trick_' . $trick->getId());
+                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks', 'trick_' . $trick->getId());
                 $trick->setMainImage($mainImageName);
             }
 
@@ -118,7 +118,7 @@ class UserTrickController extends AbstractController
 
             foreach ($images as $image) {
                 if ($image->getFile() != null) {
-                    $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks/trick_' . $trick->getId());
+                    $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks', 'trick_' . $trick->getId());
 
                     $image->setName($imageName)
                         ->setTrick($trick);
@@ -142,7 +142,7 @@ class UserTrickController extends AbstractController
             foreach ($trick->getImages() as $image) {
                 array_push($trickImages, $image->getName());
             }
-            if ($directory = $this->getParameter('media_directory') . 'tricks/trick_' . $trick->getId()) {
+            if ($directory = $this->getParameter('trick_media_directory') . $trick->getId()) {
                 if (opendir($directory)) {
                     foreach (scandir($directory) as $oldImage) {
                         if ($oldImage != '.' && $oldImage != '..') {
@@ -181,7 +181,7 @@ class UserTrickController extends AbstractController
     {
         if ($this->isCsrfTokenValid('mainImage_deletion_' . $trick->getId(), $request->get('_token'))) {
             // remove deleted image file from uploads folder
-            if ($directory = $this->getParameter('media_directory') . 'tricks/trick_' . $trick->getId()) {
+            if ($directory = $this->getParameter('trick_media_directory') . $trick->getId()) {
                 if (opendir($directory)) {
                     foreach (scandir($directory) as $file) {
                         if ($file != '.' && $file != '..') {
@@ -211,7 +211,7 @@ class UserTrickController extends AbstractController
     public function delete(Request $request, Trick $trick)
     {
         if ($this->isCsrfTokenValid('trick_deletion_' . $trick->getId(), $request->get('_token'))) {
-            if ($directory = $this->getParameter('media_directory') . 'tricks/trick_' . $trick->getId()) {
+            if ($directory = $this->getParameter('trick_media_directory') . $trick->getId()) {
                 $this->fileSystem->remove($directory);
             }
             $this->entityManager->remove($trick);

@@ -56,6 +56,6 @@ class UserFixtures extends Fixture
         $targetPath = sys_get_temp_dir().'/'.$randomImage;
         $fileSystem->copy(__DIR__.'/images/user/'.$randomImage, $targetPath, true);
         return $this->uploaderHelper
-            ->uploadFile(new File($targetPath), 'users/user_' . ($userId + 1) . '/');
+            ->uploadFile(new File($targetPath), 'users', 'user_' . ($userId + 1) . '/');
     }
 }

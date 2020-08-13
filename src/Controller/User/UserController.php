@@ -68,7 +68,7 @@ class UserController extends AbstractController
 
             $avatar = $form->get('avatar')->getData();
             if (!empty($avatar)) {
-                $avatarName = $uploaderHelper->uploadFile($avatar, 'users/user_' . $user->getId());
+                $avatarName = $uploaderHelper->uploadFile($avatar, 'users', 'user_' . $user->getId());
                 $user->setAvatar($avatarName);
             }
             $this->em->persist($user);
@@ -76,7 +76,7 @@ class UserController extends AbstractController
 
             // remove deleted avatar from uploads folder
             
-            if ($directory = $this->getParameter('media_directory') . 'users/user_' . $user->getId()) {
+            if ($directory = $this->getParameter('user_media_directory') . $user->getId()) {
                 if (opendir($directory)) {
                     foreach (scandir($directory) as $file) {
                         if ($file != '.' && $file != '..') {

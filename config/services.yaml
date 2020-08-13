@@ -5,6 +5,8 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     media_directory: "%kernel.project_dir%/public/media/uploads/"
+    trick_media_directory: "%kernel.project_dir%/public/media/uploads/tricks/trick_"
+    user_media_directory: "%kernel.project_dir%/public/media/uploads/users/user_"
 
 services:
     # default configuration for services in *this* file

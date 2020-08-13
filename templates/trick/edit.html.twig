@@ -64,7 +64,7 @@
 				{% if trick.videos is not null %}
 					{% for video in form.videos %}
 						<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0">
-							<iframe class="trick-media" src="https://www.youtube.com/embed/{{ video.vars.value.name[32:] }}" width="100%" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							<iframe class="trick-media" src="{{ video.vars.value.name }}" width="100%" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 							<div class="edit-media-input">
 								{{ form_errors(video) }}
 								{{ form_widget(video) }}

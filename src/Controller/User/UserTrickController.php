@@ -2,18 +2,22 @@
 
 namespace App\Controller\User;
 
+use App\Entity\User;
 use App\Entity\Image;
-use App\Entity\ReportedTrick;
 use App\Entity\Trick;
 use App\Form\TrickType;
+use App\Entity\ReportedTrick;
 use App\Form\ReportedTrickType;
 use App\Service\UploaderHelper;
 use App\Service\ImageFileDeletor;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
+use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -224,7 +228,7 @@ class UserTrickController extends AbstractController
     /**
      * @Route("/user/trick/report{id}", name="user.trick.report")
      */
-    public function report(Trick $trick, Request $request, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor)
+    public function report(Trick $trick, Request $request, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor, MailerInterface $mailer)
     {
         $reportedTrick = new ReportedTrick();
         $reportedTrick->setName($trick->getName())
@@ -271,6 +275,20 @@ class UserTrickController extends AbstractController
 
             $this->entityManager->persist($reportedTrick);
             $this->entityManager->flush();
+            
+            $url = $this->generateUrl('user.trick.report.view', ['id' => $reportedTrick->getId()]);
+            $message = (new TemplatedEmail())
+                    ->from(new Address('mailer@snowtricks.com', 'No-reply Snowtricks'))
+                    ->to(new Address($trick->getAuthor()->getEmail(), $trick->getAuthor()->getUsername()))
+                    ->subject('Trick report')
+                    ->context([
+                        'url' => $url,
+                        'user' => $reportedTrick->getUser()->getUsername(),
+                        'trick_name' => $trick->getName()
+                        ])
+                    ->htmlTemplate('email/trick_report.html.twig');
+    
+            $mailer->send($message);
 
             $this->addFlash('success', 'A notification has been sent to ' . $trick->getAuthor()->getUsername() . 'for modification request');
 
@@ -285,6 +303,14 @@ class UserTrickController extends AbstractController
             'trick' => $trick,
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/user/trick/reportView{id}", name="user.trick.report.view")
+     */
+    public function trickReportView(ReportedTrick $reportedTrick)
+    {
+
     }
 
 }

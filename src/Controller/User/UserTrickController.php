@@ -228,7 +228,7 @@ class UserTrickController extends AbstractController
     /**
      * @Route("/user/trick/report{id}", name="user.trick.report")
      */
-    public function report(Trick $trick, Request $request, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor, MailerInterface $mailer)
+    public function report(Trick $trick, Request $request, UploaderHelper $uploaderHelper, MailerInterface $mailer)
     {
         $reportedTrick = new ReportedTrick();
         $reportedTrick->setName($trick->getName())
@@ -250,9 +250,10 @@ class UserTrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks', 'reportedtrick_' . $trick->getId());
+                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks', 'reportedtrick_' . $reportedTrick->getId());
                 $reportedTrick->setMainImage($mainImageName);
             }
 
@@ -260,7 +261,7 @@ class UserTrickController extends AbstractController
 
             foreach ($images as $image) {
                 if ($image->getFile() != null) {
-                    $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks', 'reportedtrick_' . $trick->getId());
+                    $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks', 'reportedtrick_' . $reportedTrick->getId());
 
                     $image->setName($imageName)
                         ->setReportedTrick($reportedTrick);
@@ -275,8 +276,13 @@ class UserTrickController extends AbstractController
 
             $this->entityManager->persist($reportedTrick);
             $this->entityManager->flush();
+
+            if ($this->fileSystem->exists($this->getParameter('reportedtrick_media_directory'))) {
+                $this->fileSystem->rename($this->getParameter('reportedtrick_media_directory'), $this->getParameter('reportedtrick_media_directory') . $reportedTrick->getId());
+            }
             
-            $url = $this->generateUrl('user.trick.report.view', ['id' => $reportedTrick->getId()]);
+            
+            $url = $this->generateUrl('user.trick.reportView', ['id' => $reportedTrick->getId()]);
             $message = (new TemplatedEmail())
                     ->from(new Address('mailer@snowtricks.com', 'No-reply Snowtricks'))
                     ->to(new Address($trick->getAuthor()->getEmail(), $trick->getAuthor()->getUsername()))
@@ -306,11 +312,26 @@ class UserTrickController extends AbstractController
     }
 
     /**
-     * @Route("/user/trick/reportView{id}", name="user.trick.report.view")
+     * @Route("/user/reportView{id}", name="user.trick.reportView")
      */
-    public function trickReportView(ReportedTrick $reportedTrick)
+    public function trickReportView(ReportedTrick $reportedTrick, Request $request)
     {
+        $trick = $reportedTrick->getTrick();
 
+        /*if () {
+            
+            $this->addFlash('success', 'Your trick has been updated !');
+
+            return $this->redirectToRoute('trick.show', [
+                'id' => $trick->getId(),
+                'slug' => $trick->getSlug()
+            ]);
+        }*/
+
+        return $this->render('trick/reportView.html.twig', [
+            'trick' => $trick,
+            'reportedTrick' => $reportedTrick
+        ]);
     }
 
 }

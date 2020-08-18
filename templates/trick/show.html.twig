@@ -23,6 +23,12 @@
 							<i class="fas fa-trash-alt"></i>
 						</a>
 					</div>
+				{% elseif app.user %}
+					<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
+						<a class="custom-link" href="{{ path('user.trick.report', {id: trick.id}) }}">
+							Report trick
+						</a>
+					</div>
 				{% endif %}
 				<div class="text-center">
 					<h1>{{ trick.name }}</h1>

@@ -24,9 +24,14 @@ class Video
 
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="videos")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $trick;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ReportedTrick::class, inversedBy="videos")
+     */
+    private $reportedTrick;
 
     public function getId(): ?int
     {
@@ -53,6 +58,18 @@ class Video
     public function setTrick(?Trick $trick): self
     {
         $this->trick = $trick;
+
+        return $this;
+    }
+
+    public function getReportedTrick(): ?ReportedTrick
+    {
+        return $this->reportedTrick;
+    }
+
+    public function setReportedTrick(?ReportedTrick $reportedTrick): self
+    {
+        $this->reportedTrick = $reportedTrick;
 
         return $this;
     }

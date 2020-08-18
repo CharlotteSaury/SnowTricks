@@ -60,12 +60,18 @@ class ReportedTrick
      */
     private $createdAt;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reportedTricks")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $User;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->videos = new ArrayCollection();
-        $this->createdAt = null;
+        $this->createdAt = new DateTime();
     }
 
     public function getId(): ?int
@@ -217,6 +223,30 @@ class ReportedTrick
     public function setCreatedAt(?\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->User;
+    }
+
+    public function setUser(?User $User): self
+    {
+        $this->User = $User;
 
         return $this;
     }

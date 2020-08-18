@@ -230,7 +230,8 @@ class UserTrickController extends AbstractController
         $reportedTrick->setName($trick->getName())
             ->setDescription($trick->getDescription())
             ->setMainImage($trick->getMainImage())
-            ->setTrick($trick);
+            ->setTrick($trick)
+            ->setUser($this->getUser());
         foreach ($trick->getGroups() as $group) {
             $reportedTrick->addGroup($group);
         }
@@ -285,4 +286,5 @@ class UserTrickController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
 }

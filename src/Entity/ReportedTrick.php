@@ -41,12 +41,12 @@ class ReportedTrick
     private $groups;
 
     /**
-     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="reportedTrick", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=Image::class, orphanRemoval=true, mappedBy="reportedTrick", cascade={"persist"})
      */
     private $images;
 
     /**
-     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="reportedTrick", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=Video::class, orphanRemoval=true, mappedBy="reportedTrick", cascade={"persist"})
      */
     private $videos;
 
@@ -65,7 +65,7 @@ class ReportedTrick
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reportedTricks")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $User;
+    private $user;
 
     public function __construct()
     {
@@ -242,12 +242,12 @@ class ReportedTrick
 
     public function getUser(): ?User
     {
-        return $this->User;
+        return $this->user;
     }
 
-    public function setUser(?User $User): self
+    public function setUser(?User $user): self
     {
-        $this->User = $User;
+        $this->user = $user;
 
         return $this;
     }

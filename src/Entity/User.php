@@ -101,7 +101,7 @@ class User implements UserInterface, \Serializable
     private $activationToken;
 
     /**
-     * @ORM\OneToMany(targetEntity=ReportedTrick::class, mappedBy="User", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=ReportedTrick::class, mappedBy="user", orphanRemoval=true)
      */
     private $reportedTricks;
 

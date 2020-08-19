@@ -12,6 +12,7 @@ use App\Service\UploaderHelper;
 use App\Service\ImageFileDeletor;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
+use DateTime;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -280,20 +281,20 @@ class UserTrickController extends AbstractController
             if ($this->fileSystem->exists($this->getParameter('reportedtrick_media_directory'))) {
                 $this->fileSystem->rename($this->getParameter('reportedtrick_media_directory'), $this->getParameter('reportedtrick_media_directory') . $reportedTrick->getId());
             }
-            
-            
+
+
             $url = $this->generateUrl('user.trick.reportView', ['id' => $reportedTrick->getId()]);
             $message = (new TemplatedEmail())
-                    ->from(new Address('mailer@snowtricks.com', 'No-reply Snowtricks'))
-                    ->to(new Address($trick->getAuthor()->getEmail(), $trick->getAuthor()->getUsername()))
-                    ->subject('Trick report')
-                    ->context([
-                        'url' => $url,
-                        'user' => $reportedTrick->getUser()->getUsername(),
-                        'trick_name' => $trick->getName()
-                        ])
-                    ->htmlTemplate('email/trick_report.html.twig');
-    
+                ->from(new Address('mailer@snowtricks.com', 'No-reply Snowtricks'))
+                ->to(new Address($trick->getAuthor()->getEmail(), $trick->getAuthor()->getUsername()))
+                ->subject('Trick report')
+                ->context([
+                    'url' => $url,
+                    'user' => $reportedTrick->getUser()->getUsername(),
+                    'trick_name' => $trick->getName()
+                ])
+                ->htmlTemplate('email/trick_report.html.twig');
+
             $mailer->send($message);
 
             $this->addFlash('success', 'A notification has been sent to ' . $trick->getAuthor()->getUsername() . 'for modification request');
@@ -318,20 +319,67 @@ class UserTrickController extends AbstractController
     {
         $trick = $reportedTrick->getTrick();
 
-        /*if () {
-            
+        if ($request->isMethod('POST')) {
+            dump($request->request);
+            if ($request->request->get('reported_name')) {
+                $trick->setName($reportedTrick->getName());
+            }
+            if ($request->request->get('reported_description')) {
+                $trick->setDescription($reportedTrick->getDescription());
+            }
+            foreach ($trick->getImages() as $image) {
+                if ($request->request->get('image_' . $image->getId())) {
+                    $trick->removeImage($image);
+                }
+            }
+            foreach ($reportedTrick->getImages() as $image) {
+                if ($request->request->get('reported_image_' . $image->getId())) {
+                    $trick->addImage($image);
+                    $fileSystem = new Filesystem();
+                    $fileSystem->copy($this->getParameter('reportedtrick_media_directory') . $reportedTrick->getId() . '/' . $image->getName(), $this->getParameter('trick_media_directory') . $reportedTrick->getTrick()->getId() . '/' . $image->getName(), true);
+                }
+            }
+            foreach ($trick->getVideos() as $video) {
+                if ($request->request->get('video_' . $video->getId())) {
+                    $trick->removeVideo($video);
+                }
+            }
+            foreach ($reportedTrick->getVideos() as $video) {
+                if ($request->request->get('reported_video_' . $video->getId())) {
+                    $trick->addVideo($video);
+                }
+            }
+            foreach ($trick->getGroups() as $group) {
+                if ($request->request->get('group_' . $group->getId())) {
+                    $trick->removeGroup($group);
+                }
+            }
+            foreach ($reportedTrick->getGroups() as $group) {
+                if ($request->request->get('reported_group_' . $group->getId())) {
+                    $trick->addGroup($group);
+                }
+            }
+
+            $trick->setUpdatedAt(new DateTime());
+
+            $this->entityManager->persist($trick);
+            $this->entityManager->flush();
+
+            if ($directory = $this->getParameter('reportedtrick_media_directory') . $reportedTrick->getId()) {
+                $this->fileSystem->remove($directory);
+            }
+
             $this->addFlash('success', 'Your trick has been updated !');
 
             return $this->redirectToRoute('trick.show', [
                 'id' => $trick->getId(),
                 'slug' => $trick->getSlug()
             ]);
-        }*/
+        }
 
         return $this->render('trick/reportView.html.twig', [
             'trick' => $trick,
             'reportedTrick' => $reportedTrick
         ]);
     }
-
 }

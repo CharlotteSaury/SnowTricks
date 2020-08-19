@@ -49,7 +49,7 @@
 				{% if trick.videos is not null %}
 					{% for video in trick.videos %}
 						<div class="media-slider mb-3 mx-2">
-							<iframe class="trick-media" src="https://www.youtube.com/embed/{{ video.name[32:] }}" width="250" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							<iframe class="trick-media" src="{{ video.name }}" width="250" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 						</div>
 					{% endfor %}
 				{% endif %}

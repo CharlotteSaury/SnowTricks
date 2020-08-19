@@ -19,11 +19,14 @@
 					<button class="edit-mainImg" type="button" title="Edit main image">
 						<i class="fas fa-pencil-alt"></i>
 					</button>
-					{% if trick.mainImage is not null %}
-						<a class="ml-2" data-toggle="modal" data-target="#deleteMainImageModal" data-action="{{ path('user.trick.delete.mainImage', {id: trick.id}) }}" data-token="{{ csrf_token('mainImage_deletion_' ~ trick.id) }}">
-							<i class="fas fa-trash-alt"></i>
-						</a>
+					{% if type is defined and type != 'reportedTrick' %}
+						{% if trick.mainImage is not null %}
+							<a class="ml-2" data-toggle="modal" data-target="#deleteMainImageModal" data-action="{{ path('user.trick.delete.mainImage', {id: trick.id}) }}" data-token="{{ csrf_token('mainImage_deletion_' ~ trick.id) }}">
+								<i class="fas fa-trash-alt"></i>
+							</a>
+						{% endif %}
 					{% endif %}
+					
 
 				</div>
 				<div class="text-center">

@@ -6,6 +6,7 @@
 parameters:
     media_directory: "%kernel.project_dir%/public/media/uploads/"
     trick_media_directory: "%kernel.project_dir%/public/media/uploads/tricks/trick_"
+    reportedtrick_media_directory: "%kernel.project_dir%/public/media/uploads/tricks/reportedtrick_"
     user_media_directory: "%kernel.project_dir%/public/media/uploads/users/user_"
 
 services:

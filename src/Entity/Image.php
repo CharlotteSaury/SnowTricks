@@ -25,11 +25,16 @@ class Image
 
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="images")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $trick;
 
     private $file;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ReportedTrick::class, inversedBy="images")
+     */
+    private $reportedTrick;
 
     public function getId(): ?int
     {
@@ -68,6 +73,18 @@ class Image
     public function setFile(UploadedFile $file)
     {
         $this->file = $file;
+
+        return $this;
+    }
+
+    public function getReportedTrick(): ?ReportedTrick
+    {
+        return $this->reportedTrick;
+    }
+
+    public function setReportedTrick(?ReportedTrick $reportedTrick): self
+    {
+        $this->reportedTrick = $reportedTrick;
 
         return $this;
     }

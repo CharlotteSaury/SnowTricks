@@ -2,18 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\TrickRepository;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TrickRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=TrickRepository::class)
  * @UniqueEntity(fields={"name"}, message="This figure already exists")
  */
-class Trick
+class Trick implements \ArrayAccess
 {
     /**
      * @ORM\Id()
@@ -74,6 +74,11 @@ class Trick
      */
     private $videos;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ReportedTrick::class, mappedBy="trick", orphanRemoval=true)
+     */
+    private $reportedTricks;
+
 
     public function __construct()
     {
@@ -83,6 +88,7 @@ class Trick
         $this->comments = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->videos = new ArrayCollection();
+        $this->reportedTricks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -299,6 +305,54 @@ class Trick
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|ReportedTrick[]
+     */
+    public function getReportedTricks(): Collection
+    {
+        return $this->reportedTricks;
+    }
+
+    public function addReportedTrick(ReportedTrick $reportedTrick): self
+    {
+        if (!$this->reportedTricks->contains($reportedTrick)) {
+            $this->reportedTricks[] = $reportedTrick;
+            $reportedTrick->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReportedTrick(ReportedTrick $reportedTrick): self
+    {
+        if ($this->reportedTricks->contains($reportedTrick)) {
+            $this->reportedTricks->removeElement($reportedTrick);
+            // set the owning side to null (unless already changed)
+            if ($reportedTrick->getTrick() === $this) {
+                $reportedTrick->setTrick(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function offsetExists($offset)
+    {
+        return property_exists($this, $offset);
+    }
+    public function offsetGet($offset)
+    {
+        return $this->$offset;
+    }
+    public function offsetSet($offset, $value)
+    {
+        $this->$offset = $value;
+    }
+    public function offsetUnset($offset)
+    {
+        unset($this->$offset);
     }
 
 }

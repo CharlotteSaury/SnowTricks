@@ -13,16 +13,36 @@
 						<i class="fas fa-undo-alt mr-2"></i>Retour
 					</a>
 				</div>
-				{% if app.user and app.user.id == trick.author.id or is_granted('ROLE_ADMIN') or is_granted('ROLE_MODERATOR') %}
-					<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
+				{% if app.user %}
+				 	{% if app.user.id == trick.author.id %}
+						<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
+							<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
+								<i class="fas fa-pencil-alt"></i>
+							</a>
+							<a class="ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
+								<i class="fas fa-trash-alt"></i>
+							</a>
+						</div>
+					{% elseif app.user.id != trick.author.id and not (is_granted('ROLE_ADMIN') or is_granted('ROLE_MODERATOR')) %}
+						<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
+							<a class="custom-link ml-1" href="{{ path('user.trick.report', {id: trick.id}) }}">
+								Report trick
+							</a>
+						</div>
+					{% elseif is_granted('ROLE_ADMIN') or is_granted('ROLE_MODERATOR') %}
+						<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
 
-						<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
-							<i class="fas fa-pencil-alt"></i>
-						</a>
-						<a class="ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
-							<i class="fas fa-trash-alt"></i>
-						</a>
-					</div>
+							<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
+								<i class="fas fa-pencil-alt"></i>
+							</a>
+							<a class="ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
+								<i class="fas fa-trash-alt"></i>
+							</a>
+							<a class="custom-link ml-1" href="{{ path('user.trick.report', {id: trick.id}) }}">
+								Report trick
+							</a>
+						</div>
+					{% endif %}
 				{% endif %}
 				<div class="text-center">
 					<h1>{{ trick.name }}</h1>

@@ -1,0 +1,203 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Report view
+{% endblock %}
+
+
+{% block body %}
+	<form action="{{ path('user.trick.reportView', {id: reportedTrick.id }) }}" method="POST">
+		<div class="container-fluid py-5 trick-bg" id="editTrick">
+			<div class="container px-0 pb-5" id="editPage">
+				<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ trick.mainImage) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
+					<div class="py-2 px-3 mr-auto return-btn">
+						<a href="{{ path('trick.index') }}" class="btn btn-info">
+							<i class="fas fa-undo-alt mr-2"></i>Back
+						</a>
+					</div>
+
+					<div class="text-center">
+						<h1 class="mb-5">{{ trick.name }}</h1>
+						<div class="mainImg-input"></div>
+						{% for message in app.flashes('success') %}
+							<div class="alert alert-info w-100 mt-3 text-center">
+								{{ message }}
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="row pt-5 pb-2s px-2 justify-content-center text-center" id="trickMedia">
+					{% if trick.images is not empty or trick.videos is not empty %}
+						<button type="button" class="btn btn-info">See medias</button>
+					{% endif %}
+					{% if trick.mainImage != reportedTrick.mainImage %}
+						<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0">
+							<img class="img-thumbnail trick-media" src="{{ asset('media/uploads/tricks/reportedtrick_' ~ reportedTrick.id ~ '/' ~ reportedTrick.mainImage) }}" alt="{{ trick.name }}"/>
+							<div class="card-actions trick-media-actions py-2 px-3 mt-2 ml-auto mr-2">
+								<p class="reported">Suggested main image</p>
+								<label class="checkbox-label">
+									<input type="checkbox" name="reported_mainImage" class="report-checkbox" value="{{ reportedTrick.mainImage }}">
+									<span class="checkmark">
+										<i class="fas fa-check"></i>
+									</span>
+								</label>
+							</div>
+						</div>
+					{% endif %}
+					{% if trick.images is not null %}
+						{% for image in trick.images %}
+							<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0 {% if image not in reportedTrick.images %}deleted-image{% endif %}">
+								<img class="img-thumbnail trick-media" src="{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ image.name) }}" alt="{{ trick.name }}"/>
+
+								{% if image not in reportedTrick.images %}
+									<div class="card-actions trick-media-actions py-2 px-3 mt-2 ml-auto mr-2">
+										<label class="checkbox-label">
+											<input type="checkbox" name="image_{{ image.id }}" class="report-checkbox" value="{{ image.name }}">
+											<span class="checkmark">
+												<i class="fas fa-check"></i>
+											</span>
+										</label>
+									</div>
+								{% endif %}
+							</div>
+
+						{% endfor %}
+					{% endif %}
+					{% if reportedTrick.images is not null %}
+						{% for image in reportedTrick.images %}
+							{% if image not in trick.images %}
+								<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0">
+									<img class="img-thumbnail trick-media" src="{{ asset('media/uploads/tricks/reportedtrick_' ~ reportedTrick.id ~ '/' ~ image.name) }}" alt="{{ trick.name }}"/>
+									<div class="card-actions trick-media-actions py-2 px-3 mt-2 ml-auto mr-2">
+										<label class="checkbox-label">
+											<input type="checkbox" name="reported_image_{{ image.id }}" class="report-checkbox" value="{{ image.name }}">
+											<span class="checkmark">
+												<i class="fas fa-check"></i>
+											</span>
+										</label>
+									</div>
+								</div>
+							{% endif %}
+
+						{% endfor %}
+					{% endif %}
+					{% if trick.videos is not null %}
+						{% for video in trick.videos %}
+							<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0 {% if video not in reportedTrick.videos %}deleted-image{% endif %}">
+								<iframe class="trick-media" src="{{ video.name }}" width="100%" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+								{% if video not in reportedTrick.videos %}
+									<div class="card-actions trick-media-actions py-2 px-3 mt-2 ml-auto mr-2">
+										<label class="checkbox-label">
+											<input type="checkbox" name="video_{{ video.id }}" class="report-checkbox" value="{{ video.name }}">
+											<span class="checkmark">
+												<i class="fas fa-check"></i>
+											</span>
+										</label>
+									</div>
+								{% endif %}
+							</div>
+						{% endfor %}
+					{% endif %}
+					{% if reportedTrick.videos is not null %}
+						{% for video in reportedTrick.videos %}
+							{% if video not in trick.videos %}
+								<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0">
+									<iframe class="trick-media" src="{{ video.name }}" width="100%" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+									<div class="card-actions trick-media-actions py-2 px-3 mt-2 ml-auto mr-2">
+										<label class="checkbox-label">
+											<input type="checkbox" name="reported_video_{{ video.id }}" class="report-checkbox" value="{{ video.name }}">
+											<span class="checkmark">
+												<i class="fas fa-check"></i>
+											</span>
+										</label>
+									</div>
+								</div>
+							{% endif %}
+
+						{% endfor %}
+					{% endif %}
+				</div>
+
+
+				<div class="row py-3 d-flex flex-column align-items-center pb-0" id="newTrickInfos">
+					<h2>{{ trick.name }}</h2>
+					{% if trick.name != reportedTrick.name %}
+						<div class="form-group w-100 d-flex justify-content-center align-items-center mt-2 mb-5 reported">
+							<p class="mb-0">Suggested trick name:
+								{{ reportedTrick.name }}</p>
+							<label class="checkbox-label">
+								<input type="checkbox" name="reported_name" class="report-checkbox">
+								<span class="checkmark">
+									<i class="fas fa-check"></i>
+								</span>
+							</label>
+						</div>
+					{% endif %}
+
+					<p>{{ trick.description | nl2br }}</p>
+					{% if trick.description != reportedTrick.description %}
+						<div class="form-group w-100 reported text-center d-flex flex-column justify-content-center align-items-center mt-4">
+							<p>Suggested description :</p>
+							<p class="text-justify">{{ reportedTrick.description|nl2br }}</p>
+							<label class="checkbox-label">
+								<input type="checkbox" name="reported_description" class="report-checkbox">
+								<span class="checkmark">
+									<i class="fas fa-check"></i>
+								</span>
+							</label>
+						</div>
+					{% endif %}
+
+					{% if trick.groups is not empty or reportedTrick.groups is not empty %}
+						<div class="d-flex mt-5 justify-content-center align-items-center">
+							<h2>Groups</h2>
+							{% if trick.groups is not empty %}
+								<div class="ml-4 mr-2 d-flex align-items-center" id="trickGroup">
+									{% for group in trick.groups %}
+										{% if group not in reportedTrick.groups %}
+											<div class="badge badge-danger ml-2 badge-deleted">
+												{{ group.name }}
+											</div>
+											<label class="checkbox-label">
+												<input type="checkbox" name="group_{{ group.id }}" class="report-checkbox" value="{{ group.name }}">
+												<span class="checkmark">
+													<i class="fas fa-check"></i>
+												</span>
+											</label>
+										{% else %}
+											<div class="badge badge-info ml-2">
+												{{ group.name }}
+											</div>
+										{% endif %}
+									{% endfor %}
+								</div>
+							{% endif %}
+							{% if reportedTrick.groups is not empty %}
+								<div class="ml-4 mr-2 d-flex reported" id="trickGroup">
+									{% for group in reportedTrick.groups %}
+										{% if group not in trick.groups %}
+											<input type="text" class="form-control" value="{{ group.name }}">
+											<label class="checkbox-label">
+												<input type="checkbox" name="reported_group_{{ group.id }}" value="{{ group.name }}" class="report-checkbox">
+												<span class="checkmark">
+													<i class="fas fa-check"></i>
+												</span>
+											</label>
+										{% endif %}
+									{% endfor %}
+								</div>
+							{% endif %}
+						</div>
+					{% endif %}
+
+					<div class="mt-4">
+						<button type="submit" class="btn btn-info">Save changes</button>
+					</div>
+				</div>
+
+			</div>
+
+
+		</div>
+	</form>
+
+{% endblock %}

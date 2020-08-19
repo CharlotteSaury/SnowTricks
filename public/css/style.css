@@ -613,3 +613,101 @@ footer {
         margin-bottom:5rem;
     }
 }
+
+
+/*************************
+****** Trick reportView Page ********
+*************************/
+
+.reported {
+    color: red;
+}
+
+.reported input {
+    inline-size: fit-content;
+}
+
+.badge-deleted {
+    text-decoration: line-through;
+}
+
+.deleted-image {
+    position: relative;
+}
+.deleted-image::before {
+    content:"x";
+    font-size: 4rem;
+    position: absolute;
+    top: 10%;
+    left: 44%;
+    color: red;
+    z-index: 20;
+}
+
+.checkbox-label {
+    display: block;
+    position: relative;
+    padding-left: 0.5rem;
+    margin-right: 2rem;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Hide the browser's default checkbox */
+  .checkbox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .checkmark {
+    width: fit-content;
+    height: fit-content;
+    font-size: 0.75rem;
+    color: darkgrey;
+    padding: 0.3rem;
+    border: 1px solid darkgrey;
+    border-radius: 5px;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .checkbox-label:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+  
+  /* When the checkbox is checked, add a blue background */
+  .checkbox-label input:checked ~ .checkmark {
+    background-color: #17a2b8;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .checkbox-label input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+  .checkbox-label .checkmark:after {
+    left: 50%;
+    top: 36%;
+    width: 8px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }

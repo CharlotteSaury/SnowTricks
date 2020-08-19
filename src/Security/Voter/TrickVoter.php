@@ -43,7 +43,7 @@ class TrickVoter extends Voter
             return false;
         }
 
-        if ($this->security->isGranted('ROLE_ADMIN')) {
+        if ($this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_MODERATOR')) {
             return true;
         }
 

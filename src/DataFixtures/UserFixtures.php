@@ -65,7 +65,7 @@ class UserFixtures extends Fixture
             $user = new User();
             $password = $this->encoder->encodePassword($user, $fakeUser[0]);
             $user->setUsername(array_search($fakeUser, $fakeUsers))
-                ->setEmail($faker->email)
+                ->setEmail($this->faker->email)
                 ->setPassword($password)
                 ->setRoles($fakeUser[1]);
             $manager->persist($user);

@@ -327,6 +327,11 @@ class UserTrickController extends AbstractController
             if ($request->request->get('reported_description')) {
                 $trick->setDescription($reportedTrick->getDescription());
             }
+            if ($request->request->get('reported_mainImage')) {
+                $trick->setMainImage($reportedTrick->getMainImage());
+                $fileSystem = new Filesystem();
+                $fileSystem->copy($this->getParameter('reportedtrick_media_directory') . $reportedTrick->getId() . '/' . $reportedTrick->getMainImage(), $this->getParameter('trick_media_directory') . $reportedTrick->getTrick()->getId() . '/' . $reportedTrick->getMainImage(), true);
+            }
             foreach ($trick->getImages() as $image) {
                 if ($request->request->get('image_' . $image->getId())) {
                     $trick->removeImage($image);

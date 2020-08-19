@@ -4,13 +4,12 @@ namespace App\DataFixtures;
 
 use App\Entity\Image;
 use App\Entity\Trick;
-use App\Service\UploaderHelper;
-use App\DataFixtures\UserRoleFixtures;
+use App\Helper\UploaderHelper;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use App\Entity\Video;
 use App\DataFixtures\GroupFixtures;
-use App\Service\VideoLinkFormatter;
+use App\Helper\VideoLinkFormatter;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;

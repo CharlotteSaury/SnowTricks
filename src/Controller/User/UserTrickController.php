@@ -3,23 +3,19 @@
 namespace App\Controller\User;
 
 use DateTime;
-use App\Entity\User;
-use App\Entity\Image;
 use App\Entity\Trick;
 use App\Form\TrickType;
 use App\Entity\ReportedTrick;
 use App\Form\ReportedTrickType;
-use App\Service\UploaderHelper;
-use App\Service\ImageFileDeletor;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
 use Symfony\Component\Mime\Address;
-use App\Service\ImageFileDeletor;
-use App\Service\UploaderHelper;
-use App\Service\VideoLinkFormatter;
+use App\Helper\ImageFileDeletor;
+use App\Helper\UploaderHelper;
+use App\Helper\VideoLinkFormatter;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ReportedTrickRepository;
-use App\Service\ReportedTrickGenerator;
+use App\Helper\ReportedTrickGenerator;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;

@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
-use App\Service\UploaderHelper;
+use App\Helper\UploaderHelper;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\Filesystem\Filesystem;
 use Doctrine\Common\Persistence\ObjectManager;

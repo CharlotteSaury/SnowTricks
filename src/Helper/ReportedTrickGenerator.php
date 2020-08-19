@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Helper;
 
 use App\Entity\User;
 use App\Entity\Trick;

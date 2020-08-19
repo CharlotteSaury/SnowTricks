@@ -6,14 +6,13 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
-use App\Service\ImageFileDeletor;
-use App\Service\UploaderHelper;
+use App\Helper\ImageFileDeletor;
+use App\Helper\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @IsGranted("access", subject="user", message="Access denied")

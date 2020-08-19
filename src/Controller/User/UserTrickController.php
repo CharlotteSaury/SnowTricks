@@ -2,6 +2,7 @@
 
 namespace App\Controller\User;
 
+use DateTime;
 use App\Entity\User;
 use App\Entity\Image;
 use App\Entity\Trick;
@@ -12,9 +13,9 @@ use App\Service\UploaderHelper;
 use App\Service\ImageFileDeletor;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
-use DateTime;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ReportedTrickRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,16 +42,22 @@ class UserTrickController extends AbstractController
      * @var TrickRepository
      */
     private $trickRepository;
+    
+    /**
+     * @var ReportedTrickRepository
+     */
+    private $reportedTrickRepository;
 
     /**
      * @var FileSystem
      */
     private $fileSystem;
 
-    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, EntityManagerInterface $entityManager, Filesystem $fileSystem)
+    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, EntityManagerInterface $entityManager, Filesystem $fileSystem, ReportedTrickRepository $reportedTrickRepository)
     {
         $this->userRepository = $userRepository;
         $this->trickRepository = $trickRepository;
+        $this->reportedTrickRepository = $reportedTrickRepository;
         $this->entityManager = $entityManager;
         $this->fileSystem = $fileSystem;
     }
@@ -393,4 +400,5 @@ class UserTrickController extends AbstractController
             'reportedTrick' => $reportedTrick
         ]);
     }
+
 }

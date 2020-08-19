@@ -82,7 +82,7 @@
 					{% endif %}
 					{% if trick.videos is not null %}
 						{% for video in trick.videos %}
-							<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0">
+							<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0 {% if video not in reportedTrick.videos %}deleted-image{% endif %}">
 								<iframe class="trick-media" src="{{ video.name }}" width="100%" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 								{% if video not in reportedTrick.videos %}
 									<div class="card-actions trick-media-actions py-2 px-3 mt-2 ml-auto mr-2">

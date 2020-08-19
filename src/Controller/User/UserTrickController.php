@@ -315,7 +315,7 @@ class UserTrickController extends AbstractController
     /**
      * @Route("/user/reportView{id}", name="user.trick.reportView")
      */
-    public function trickReportView(ReportedTrick $reportedTrick, Request $request)
+    public function trickReportView(ReportedTrick $reportedTrick, Request $request, ImageFileDeletor $imageFileDeletor)
     {
         $trick = $reportedTrick->getTrick();
 
@@ -373,6 +373,12 @@ class UserTrickController extends AbstractController
             if ($directory = $this->getParameter('reportedtrick_media_directory') . $reportedTrick->getId()) {
                 $this->fileSystem->remove($directory);
             }
+
+            $trickImages = [$trick->getMainImage()];
+            foreach ($trick->getImages() as $image) {
+                array_push($trickImages, $image->getName());
+            }
+            $imageFileDeletor->deleteFile('trick', $trick->getId(), $trickImages);
 
             $this->addFlash('success', 'Your trick has been updated !');
 

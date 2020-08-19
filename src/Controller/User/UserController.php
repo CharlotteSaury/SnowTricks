@@ -6,12 +6,14 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
+use App\Service\ImageFileDeletor;
 use App\Service\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @IsGranted("access", subject="user", message="Access denied")
@@ -58,7 +60,7 @@ class UserController extends AbstractController
     /**
      * @Route("/user/edit/{username}", name="user.edit")
      */
-    public function edit(Request $request, User $user, UploaderHelper $uploaderHelper)
+    public function edit(Request $request, User $user, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor)
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -67,11 +69,14 @@ class UserController extends AbstractController
 
             $avatar = $form->get('avatar')->getData();
             if (!empty($avatar)) {
-                $avatarName = $uploaderHelper->uploadFile($avatar);
+                $avatarName = $uploaderHelper->uploadFile($avatar, 'users', 'user_' . $user->getId());
                 $user->setAvatar($avatarName);
             }
             $this->em->persist($user);
             $this->em->flush();
+            
+            $imageFileDeletor->deleteFile('user', $user->getId(), [$avatarName]);
+
             $this->addFlash('success', 'Your profile has been updated !');
 
             return $this->redirectToRoute('user.profile', [

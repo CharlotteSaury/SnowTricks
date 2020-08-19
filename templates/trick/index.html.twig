@@ -29,7 +29,7 @@
 			{% for trick in tricks %}
 				<div class="col-md-2 col-sm-4 mx-1 mb-4 trick-card-div">
 					<div class="card">
-						<img src="{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/'~trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}" class="card-img-top" alt="Trick {{ trick.name }}">
+						<img src="{% if trick.mainImage is not null %}{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}" class="card-img-top" alt="Trick {{ trick.name }}">
 						<div class="card-body d-flex flex-row {% if app.user %}justify-content-between{% else %}justify-content-center{% endif %} px-2">
 							<div class="{% if app.user %}col-8{% else %}col-12{% endif %} px-1 text-center">
 								<h5 class="card-title mb-0">

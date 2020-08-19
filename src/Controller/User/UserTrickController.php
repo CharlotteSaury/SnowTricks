@@ -7,6 +7,7 @@ use App\Entity\Trick;
 use App\Form\TrickType;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
+use App\Service\ImageFileDeletor;
 use App\Service\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,13 +15,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class UserTrickController extends AbstractController
 {
     /**
      * @var EntityManagerInterface
      */
-    private $em;
+    private $entityManager;
 
     /**
      * @var UserRepository
@@ -32,11 +35,17 @@ class UserTrickController extends AbstractController
      */
     private $trickRepository;
 
-    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, EntityManagerInterface $em)
+    /**
+     * @var FileSystem
+     */
+    private $fileSystem;
+
+    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, EntityManagerInterface $entityManager, Filesystem $fileSystem)
     {
         $this->userRepository = $userRepository;
         $this->trickRepository = $trickRepository;
-        $this->em = $em;
+        $this->entityManager = $entityManager;
+        $this->fileSystem = $fileSystem;
     }
 
     /**
@@ -54,13 +63,13 @@ class UserTrickController extends AbstractController
 
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage);
+                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks', 'trick_');
                 $trick->setMainImage($mainImageName);
             }
 
             $images = $form->get('images')->getData();
             foreach ($images as $image) {
-                $imageName = $uploaderHelper->uploadFile($image->getFile());
+                $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks', 'trick_');
 
                 $image->setName($imageName)
                     ->setTrick($trick);
@@ -72,10 +81,15 @@ class UserTrickController extends AbstractController
                 $trick->addVideo($video);
             }
 
-            $this->em->persist($trick);
-            $this->em->flush();
+            $this->entityManager->persist($trick);
+            $this->entityManager->flush();
+
+            $this->fileSystem->rename($this->getParameter('trick_media_directory'), $this->getParameter('trick_media_directory') . $trick->getId());
             $this->addFlash('success', 'Your trick is posted !');
-            return $this->redirectToRoute('user.tricks');
+            return $this->redirectToRoute('trick.show', [
+                'id' => $trick->getId(),
+                'slug' => $trick->getSlug()
+            ]);
         }
 
         return $this->render('trick/new.html.twig', [
@@ -88,7 +102,7 @@ class UserTrickController extends AbstractController
      * @Route("/user/trick/edit{id}", name="user.trick.edit")
      * @IsGranted("edit", subject="trick", message="Access denied")
      */
-    public function edit(Trick $trick, Request $request, UploaderHelper $uploaderHelper)
+    public function edit(Trick $trick, Request $request, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor)
     {
         $author = $trick->getAuthor();
         $form = $this->createForm(TrickType::class, $trick);
@@ -97,7 +111,7 @@ class UserTrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage);
+                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks', 'trick_' . $trick->getId());
                 $trick->setMainImage($mainImageName);
             }
 
@@ -105,7 +119,7 @@ class UserTrickController extends AbstractController
 
             foreach ($images as $image) {
                 if ($image->getFile() != null) {
-                    $imageName = $uploaderHelper->uploadFile($image->getFile());
+                    $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks', 'trick_' . $trick->getId());
 
                     $image->setName($imageName)
                         ->setTrick($trick);
@@ -121,9 +135,16 @@ class UserTrickController extends AbstractController
             $trick->setUpdatedAt(new \DateTime())
                 ->setAuthor($author);
 
-            $this->em->persist($trick);
-            $this->em->flush();
+            $this->entityManager->persist($trick);
+            $this->entityManager->flush();
 
+            $trickImages = [$trick->getMainImage()];
+            foreach ($trick->getImages() as $image) {
+                array_push($trickImages, $image->getName());
+            }
+            $imageFileDeletor->deleteFile('trick', $trick->getId(), $trickImages);
+
+             
             if ($author == $this->getUser()) {
                 $this->addFlash('success', 'Your trick has been updated !');
             } else {
@@ -144,14 +165,38 @@ class UserTrickController extends AbstractController
     }
 
     /**
+     * @Route("/user/trick/deleteMainImage{id}", name="user.trick.delete.mainImage", methods="DELETE")
+     * @IsGranted("edit", subject="trick", message="Access denied")
+     */
+    public function deleteMainImage(Trick $trick, Request $request, ImageFileDeletor $imageFileDeletor)
+    {
+        if ($this->isCsrfTokenValid('mainImage_deletion_' . $trick->getId(), $request->get('_token'))) {
+            $imageFileDeletor->deleteFile('trick', $trick->getId(), [$trick->getMainImage()], true);
+
+            $trick->setMainImage(null);
+            $this->entityManager->persist($trick);
+            $this->entityManager->flush(); 
+        }
+
+        $this->addFlash('success', 'Main image has been deleted !');
+        return $this->redirectToRoute('user.trick.edit', [
+                'id' => $trick->getId()
+            ]);
+            
+    }
+
+    /**
      * @Route("/user/trick/delete{id}", name="user.trick.delete", methods="DELETE")
      * @IsGranted("edit", subject="trick", message="Access denied")
      */
     public function delete(Request $request, Trick $trick)
     {
         if ($this->isCsrfTokenValid('trick_deletion_' . $trick->getId(), $request->get('_token'))) {
-            $this->em->remove($trick);
-            $this->em->flush(); 
+            if ($directory = $this->getParameter('trick_media_directory') . $trick->getId()) {
+                $this->fileSystem->remove($directory);
+            }
+            $this->entityManager->remove($trick);
+            $this->entityManager->flush(); 
         }
         if ($trick->getAuthor() == $this->getUser()) {
             $this->addFlash('success', 'Your trick has been deleted !');

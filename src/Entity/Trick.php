@@ -148,7 +148,7 @@ class Trick
         return $this->mainImage;
     }
 
-    public function setMainImage(string $mainImage): self
+    public function setMainImage($mainImage): self
     {
         $this->mainImage = $mainImage;
 

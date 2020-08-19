@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\User;
+namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
@@ -73,7 +73,7 @@ class UserController extends AbstractController
             }
             $this->em->persist($user);
             $this->em->flush();
-            
+
             $imageFileDeletor->deleteFile('user', $user->getId(), [$avatarName]);
 
             $this->addFlash('success', 'Your profile has been updated !');
@@ -87,6 +87,21 @@ class UserController extends AbstractController
             'user' => $user,
             'nav' => 'profile',
             'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/users", name="users")
+     */
+    public function users()
+    {
+        $verifiedUsers = $this->userRepository->findBy(['activationToken' => null]);
+        $unverifiedUsers = $this->userRepository->findUnverified();
+
+        return $this->render('admin/users.html.twig', [
+            'verifiedUsers' => $verifiedUsers,
+            'unverifiedUsers' => $unverifiedUsers,
+            'nav' => 'users'
         ]);
     }
 }

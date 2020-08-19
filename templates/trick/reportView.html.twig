@@ -15,17 +15,6 @@
 						</a>
 					</div>
 
-					{% if trick.mainImage != reportedTrick.mainImage %}
-						<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
-							<label class="checkbox-label">
-								<input type="checkbox" name="reported_mainImage" class="report-checkbox">
-								<span class="checkmark">
-									<i class="fas fa-check"></i>
-								</span>
-							</label>
-						</div>
-					{% endif %}
-
 					<div class="text-center">
 						<h1 class="mb-5">{{ trick.name }}</h1>
 						<div class="mainImg-input"></div>
@@ -39,6 +28,20 @@
 				<div class="row pt-5 pb-2s px-2 justify-content-center text-center" id="trickMedia">
 					{% if trick.images is not empty or trick.videos is not empty %}
 						<button type="button" class="btn btn-info">See medias</button>
+					{% endif %}
+					{% if trick.mainImage != reportedTrick.mainImage %}
+						<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0">
+							<img class="img-thumbnail trick-media" src="{{ asset('media/uploads/tricks/reportedtrick_' ~ reportedTrick.id ~ '/' ~ reportedTrick.mainImage) }}" alt="{{ trick.name }}"/>
+							<div class="card-actions trick-media-actions py-2 px-3 mt-2 ml-auto mr-2">
+								<p class="reported">Suggested main image</p>
+								<label class="checkbox-label">
+									<input type="checkbox" name="reported_mainImage" class="report-checkbox" value="{{ reportedTrick.mainImage }}">
+									<span class="checkmark">
+										<i class="fas fa-check"></i>
+									</span>
+								</label>
+							</div>
+						</div>
 					{% endif %}
 					{% if trick.images is not null %}
 						{% for image in trick.images %}
@@ -109,7 +112,7 @@
 									</div>
 								</div>
 							{% endif %}
-							
+
 						{% endfor %}
 					{% endif %}
 				</div>

@@ -14,6 +14,9 @@ use App\Service\ImageFileDeletor;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
 use Symfony\Component\Mime\Address;
+use App\Service\ImageFileDeletor;
+use App\Service\UploaderHelper;
+use App\Service\VideoLinkFormatter;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ReportedTrickRepository;
 use App\Service\ReportedTrickGenerator;
@@ -66,7 +69,7 @@ class UserTrickController extends AbstractController
     /**
      * @Route("/user/trick/new", name="user.trick.new")
      */
-    public function new(Request $request, UploaderHelper $uploaderHelper)
+    public function new(Request $request, UploaderHelper $uploaderHelper, VideoLinkFormatter $videoLinkFormatter)
     {
         $trick = new Trick();
         $form = $this->createForm(TrickType::class, $trick);
@@ -93,6 +96,8 @@ class UserTrickController extends AbstractController
 
             $videos = $form->get('videos')->getData();
             foreach ($videos as $video) {
+                $formattedName = $videoLinkFormatter->format($video->getLink());
+                $video->setName($formattedName);
                 $trick->addVideo($video);
             }
 
@@ -117,7 +122,7 @@ class UserTrickController extends AbstractController
      * @Route("/user/trick/edit{id}", name="user.trick.edit")
      * @IsGranted("edit", subject="trick", message="Access denied")
      */
-    public function edit(Trick $trick, Request $request, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor)
+    public function edit(Trick $trick, Request $request, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor, VideoLinkFormatter $videoLinkFormatter)
     {
         $author = $trick->getAuthor();
         $form = $this->createForm(TrickType::class, $trick);
@@ -144,6 +149,8 @@ class UserTrickController extends AbstractController
 
             $videos = $form->get('videos')->getData();
             foreach ($videos as $video) {
+                $formattedName = $videoLinkFormatter->format($video->getLink());
+                $video->setName($formattedName);
                 $trick->addVideo($video);
             }
 

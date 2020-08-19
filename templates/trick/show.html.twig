@@ -69,7 +69,7 @@
 				{% if trick.videos is not null %}
 					{% for video in trick.videos %}
 						<div class="media-slider mb-3 mx-2">
-							<iframe class="trick-media" src="https://www.youtube.com/embed/{{ video.name[32:] }}" width="250" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							<iframe class="trick-media" src="{{ video.name }}" width="250" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 						</div>
 					{% endfor %}
 				{% endif %}
@@ -151,7 +151,7 @@
 									</a>
 									-
 									{{ comment.createdAt|format_datetime(locale='us') }}
-									{% if app.user and app.user.id == comment.author.id %}
+									{% if app.user and app.user.id == comment.author.id  or is_granted('ROLE_ADMIN') or is_granted('ROLE_MODERATOR')%}
 										-
 										<a class="ml-2" data-toggle="modal" data-target="#deleteCommentModal" data-action="{{ path('user.comment.delete', {id: comment.id}) }}" data-token="{{ csrf_token('comment_deletion_' ~ comment.id) }}">
 											<i class="fas fa-trash-alt"></i>

@@ -18,7 +18,7 @@ class Video
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $name;
 
@@ -32,6 +32,8 @@ class Video
      * @ORM\ManyToOne(targetEntity=ReportedTrick::class, inversedBy="videos")
      */
     private $reportedTrick;
+  
+    private $link;
 
     public function getId(): ?int
     {
@@ -70,6 +72,15 @@ class Video
     public function setReportedTrick(?ReportedTrick $reportedTrick): self
     {
         $this->reportedTrick = $reportedTrick;
+      
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(string $link)
+    {
+        $this->link = $link;
 
         return $this;
     }

@@ -16,6 +16,7 @@ use App\Repository\TrickRepository;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ReportedTrickRepository;
+use App\Service\ReportedTrickGenerator;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
@@ -236,23 +237,9 @@ class UserTrickController extends AbstractController
     /**
      * @Route("/user/trick/report{id}", name="user.trick.report")
      */
-    public function report(Trick $trick, Request $request, UploaderHelper $uploaderHelper, MailerInterface $mailer)
+    public function report(Trick $trick, Request $request, UploaderHelper $uploaderHelper, MailerInterface $mailer, ReportedTrickGenerator $reportedTrickGenerator)
     {
-        $reportedTrick = new ReportedTrick();
-        $reportedTrick->setName($trick->getName())
-            ->setDescription($trick->getDescription())
-            ->setMainImage($trick->getMainImage())
-            ->setTrick($trick)
-            ->setUser($this->getUser());
-        foreach ($trick->getGroups() as $group) {
-            $reportedTrick->addGroup($group);
-        }
-        foreach ($trick->getImages() as $image) {
-            $reportedTrick->addImage($image);
-        }
-        foreach ($trick->getVideos() as $video) {
-            $reportedTrick->addVideo($video);
-        }
+        $reportedTrick = $reportedTrickGenerator->transform($trick, $this->getUser());
 
         $form = $this->createForm(ReportedTrickType::class, $reportedTrick);
         $form->handleRequest($request);

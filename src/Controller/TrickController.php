@@ -4,9 +4,7 @@ namespace App\Controller;
 
 use DateTime;
 use App\Entity\Trick;
-use App\Entity\Comment;
 use App\Form\TrickType;
-use App\Form\CommentType;
 use App\Entity\ReportedTrick;
 use App\Service\TrickService;
 use App\Helper\UploaderHelper;
@@ -85,36 +83,17 @@ class TrickController extends AbstractController
      * @Route("/trick{id}/{slug}", name="trick.show")
      * @return Response
      */
-    public function show($id, Request $request): Response
+    public function show(Trick $trick, Request $request, CommentController $commentController): Response
     {
-        $trick = $this->trickRepository->find($id);
+        $trick = $this->trickRepository->find($trick->getId());
+        $view = $commentController->new($request, $trick);
 
-        $comment = new Comment();
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $author = $this->userRepository->findOneByUsername($this->getUser()->getUserName());
-            $comment->setAuthor($author)
-                    ->setCreatedAt(new \DateTime())
-                    ->setTrick($trick);
-            
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($comment);
-            $em->flush();
-
-            $this->addFlash('successComment', 'Your comment is posted !');
-
-            return $this->redirect($this->generateUrl('trick.show', [
-                '_fragment' => 'trickCommentForm',
-                'id' => $id,
-                'slug' => $trick->getName()
-                ]));
-        }
-        
+        if (!$view instanceof Form) {
+            return $view;
+        }         
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
-            'form' => $form->createView()
+            'form' => $view->createView()
         ]);
     }
 

@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use DateTime;
+use App\Entity\Trick;
 use App\Entity\Comment;
+use App\Form\CommentType;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CommentController extends AbstractController
@@ -15,17 +18,17 @@ class CommentController extends AbstractController
     /**
      * @var EntityManagerInterface
      */
-    private $em;
+    private $entityManager;
 
         /**
      * @var CommentRepository
      */
     private $commentRepository;
 
-    public function __construct(CommentRepository $commentRepository, EntityManagerInterface $em)
+    public function __construct(CommentRepository $commentRepository, EntityManagerInterface $entityManager)
     {
         $this->commentRepository = $commentRepository;
-        $this->em = $em;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -48,8 +51,8 @@ class CommentController extends AbstractController
     public function delete(Request $request, Comment $comment)
     {
         if ($this->isCsrfTokenValid('comment_deletion_' . $comment->getId(), $request->get('_token'))) {
-            $this->em->remove($comment);
-            $this->em->flush();
+            $this->entityManager->remove($comment);
+            $this->entityManager->flush();
             if ($comment->getAuthor() == $this->getUser()) {
                 $this->addFlash('successComment', 'Your comment has been deleted !');
             } else {
@@ -61,5 +64,38 @@ class CommentController extends AbstractController
             'slug' => $comment->getTrick()->getSlug(),
             '_fragment' => 'trickCommentForm',
             ]);
+    }
+
+    /**
+     * Create new comment
+     *
+     * @param Request $request
+     * @param Trick $trick
+     * @return view or $form
+     */
+    public function new(Request $request, Trick $trick) 
+    {
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setAuthor($this->getUser())
+                    ->setCreatedAt(new \DateTime())
+                    ->setTrick($trick);
+            
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            $this->addFlash('successComment', 'Your comment is posted !');
+
+            return $this->redirect($this->generateUrl('trick.show', [
+                '_fragment' => 'trickCommentForm',
+                'id' => $trick->getId(),
+                'slug' => $trick->getName()
+                ]));
+        }
+        return $form;
     }
 }

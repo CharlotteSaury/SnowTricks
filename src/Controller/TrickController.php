@@ -2,31 +2,33 @@
 
 namespace App\Controller;
 
-use App\Entity\Comment;
-use App\Form\CommentType;
-use App\Repository\TrickRepository;
-use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use DateTime;
 use App\Entity\Trick;
+use App\Entity\Comment;
 use App\Form\TrickType;
+use App\Form\CommentType;
 use App\Entity\ReportedTrick;
-use App\Form\ReportedTrickType;
-use Symfony\Component\Mime\Address;
-use App\Helper\ImageFileDeletor;
+use App\Service\TrickService;
 use App\Helper\UploaderHelper;
+use App\Form\ReportedTrickType;
+use App\Helper\ImageFileDeletor;
+use Symfony\Component\Form\Form;
 use App\Helper\VideoLinkFormatter;
+use App\Repository\UserRepository;
+use App\Repository\TrickRepository;
+use Symfony\Component\Mime\Address;
+use App\Helper\ReportedTrickGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ReportedTrickRepository;
-use App\Helper\ReportedTrickGenerator;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TrickController extends AbstractController
 {
@@ -55,13 +57,16 @@ class TrickController extends AbstractController
      */
     private $fileSystem;
 
-    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, EntityManagerInterface $entityManager, Filesystem $fileSystem, ReportedTrickRepository $reportedTrickRepository)
+    private $trickService;
+
+    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, EntityManagerInterface $entityManager, Filesystem $fileSystem, ReportedTrickRepository $reportedTrickRepository, TrickService $trickService)
     {
         $this->userRepository = $userRepository;
         $this->trickRepository = $trickRepository;
         $this->reportedTrickRepository = $reportedTrickRepository;
         $this->entityManager = $entityManager;
         $this->fileSystem = $fileSystem;
+        $this->trickService = $trickService;
     }
 
     /**
@@ -116,49 +121,15 @@ class TrickController extends AbstractController
     /**
      * @Route("/user/trick/new", name="user.trick.new")
      */
-    public function new(Request $request, UploaderHelper $uploaderHelper, VideoLinkFormatter $videoLinkFormatter)
+    public function new(Request $request)
     {
         $trick = new Trick();
         $form = $this->createForm(TrickType::class, $trick);
-        $form->handleRequest($request);
+        $view = $this->createOrUpdate($trick, $form, $request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $author = $this->userRepository->findOneByUsername($this->getUser()->getUserName());
-            $trick->setAuthor($author);
-
-            $mainImage = $form->get('mainImage')->getData();
-            if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks', 'trick_');
-                $trick->setMainImage($mainImageName);
-            }
-
-            $images = $form->get('images')->getData();
-            foreach ($images as $image) {
-                $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks', 'trick_');
-
-                $image->setName($imageName)
-                    ->setTrick($trick);
-                $trick->addImage($image);
-            }
-
-            $videos = $form->get('videos')->getData();
-            foreach ($videos as $video) {
-                $formattedName = $videoLinkFormatter->format($video->getLink());
-                $video->setName($formattedName);
-                $trick->addVideo($video);
-            }
-
-            $this->entityManager->persist($trick);
-            $this->entityManager->flush();
-
-            $this->fileSystem->rename($this->getParameter('trick_media_directory'), $this->getParameter('trick_media_directory') . $trick->getId());
-            $this->addFlash('success', 'Your trick is posted !');
-            return $this->redirectToRoute('trick.show', [
-                'id' => $trick->getId(),
-                'slug' => $trick->getSlug()
-            ]);
+        if ($view) {
+            return $view;
         }
-
         return $this->render('trick/new.html.twig', [
             'trick' => $trick,
             'form' => $form->createView()
@@ -169,67 +140,40 @@ class TrickController extends AbstractController
      * @Route("/user/trick/edit{id}", name="user.trick.edit")
      * @IsGranted("edit", subject="trick", message="Access denied")
      */
-    public function edit(Trick $trick, Request $request, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor, VideoLinkFormatter $videoLinkFormatter)
+    public function edit(Trick $trick, Request $request)
     {
-        $author = $trick->getAuthor();
         $form = $this->createForm(TrickType::class, $trick);
+        $view = $this->createOrUpdate($trick, $form, $request);
+
+        if ($view) {
+            return $view;
+        }
+        return $this->render('trick/edit.html.twig', [
+            'trick' => $trick,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * handle form submission and validation 
+     *
+     * @param Trick $trick
+     * @param Form $form
+     * @param Request $request
+     * @return void
+     */
+    public function createOrUpdate(Trick $trick, Form $form, Request $request) {
         $form->handleRequest($request);
+        $author = ($trick->getId() != null) ? $trick->getAuthor() : $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $mainImage = $form->get('mainImage')->getData();
-            if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks', 'trick_' . $trick->getId());
-                $trick->setMainImage($mainImageName);
-            }
-
-            $images = $form->get('images')->getData();
-
-            foreach ($images as $image) {
-                if ($image->getFile() != null) {
-                    $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks', 'trick_' . $trick->getId());
-
-                    $image->setName($imageName)
-                        ->setTrick($trick);
-                    $trick->addImage($image);
-                }
-            }
-
-            $videos = $form->get('videos')->getData();
-            foreach ($videos as $video) {
-                $formattedName = $videoLinkFormatter->format($video->getLink());
-                $video->setName($formattedName);
-                $trick->addVideo($video);
-            }
-
-            $trick->setUpdatedAt(new \DateTime())
-                ->setAuthor($author);
-
-            $this->entityManager->persist($trick);
-            $this->entityManager->flush();
-
-            $trickImages = [$trick->getMainImage()];
-            foreach ($trick->getImages() as $image) {
-                array_push($trickImages, $image->getName());
-            }
-            $imageFileDeletor->deleteFile('trick', $trick->getId(), $trickImages);
-
-
-            if ($author == $this->getUser()) {
-                $this->addFlash('success', 'Your trick has been updated !');
-            } else {
-                $this->addFlash('success', $author->getUsername() . '\'s trick has been updated !');
-            }
-
+            $this->trickService->handleCreateOrUpdate($trick, $form, $author);
+            
             return $this->redirectToRoute('trick.show', [
                 'id' => $trick->getId(),
                 'slug' => $trick->getSlug()
             ]);
         }
-
-        return $this->render('trick/edit.html.twig', [
-            'trick' => $trick,
-            'form' => $form->createView()
-        ]);
     }
 
     /**

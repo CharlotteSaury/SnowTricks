@@ -60,19 +60,6 @@ class AdminController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/users", name="users")
-     */
-    public function users()
-    {
-        $verifiedUsers = $this->userRepository->findBy(['activationToken' => null]);
-        $unverifiedUsers = $this->userRepository->findUnverified();
 
-        return $this->render('admin/users.html.twig', [
-            'verifiedUsers' => $verifiedUsers,
-            'unverifiedUsers' => $unverifiedUsers,
-            'nav' => 'users'
-        ]);
-    }
 
 }

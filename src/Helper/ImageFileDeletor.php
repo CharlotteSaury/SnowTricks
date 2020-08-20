@@ -28,23 +28,22 @@ class ImageFileDeletor
         } elseif ($type == 'user') {
             $directory = $this->userDirectory . $id;
         }
-        if ($directory) {
-                if (opendir($directory)) {
-                    foreach (scandir($directory) as $file) {
-                        if ($file != '.' && $file != '..') {
-                            if ($bool) {
-                                if (in_array($file, $data)) {
-                                    $this->fileSystem->remove($directory . '/' . $file);
-                                }
-                            } else {
-                                if (!in_array($file, $data)) {
+        if ($this->fileSystem->exists($directory)) {
+            if (opendir($directory)) {
+                foreach (scandir($directory) as $file) {
+                    if ($file != '.' && $file != '..') {
+                        if ($bool) {
+                            if (in_array($file, $data)) {
                                 $this->fileSystem->remove($directory . '/' . $file);
                             }
+                        } else {
+                            if (!in_array($file, $data)) {
+                                $this->fileSystem->remove($directory . '/' . $file);
                             }
-                            
                         }
                     }
                 }
             }
+        }
     }
 }

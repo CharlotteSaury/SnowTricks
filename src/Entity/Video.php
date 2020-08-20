@@ -72,6 +72,8 @@ class Video
     public function setReportedTrick(?ReportedTrick $reportedTrick): self
     {
         $this->reportedTrick = $reportedTrick;
+
+        return $this;
     }
       
     public function getLink(): ?string

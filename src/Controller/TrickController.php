@@ -11,7 +11,6 @@ use App\Helper\UploaderHelper;
 use App\Form\ReportedTrickType;
 use App\Helper\ImageFileDeletor;
 use Symfony\Component\Form\Form;
-use App\Helper\VideoLinkFormatter;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
 use Symfony\Component\Mime\Address;

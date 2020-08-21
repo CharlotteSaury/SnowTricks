@@ -4,11 +4,12 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Entity\Trick;
-use App\Helper\ImageFileDeletor;
 use App\Helper\UploaderHelper;
+use App\Helper\ImageFileDeletor;
+use Symfony\Component\Form\Form;
 use App\Helper\VideoLinkFormatter;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -31,7 +32,7 @@ class TrickService
     private $session;
 
     const NEW_FLASH = 'Your trick is posted !';
-    
+
     const EDIT_FLASH_SELF = 'Your trick has been updated !';
 
     const EDIT_FLASH = '\'s trick has been updated !';
@@ -48,36 +49,13 @@ class TrickService
         $this->session = $session;
     }
 
-    public function handleCreateOrUpdate(Trick $trick, $form, User $author)
+    public function handleCreateOrUpdate(Trick $trick, Form $form, User $author)
     {
         try {
             $trick->setAuthor($author);
-
-            $mainImage = $form->get('mainImage')->getData();
-            if (!empty($mainImage)) {
-                $mainImageName = $this->uploaderHelper->uploadFile($mainImage, 'tricks', 'trick_' . $trick->getId());
-                $trick->setMainImage($mainImageName);
-            }
-
-            $images = $form->get('images')->getData();
-            foreach ($images as $image) {
-                if ($image->getFile() != null) {
-                    $imageName = $this->uploaderHelper->uploadFile($image->getFile(), 'tricks', 'trick_' . $trick->getId());
-
-                    $image->setName($imageName)
-                        ->setTrick($trick);
-                    $trick->addImage($image);
-                }
-            }
-
-            $videos = $form->get('videos')->getData();
-            foreach ($videos as $video) {
-                if ($video->getLink() != null) {
-                    $formattedName = $this->videoLinkFormatter->format($video->getLink());
-                    $video->setName($formattedName);
-                    $trick->addVideo($video);
-                }
-            }
+            $this->handleMainImage($trick, $form);
+            $this->handleImages($trick, $form);
+            $this->handleVideos($trick, $form);
 
             if ($trick->getId() != null) {
                 $trick->setUpdatedAt(new \DateTime());
@@ -88,20 +66,10 @@ class TrickService
             $this->entityManager->persist($trick);
             $this->entityManager->flush();
 
-            if ($this->fileSystem->exists($this->trickDirectory)) {
-                $this->fileSystem->rename($this->trickDirectory, $this->trickDirectory . $trick->getId());
-            }
-
-            $trickImages = [$trick->getMainImage()];
-            foreach ($trick->getImages() as $image) {
-                array_push($trickImages, $image->getName());
-            }
-            $this->imageFileDeletor->deleteFile('trick', $trick->getId(), $trickImages);
+            $this->handleImageFiles($trick);
 
             return $trick;
-
         } catch (\Exception $error) {
-
             throw $error;
         }
     }
@@ -127,13 +95,62 @@ class TrickService
      * @param Trick $trick
      * @return void
      */
-    public function createFlashMessage(Trick $trick) {
+    public function createFlashMessage(Trick $trick)
+    {
         if ($trick->getId() != null) {
             if ($trick->getAuthor() == $this->session->get('user')) {
                 return self::EDIT_FLASH_SELF;
-            } 
-            return $trick->getAuthor()->getUsername() . self::EDIT_FLASH; 
-        } 
-        return self::NEW_FLASH ;
+            }
+            return $trick->getAuthor()->getUsername() . self::EDIT_FLASH;
+        }
+        return self::NEW_FLASH;
+    }
+
+    public function handleMainImage(Trick $trick, Form $form)
+    {
+        $mainImage = $form->get('mainImage')->getData();
+        if (!empty($mainImage)) {
+            $mainImageName = $this->uploaderHelper->uploadFile($mainImage, 'tricks', 'trick_' . $trick->getId());
+            $trick->setMainImage($mainImageName);
+        }
+    }
+
+    public function handleImages(Trick $trick, Form $form)
+    {
+        $images = $form->get('images')->getData();
+        foreach ($images as $image) {
+            if ($image->getFile() != null) {
+                $imageName = $this->uploaderHelper->uploadFile($image->getFile(), 'tricks', 'trick_' . $trick->getId());
+
+                $image->setName($imageName)
+                    ->setTrick($trick);
+                $trick->addImage($image);
+            }
+        }
+    }
+
+    public function handleVideos(Trick $trick, Form $form) 
+    {
+        $videos = $form->get('videos')->getData();
+            foreach ($videos as $video) {
+                if ($video->getLink() != null) {
+                    $formattedName = $this->videoLinkFormatter->format($video->getLink());
+                    $video->setName($formattedName);
+                    $trick->addVideo($video);
+                }
+            }
+    }
+
+    public function handleImageFiles(Trick $trick)
+    {
+        if ($this->fileSystem->exists($this->trickDirectory)) {
+            $this->fileSystem->rename($this->trickDirectory, $this->trickDirectory . $trick->getId());
+        }
+
+        $trickImages = [$trick->getMainImage()];
+        foreach ($trick->getImages() as $image) {
+            array_push($trickImages, $image->getName());
+        }
+        $this->imageFileDeletor->deleteFile('trick', $trick->getId(), $trickImages);
     }
 }

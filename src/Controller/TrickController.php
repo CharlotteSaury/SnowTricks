@@ -62,7 +62,7 @@ class TrickController extends AbstractController
      * @return Response
      */
     public function index(): Response
-    {    
+    {
         $tricks = $this->trickRepository->findAll();
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks
@@ -80,7 +80,7 @@ class TrickController extends AbstractController
 
         if (!$view instanceof Form) {
             return $view;
-        }         
+        }
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
             'form' => $view->createView()
@@ -131,13 +131,14 @@ class TrickController extends AbstractController
      * @param Request $request
      * @return void
      */
-    public function createOrUpdate(Trick $trick, Form $form, Request $request) {
+    public function createOrUpdate(Trick $trick, Form $form, Request $request)
+    {
         $form->handleRequest($request);
         $author = ($trick->getId() != null) ? $trick->getAuthor() : $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $trick = $this->trickService->handleCreateOrUpdate($trick, $form, $author);
-            
+
             return $this->redirectToRoute('trick.show', [
                 'id' => $trick->getId(),
                 'slug' => $trick->getSlug()
@@ -157,12 +158,13 @@ class TrickController extends AbstractController
             $trick->setMainImage(null);
             $this->entityManager->persist($trick);
             $this->entityManager->flush();
+            $this->addFlash('success', 'Main image has been deleted !');
+            return $this->redirectToRoute('user.trick.edit', [
+                'id' => $trick->getId()
+            ]);
         }
-
-        $this->addFlash('success', 'Main image has been deleted !');
-        return $this->redirectToRoute('user.trick.edit', [
-            'id' => $trick->getId()
-        ]);
+        $this->addFlash('error', 'An error has occured.');
+        return $this->redirectToRoute('trick.index');
     }
 
     /**
@@ -177,14 +179,16 @@ class TrickController extends AbstractController
             }
             $this->entityManager->remove($trick);
             $this->entityManager->flush();
+            if ($trick->getAuthor() == $this->getUser()) {
+                $this->addFlash('success', 'Your trick has been deleted !');
+                return $this->redirectToRoute('user.tricks');
+            } else {
+                $this->addFlash('success', $trick->getAuthor()->getUsername() . '\'s trick has been deleted !');
+                return $this->redirectToRoute('trick.index');
+            }
         }
-        if ($trick->getAuthor() == $this->getUser()) {
-            $this->addFlash('success', 'Your trick has been deleted !');
-            return $this->redirectToRoute('user.tricks');
-        } else {
-            $this->addFlash('success', $trick->getAuthor()->getUsername() . '\'s trick has been deleted !');
-            return $this->redirectToRoute('trick.index');
-        }
+        $this->addFlash('error', 'An error has occured.');
+        return $this->redirectToRoute('trick.index');
     }
 
     /**
@@ -295,6 +299,7 @@ class TrickController extends AbstractController
             $trick->setUpdatedAt(new DateTime());
 
             $this->entityManager->persist($trick);
+            $this->entityManager->remove($reportedTrick);
             $this->entityManager->flush();
 
             if ($directory = $this->getParameter('trick_media_directory') . $reportedTrick->getId()) {
@@ -320,5 +325,4 @@ class TrickController extends AbstractController
             'reportedTrick' => $reportedTrick
         ]);
     }
-
 }

@@ -52,6 +52,11 @@
 						{{ message }}
 					</div>
 				{% endfor %}
+				{% for message in app.flashes('error') %}
+					<div class="alert alert-danger w-75 mt-3 text-center">
+						{{ message }}
+					</div>
+				{% endfor %}
 			</div>
 
 			<div class="row py-5 px-2 justify-content-center" id="trickMedia">

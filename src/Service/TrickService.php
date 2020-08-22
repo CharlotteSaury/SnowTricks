@@ -52,28 +52,24 @@ class TrickService
 
     public function handleCreateOrUpdate(Trick $trick, Form $form, User $author)
     {
-        try {
-            $trick->setAuthor($author);
-            $this->handleMainImage($trick, $form);
-            $this->handleImages($trick, $form);
-            $this->handleVideos($trick, $form);
+        $trick->setAuthor($author);
+        $this->handleMainImage($trick, $form);
+        $this->handleImages($trick, $form);
+        $this->handleVideos($trick, $form);
 
-            if ($trick->getId() != null) {
-                $trick->setUpdatedAt(new \DateTime());
-            }
-
-            $message = $this->createFlashMessage($trick);
-            $this->addFlashMessage($message, 'success');
-
-            $this->entityManager->persist($trick);
-            $this->entityManager->flush();
-
-            $this->handleImageFiles($trick);
-
-            return $trick;
-        } catch (\Exception $error) {
-            throw $error->getMessage();
+        if ($trick->getId() != null) {
+            $trick->setUpdatedAt(new \DateTime());
         }
+
+        $message = $this->createFlashMessage($trick);
+        $this->addFlashMessage($message, 'success');
+
+        $this->entityManager->persist($trick);
+        $this->entityManager->flush();
+
+        $this->handleImageFiles($trick);
+
+        return $trick;
     }
 
     /**
@@ -101,12 +97,12 @@ class TrickService
         if ($trick->getId() != null) {
             if ($trick->getAuthor() == $this->session->get('user')) {
                 return self::EDIT_FLASH_SELF;
-            } 
+            }
             return $trick->getAuthor()->getUsername() . self::EDIT_FLASH;
         } else {
             if ($trick->getParentTrick() != null) {
                 return 'A notification has been sent to ' . $trick->getAuthor()->getUsername() . 'for modification request';
-            } 
+            }
             return self::NEW_FLASH;
         }
     }
@@ -133,16 +129,16 @@ class TrickService
         }
     }
 
-    public function handleVideos(Trick $trick, Form $form) 
+    public function handleVideos(Trick $trick, Form $form)
     {
         $videos = $form->get('videos')->getData();
-            foreach ($videos as $video) {
-                if ($video->getLink() != null) {
-                    $formattedName = $this->videoLinkFormatter->format($video->getLink());
-                    $video->setName($formattedName);
-                    $trick->addVideo($video);
-                }
+        foreach ($videos as $video) {
+            if ($video->getLink() != null) {
+                $formattedName = $this->videoLinkFormatter->format($video->getLink());
+                $video->setName($formattedName);
+                $trick->addVideo($video);
             }
+        }
     }
 
     public function handleImageFiles(Trick $trick)

@@ -134,11 +134,14 @@
 				<div class="d-flex ml-md-auto mt-2">
 					<button type="submit" class="btn btn-info ml-2">Save</button>
 					{{ form_end(form) }}
-					<form method="post" id="trick_deletion" action="{{ path('user.trick.delete', {id: trick.id}) }}" onsubmit="return confirm('Are you sure ?');">
-						<input type="hidden" name="_method" value="DELETE">
-						<input type="hidden" name="_token" id="csrf_deletion" value="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
-						<button class="btn btn-danger ml-2">Delete</button>
-					</form>
+					{% if type is not defined %}
+						<form method="post" id="trick_deletion" action="{{ path('user.trick.delete', {id: trick.id}) }}" onsubmit="return confirm('Are you sure ?');">
+							<input type="hidden" name="_method" value="DELETE">
+							<input type="hidden" name="_token" id="csrf_deletion" value="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
+							<button class="btn btn-danger ml-2">Delete</button>
+						</form>
+					{% endif %}
+
 
 				</div>
 

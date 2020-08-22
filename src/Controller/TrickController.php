@@ -136,7 +136,7 @@ class TrickController extends AbstractController
         $author = ($trick->getId() != null) ? $trick->getAuthor() : $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->trickService->handleCreateOrUpdate($trick, $form, $author);
+            $trick = $this->trickService->handleCreateOrUpdate($trick, $form, $author);
             
             return $this->redirectToRoute('trick.show', [
                 'id' => $trick->getId(),

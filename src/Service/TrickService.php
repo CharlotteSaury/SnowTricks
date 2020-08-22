@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Exception;
 use App\Entity\User;
 use App\Entity\Trick;
 use App\Helper\UploaderHelper;
@@ -61,7 +62,8 @@ class TrickService
                 $trick->setUpdatedAt(new \DateTime());
             }
 
-            $this->addFlashMessage($trick);
+            $message = $this->createFlashMessage($trick);
+            $this->addFlashMessage($message, 'success');
 
             $this->entityManager->persist($trick);
             $this->entityManager->flush();
@@ -70,7 +72,7 @@ class TrickService
 
             return $trick;
         } catch (\Exception $error) {
-            throw $error;
+            throw $error->getMessage();
         }
     }
 
@@ -80,20 +82,19 @@ class TrickService
      * @param Trick $trick
      * @return void
      */
-    public function addFlashMessage(Trick $trick)
+    public function addFlashMessage(string $message, string $type)
     {
         if (!$this->container->has('session')) {
             throw new \LogicException('You can not use the addFlash method if sessions are disabled. Enable them in "config/packages/framework.yaml".');
         }
-        $message = $this->createFlashMessage($trick);
-        $this->container->get('session')->getFlashBag()->add('success', $message);
+        $this->container->get('session')->getFlashBag()->add($type, $message);
     }
 
     /**
      * Create Flash message content
      *
      * @param Trick $trick
-     * @return void
+     * @return string
      */
     public function createFlashMessage(Trick $trick)
     {

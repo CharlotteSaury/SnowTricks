@@ -10,7 +10,7 @@
 			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
 				<div class="py-2 px-3 mr-auto return-btn">
 					<a href="{{ path('trick.index') }}#trickList" class="btn btn-info">
-						<i class="fas fa-undo-alt mr-2"></i>Retour
+						<i class="fas fa-undo-alt mr-2"></i>Back
 					</a>
 				</div>
 				{% if app.user %}

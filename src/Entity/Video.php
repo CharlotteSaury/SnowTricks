@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\VideoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,19 +23,18 @@ class Video
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $name;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="videos")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $trick;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=ReportedTrick::class, inversedBy="videos")
-     */
-    private $reportedTrick;
   
     private $link;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Trick::class, mappedBy="videos")
+     */
+    private $tricks;
+
+    public function __construct()
+    {
+        $this->tricks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -51,30 +52,6 @@ class Video
 
         return $this;
     }
-
-    public function getTrick(): ?Trick
-    {
-        return $this->trick;
-    }
-
-    public function setTrick(?Trick $trick): self
-    {
-        $this->trick = $trick;
-
-        return $this;
-    }
-
-    public function getReportedTrick(): ?ReportedTrick
-    {
-        return $this->reportedTrick;
-    }
-
-    public function setReportedTrick(?ReportedTrick $reportedTrick): self
-    {
-        $this->reportedTrick = $reportedTrick;
-
-        return $this;
-    }
       
     public function getLink(): ?string
     {
@@ -84,6 +61,34 @@ class Video
     public function setLink(string $link)
     {
         $this->link = $link;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Trick[]
+     */
+    public function getTricks(): Collection
+    {
+        return $this->tricks;
+    }
+
+    public function addTrick(Trick $trick): self
+    {
+        if (!$this->tricks->contains($trick)) {
+            $this->tricks[] = $trick;
+            $trick->addVideo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrick(Trick $trick): self
+    {
+        if ($this->tricks->contains($trick)) {
+            $this->tricks->removeElement($trick);
+            $trick->removeVideo($this);
+        }
 
         return $this;
     }

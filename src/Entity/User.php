@@ -100,18 +100,12 @@ class User implements UserInterface, \Serializable
      */
     private $activationToken;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ReportedTrick::class, mappedBy="user", orphanRemoval=true)
-     */
-    private $reportedTricks;
-
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tricks = new ArrayCollection();
         $this->createdAt = new \DateTime();
         $this->roles = ['ROLE_USER'];
-        $this->reportedTricks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -373,37 +367,6 @@ class User implements UserInterface, \Serializable
     public function setActivationToken(?string $activationToken): self
     {
         $this->activationToken = $activationToken;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|ReportedTrick[]
-     */
-    public function getReportedTricks(): Collection
-    {
-        return $this->reportedTricks;
-    }
-
-    public function addReportedTrick(ReportedTrick $reportedTrick): self
-    {
-        if (!$this->reportedTricks->contains($reportedTrick)) {
-            $this->reportedTricks[] = $reportedTrick;
-            $reportedTrick->setAuthor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReportedTrick(ReportedTrick $reportedTrick): self
-    {
-        if ($this->reportedTricks->contains($reportedTrick)) {
-            $this->reportedTricks->removeElement($reportedTrick);
-            // set the owning side to null (unless already changed)
-            if ($reportedTrick->getAuthor() === $this) {
-                $reportedTrick->setAuthor(null);
-            }
-        }
 
         return $this;
     }

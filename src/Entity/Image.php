@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MediaRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -23,18 +25,17 @@ class Image
      */
     private $name;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="images")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $trick;
-
     private $file;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ReportedTrick::class, inversedBy="images")
+     * @ORM\ManyToMany(targetEntity=Trick::class, mappedBy="images")
      */
-    private $reportedTrick;
+    private $tricks;
+
+    public function __construct()
+    {
+        $this->tricks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -53,18 +54,6 @@ class Image
         return $this;
     }
 
-    public function getTrick(): ?Trick
-    {
-        return $this->trick;
-    }
-
-    public function setTrick(?Trick $trick): self
-    {
-        $this->trick = $trick;
-
-        return $this;
-    }
-
     public function getFile()
     {
         return $this->file;
@@ -77,14 +66,30 @@ class Image
         return $this;
     }
 
-    public function getReportedTrick(): ?ReportedTrick
+    /**
+     * @return Collection|Trick[]
+     */
+    public function getTricks(): Collection
     {
-        return $this->reportedTrick;
+        return $this->tricks;
     }
 
-    public function setReportedTrick(?ReportedTrick $reportedTrick): self
+    public function addTrick(Trick $trick): self
     {
-        $this->reportedTrick = $reportedTrick;
+        if (!$this->tricks->contains($trick)) {
+            $this->tricks[] = $trick;
+            $trick->addImage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrick(Trick $trick): self
+    {
+        if ($this->tricks->contains($trick)) {
+            $this->tricks->removeElement($trick);
+            $trick->removeImage($this);
+        }
 
         return $this;
     }

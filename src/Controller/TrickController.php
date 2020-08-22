@@ -5,10 +5,8 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\Trick;
 use App\Form\TrickType;
-use App\Entity\ReportedTrick;
 use App\Service\TrickService;
 use App\Helper\UploaderHelper;
-use App\Form\ReportedTrickType;
 use App\Helper\ImageFileDeletor;
 use Symfony\Component\Form\Form;
 use App\Repository\UserRepository;
@@ -16,7 +14,6 @@ use App\Repository\TrickRepository;
 use Symfony\Component\Mime\Address;
 use App\Helper\ReportedTrickGenerator;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\ReportedTrickRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,11 +40,6 @@ class TrickController extends AbstractController
      * @var TrickRepository
      */
     private $trickRepository;
-    
-    /**
-     * @var ReportedTrickRepository
-     */
-    private $reportedTrickRepository;
 
     /**
      * @var FileSystem
@@ -56,11 +48,10 @@ class TrickController extends AbstractController
 
     private $trickService;
 
-    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, EntityManagerInterface $entityManager, Filesystem $fileSystem, ReportedTrickRepository $reportedTrickRepository, TrickService $trickService)
+    public function __construct(UserRepository $userRepository, TrickRepository $trickRepository, EntityManagerInterface $entityManager, Filesystem $fileSystem, TrickService $trickService)
     {
         $this->userRepository = $userRepository;
         $this->trickRepository = $trickRepository;
-        $this->reportedTrickRepository = $reportedTrickRepository;
         $this->entityManager = $entityManager;
         $this->fileSystem = $fileSystem;
         $this->trickService = $trickService;
@@ -216,42 +207,11 @@ class TrickController extends AbstractController
     public function report(Trick $trick, Request $request, UploaderHelper $uploaderHelper, MailerInterface $mailer, ReportedTrickGenerator $reportedTrickGenerator)
     {
         $reportedTrick = $reportedTrickGenerator->transform($trick, $this->getUser());
-
-        $form = $this->createForm(ReportedTrickType::class, $reportedTrick);
+        $form = $this->createForm(TrickType::class, $reportedTrick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $mainImage = $form->get('mainImage')->getData();
-            if (!empty($mainImage)) {
-                $mainImageName = $uploaderHelper->uploadFile($mainImage, 'tricks', 'reportedtrick_' . $reportedTrick->getId());
-                $reportedTrick->setMainImage($mainImageName);
-            }
-
-            $images = $form->get('images')->getData();
-
-            foreach ($images as $image) {
-                if ($image->getFile() != null) {
-                    $imageName = $uploaderHelper->uploadFile($image->getFile(), 'tricks', 'reportedtrick_' . $reportedTrick->getId());
-
-                    $image->setName($imageName)
-                        ->setReportedTrick($reportedTrick);
-                    $reportedTrick->addImage($image);
-                }
-            }
-
-            $videos = $form->get('videos')->getData();
-            foreach ($videos as $video) {
-                $reportedTrick->addVideo($video);
-            }
-
-            $this->entityManager->persist($reportedTrick);
-            $this->entityManager->flush();
-
-            if ($this->fileSystem->exists($this->getParameter('reportedtrick_media_directory'))) {
-                $this->fileSystem->rename($this->getParameter('reportedtrick_media_directory'), $this->getParameter('reportedtrick_media_directory') . $reportedTrick->getId());
-            }
-
+            $reportedTrick = $this->trickService->handleCreateOrUpdate($reportedTrick, $form, $this->getUser());
 
             $url = $this->generateUrl('user.trick.reportView', ['id' => $reportedTrick->getId()]);
             $message = (new TemplatedEmail())
@@ -260,14 +220,12 @@ class TrickController extends AbstractController
                 ->subject('Trick report')
                 ->context([
                     'url' => $url,
-                    'user' => $reportedTrick->getUser()->getUsername(),
+                    'user' => $reportedTrick->getAuthor()->getUsername(),
                     'trick_name' => $trick->getName()
                 ])
                 ->htmlTemplate('email/trick_report.html.twig');
 
             $mailer->send($message);
-
-            $this->addFlash('success', 'A notification has been sent to ' . $trick->getAuthor()->getUsername() . 'for modification request');
 
             return $this->redirectToRoute('trick.show', [
                 'id' => $trick->getId(),
@@ -285,12 +243,11 @@ class TrickController extends AbstractController
     /**
      * @Route("/user/reportView{id}", name="user.trick.reportView")
      */
-    public function trickReportView(ReportedTrick $reportedTrick, Request $request, ImageFileDeletor $imageFileDeletor)
+    public function trickReportView(Trick $reportedTrick, Request $request, ImageFileDeletor $imageFileDeletor)
     {
-        $trick = $reportedTrick->getTrick();
+        $trick = $reportedTrick->getParentTrick();
 
         if ($request->isMethod('POST')) {
-            dump($request->request);
             if ($request->request->get('reported_name')) {
                 $trick->setName($reportedTrick->getName());
             }
@@ -300,7 +257,7 @@ class TrickController extends AbstractController
             if ($request->request->get('reported_mainImage')) {
                 $trick->setMainImage($reportedTrick->getMainImage());
                 $fileSystem = new Filesystem();
-                $fileSystem->copy($this->getParameter('reportedtrick_media_directory') . $reportedTrick->getId() . '/' . $reportedTrick->getMainImage(), $this->getParameter('trick_media_directory') . $reportedTrick->getTrick()->getId() . '/' . $reportedTrick->getMainImage(), true);
+                $fileSystem->copy($this->getParameter('trick_media_directory') . $reportedTrick->getId() . '/' . $reportedTrick->getMainImage(), $this->getParameter('trick_media_directory') . $reportedTrick->getParentTrick()->getId() . '/' . $reportedTrick->getMainImage(), true);
             }
             foreach ($trick->getImages() as $image) {
                 if ($request->request->get('image_' . $image->getId())) {
@@ -311,7 +268,7 @@ class TrickController extends AbstractController
                 if ($request->request->get('reported_image_' . $image->getId())) {
                     $trick->addImage($image);
                     $fileSystem = new Filesystem();
-                    $fileSystem->copy($this->getParameter('reportedtrick_media_directory') . $reportedTrick->getId() . '/' . $image->getName(), $this->getParameter('trick_media_directory') . $reportedTrick->getTrick()->getId() . '/' . $image->getName(), true);
+                    $fileSystem->copy($this->getParameter('trick_media_directory') . $reportedTrick->getId() . '/' . $image->getName(), $this->getParameter('trick_media_directory') . $reportedTrick->getParentTrick()->getId() . '/' . $image->getName(), true);
                 }
             }
             foreach ($trick->getVideos() as $video) {
@@ -340,7 +297,7 @@ class TrickController extends AbstractController
             $this->entityManager->persist($trick);
             $this->entityManager->flush();
 
-            if ($directory = $this->getParameter('reportedtrick_media_directory') . $reportedTrick->getId()) {
+            if ($directory = $this->getParameter('trick_media_directory') . $reportedTrick->getId()) {
                 $this->fileSystem->remove($directory);
             }
 

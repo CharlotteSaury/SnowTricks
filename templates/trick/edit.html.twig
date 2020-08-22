@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit trick
+{% block title %}
+	{% if type is defined and type == "reportedTrick" %}
+		Report trick
+	{% else %}
+		Edit trick
+	{% endif %}
+
 {% endblock %}
 
 
@@ -26,7 +32,7 @@
 							</a>
 						{% endif %}
 					{% endif %}
-					
+
 
 				</div>
 				<div class="text-center">

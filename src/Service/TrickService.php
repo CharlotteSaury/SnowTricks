@@ -100,10 +100,14 @@ class TrickService
         if ($trick->getId() != null) {
             if ($trick->getAuthor() == $this->session->get('user')) {
                 return self::EDIT_FLASH_SELF;
-            }
+            } 
             return $trick->getAuthor()->getUsername() . self::EDIT_FLASH;
+        } else {
+            if ($trick->getParentTrick() != null) {
+                return 'A notification has been sent to ' . $trick->getAuthor()->getUsername() . 'for modification request';
+            } 
+            return self::NEW_FLASH;
         }
-        return self::NEW_FLASH;
     }
 
     public function handleMainImage(Trick $trick, Form $form)
@@ -122,8 +126,7 @@ class TrickService
             if ($image->getFile() != null) {
                 $imageName = $this->uploaderHelper->uploadFile($image->getFile(), 'tricks', 'trick_' . $trick->getId());
 
-                $image->setName($imageName)
-                    ->setTrick($trick);
+                $image->setName($imageName);
                 $trick->addImage($image);
             }
         }

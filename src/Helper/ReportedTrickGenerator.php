@@ -4,18 +4,25 @@ namespace App\Helper;
 
 use App\Entity\User;
 use App\Entity\Trick;
-use App\Entity\ReportedTrick;
+use App\Repository\TrickRepository;
 
 class ReportedTrickGenerator
 {
+    private $trickRepoditory;
+
+    public function __construct(TrickRepository $trickRepository)
+    {
+        $this->trickRepository = $trickRepository;
+    }
     public function transform(Trick $trick, User $user)
     {
-        $reportedTrick = new ReportedTrick();
-        $reportedTrick->setName($trick->getName())
+        $reportedTricks = count($this->trickRepository->findBy(['parentTrick' => $trick]));
+        $reportedTrick = new Trick();
+        $reportedTrick->setName($trick->getName() . '(' . ($reportedTricks + 1) . ')')
             ->setDescription($trick->getDescription())
             ->setMainImage($trick->getMainImage())
-            ->setTrick($trick)
-            ->setUser($user);
+            ->setParentTrick($trick)
+            ->setAuthor($user);
         foreach ($trick->getGroups() as $group) {
             $reportedTrick->addGroup($group);
         }
@@ -27,5 +34,4 @@ class ReportedTrickGenerator
         }
         return $reportedTrick;
     }
-    
 }

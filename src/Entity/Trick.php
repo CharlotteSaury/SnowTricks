@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TrickRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -65,19 +66,25 @@ class Trick implements \ArrayAccess
     private $author;
 
     /**
-     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="trick", orphanRemoval=true, cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="reportedTricks")
+     * @JoinColumn(name="parentTrick_id", referencedColumnName="id")
+     */
+    private $parentTrick;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Trick::class, mappedBy="parentTrick")
+     */
+    private $reportedTricks;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Image::class, inversedBy="tricks", cascade={"persist"})
      */
     private $images;
 
     /**
-     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="trick", orphanRemoval=true, cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity=Video::class, inversedBy="tricks", cascade={"persist"})
      */
     private $videos;
-
-    /**
-     * @ORM\OneToMany(targetEntity=ReportedTrick::class, mappedBy="trick", orphanRemoval=true)
-     */
-    private $reportedTricks;
 
 
     public function __construct()
@@ -86,9 +93,9 @@ class Trick implements \ArrayAccess
         $this->updatedAt = new DateTime();
         $this->groups = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->reportedTricks = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->videos = new ArrayCollection();
-        $this->reportedTricks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,19 +169,6 @@ class Trick implements \ArrayAccess
     }
 
     /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     * @return void
-     */
-    /*public function updateTimestamps()
-    {
-        if ($this->createdAt === null) {
-            $this->setCreatedAt(new \DateTime());
-        }
-        $this->setUpdatedAt(new \DateTime());
-    }*/
-
-    /**
      * @return Collection|Group[]
      */
     public function getGroups(): Collection
@@ -245,93 +239,43 @@ class Trick implements \ArrayAccess
         return $this;
     }
 
-    /**
-     * @return Collection|Image[]
-     */
-    public function getImages(): Collection
+    public function getParentTrick()
     {
-        return $this->images;
+        return $this->parentTrick;
     }
 
-    public function addImage(Image $image): self
+    public function setParentTrick($parentTrick)
     {
-        if (!$this->images->contains($image)) {
-            $this->images[] = $image;
-            $image->setTrick($this);
-        }
-
-        return $this;
-    }
-
-    public function removeImage(Image $image): self
-    {
-        if ($this->images->contains($image)) {
-            $this->images->removeElement($image);
-            // set the owning side to null (unless already changed)
-            if ($image->getTrick() === $this) {
-                $image->setTrick(null);
-            }
-        }
+        $this->parentTrick = $parentTrick;
 
         return $this;
     }
 
     /**
-     * @return Collection|Video[]
-     */
-    public function getVideos(): Collection
-    {
-        return $this->videos;
-    }
-
-    public function addVideo(Video $video): self
-    {
-        if (!$this->videos->contains($video)) {
-            $this->videos[] = $video;
-            $video->setTrick($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVideo(Video $video): self
-    {
-        if ($this->videos->contains($video)) {
-            $this->videos->removeElement($video);
-            // set the owning side to null (unless already changed)
-            if ($video->getTrick() === $this) {
-                $video->setTrick(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|ReportedTrick[]
+     * @return Collection|Trick[]
      */
     public function getReportedTricks(): Collection
     {
         return $this->reportedTricks;
     }
 
-    public function addReportedTrick(ReportedTrick $reportedTrick): self
+    public function addReportedTrick(Trick $reportedTrick): self
     {
         if (!$this->reportedTricks->contains($reportedTrick)) {
             $this->reportedTricks[] = $reportedTrick;
-            $reportedTrick->setTrick($this);
+            $reportedTrick->setParentTrick($this);
         }
 
         return $this;
     }
 
-    public function removeReportedTrick(ReportedTrick $reportedTrick): self
+    public function removeReportedTrick(Trick $reportedTrick): self
     {
         if ($this->reportedTricks->contains($reportedTrick)) {
             $this->reportedTricks->removeElement($reportedTrick);
             // set the owning side to null (unless already changed)
-            if ($reportedTrick->getTrick() === $this) {
-                $reportedTrick->setTrick(null);
+            if ($reportedTrick->getParentTrick() === $this) {
+                $reportedTrick->setParentTrick(null);
             }
         }
 
@@ -355,4 +299,55 @@ class Trick implements \ArrayAccess
         unset($this->$offset);
     }
 
+    /**
+     * @return Collection|Image[]
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images[] = $image;
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->images->contains($image)) {
+            $this->images->removeElement($image);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): self
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos[] = $video;
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->videos->contains($video)) {
+            $this->videos->removeElement($video);
+        }
+
+        return $this;
+    }
 }

@@ -63,7 +63,7 @@ class TrickController extends AbstractController
      */
     public function index(): Response
     {
-        $tricks = $this->trickRepository->findAll();
+        $tricks = $this->trickRepository->findBy(['parentTrick' => null]);
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks
         ]);
@@ -250,75 +250,83 @@ class TrickController extends AbstractController
     public function trickReportView(Trick $reportedTrick, Request $request, ImageFileDeletor $imageFileDeletor)
     {
         $trick = $reportedTrick->getParentTrick();
-
-        if ($request->isMethod('POST')) {
-            if ($request->request->get('reported_name')) {
-                $trick->setName($reportedTrick->getName());
-            }
-            if ($request->request->get('reported_description')) {
-                $trick->setDescription($reportedTrick->getDescription());
-            }
-            if ($request->request->get('reported_mainImage')) {
-                $trick->setMainImage($reportedTrick->getMainImage());
-                $fileSystem = new Filesystem();
-                $fileSystem->copy($this->getParameter('trick_media_directory') . $reportedTrick->getId() . '/' . $reportedTrick->getMainImage(), $this->getParameter('trick_media_directory') . $reportedTrick->getParentTrick()->getId() . '/' . $reportedTrick->getMainImage(), true);
-            }
-            foreach ($trick->getImages() as $image) {
-                if ($request->request->get('image_' . $image->getId())) {
-                    $trick->removeImage($image);
-                }
-            }
-            foreach ($reportedTrick->getImages() as $image) {
-                if ($request->request->get('reported_image_' . $image->getId())) {
-                    $trick->addImage($image);
-                    $fileSystem = new Filesystem();
-                    $fileSystem->copy($this->getParameter('trick_media_directory') . $reportedTrick->getId() . '/' . $image->getName(), $this->getParameter('trick_media_directory') . $reportedTrick->getParentTrick()->getId() . '/' . $image->getName(), true);
-                }
-            }
-            foreach ($trick->getVideos() as $video) {
-                if ($request->request->get('video_' . $video->getId())) {
-                    $trick->removeVideo($video);
-                }
-            }
-            foreach ($reportedTrick->getVideos() as $video) {
-                if ($request->request->get('reported_video_' . $video->getId())) {
-                    $trick->addVideo($video);
-                }
-            }
-            foreach ($trick->getGroups() as $group) {
-                if ($request->request->get('group_' . $group->getId())) {
-                    $trick->removeGroup($group);
-                }
-            }
-            foreach ($reportedTrick->getGroups() as $group) {
-                if ($request->request->get('reported_group_' . $group->getId())) {
-                    $trick->addGroup($group);
-                }
-            }
-
-            $trick->setUpdatedAt(new DateTime());
-
-            $this->entityManager->persist($trick);
-            $this->entityManager->remove($reportedTrick);
-            $this->entityManager->flush();
-
-            if ($directory = $this->getParameter('trick_media_directory') . $reportedTrick->getId()) {
-                $this->fileSystem->remove($directory);
-            }
-
-            $trickImages = [$trick->getMainImage()];
-            foreach ($trick->getImages() as $image) {
-                array_push($trickImages, $image->getName());
-            }
-            $imageFileDeletor->deleteFile('trick', $trick->getId(), $trickImages);
-
-            $this->addFlash('success', 'Your trick has been updated !');
-
-            return $this->redirectToRoute('trick.show', [
-                'id' => $trick->getId(),
-                'slug' => $trick->getSlug()
-            ]);
+        if (!$this->isGranted('report', $trick)) {
+            throw $this->createAccessDeniedException();
         }
+        //if ($this->isCsrfTokenValid('save_report_' . $reportedTrick->getId(), $request->get('_token'))) {
+        if ($request->isMethod('POST')) {
+            if ($this->isCsrfTokenValid('save_report_' . $reportedTrick->getId(), $request->get('_token'))) {
+                if ($request->request->get('reported_name')) {
+                    $trick->setName($reportedTrick->getName());
+                }
+                if ($request->request->get('reported_description')) {
+                    $trick->setDescription($reportedTrick->getDescription());
+                }
+                if ($request->request->get('reported_mainImage')) {
+                    $trick->setMainImage($reportedTrick->getMainImage());
+                    $fileSystem = new Filesystem();
+                    $fileSystem->copy($this->getParameter('trick_media_directory') . $reportedTrick->getId() . '/' . $reportedTrick->getMainImage(), $this->getParameter('trick_media_directory') . $reportedTrick->getParentTrick()->getId() . '/' . $reportedTrick->getMainImage(), true);
+                }
+                foreach ($trick->getImages() as $image) {
+                    if ($request->request->get('image_' . $image->getId())) {
+                        $trick->removeImage($image);
+                    }
+                }
+                foreach ($reportedTrick->getImages() as $image) {
+                    if ($request->request->get('reported_image_' . $image->getId())) {
+                        $trick->addImage($image);
+                        $fileSystem = new Filesystem();
+                        $fileSystem->copy($this->getParameter('trick_media_directory') . $reportedTrick->getId() . '/' . $image->getName(), $this->getParameter('trick_media_directory') . $reportedTrick->getParentTrick()->getId() . '/' . $image->getName(), true);
+                    }
+                }
+                foreach ($trick->getVideos() as $video) {
+                    if ($request->request->get('video_' . $video->getId())) {
+                        $trick->removeVideo($video);
+                    }
+                }
+                foreach ($reportedTrick->getVideos() as $video) {
+                    if ($request->request->get('reported_video_' . $video->getId())) {
+                        $trick->addVideo($video);
+                    }
+                }
+                foreach ($trick->getGroups() as $group) {
+                    if ($request->request->get('group_' . $group->getId())) {
+                        $trick->removeGroup($group);
+                    }
+                }
+                foreach ($reportedTrick->getGroups() as $group) {
+                    if ($request->request->get('reported_group_' . $group->getId())) {
+                        $trick->addGroup($group);
+                    }
+                }
+
+                $trick->setUpdatedAt(new DateTime());
+
+                $this->entityManager->persist($trick);
+                $this->entityManager->remove($reportedTrick);
+                $this->entityManager->flush();
+
+                if ($directory = $this->getParameter('trick_media_directory') . $reportedTrick->getId()) {
+                    $this->fileSystem->remove($directory);
+                }
+
+                $trickImages = [$trick->getMainImage()];
+                foreach ($trick->getImages() as $image) {
+                    array_push($trickImages, $image->getName());
+                }
+                $imageFileDeletor->deleteFile('trick', $trick->getId(), $trickImages);
+
+                $this->addFlash('success', 'Your trick has been updated !');
+
+                return $this->redirectToRoute('trick.show', [
+                    'id' => $trick->getId(),
+                    'slug' => $trick->getSlug()
+                ]);
+            } else {
+            $this->addFlash('error', 'An error has occured');
+            return $this->redirectToRoute('trick.index');
+            }
+        } 
 
         return $this->render('trick/reportView.html.twig', [
             'trick' => $trick,

@@ -19,6 +19,7 @@ class TrickVoter extends Voter
     }
 
     const EDIT = 'edit';
+    const REPORT = 'report';
 
     protected function supports(string $attribute, $subject)
     {
@@ -44,15 +45,17 @@ class TrickVoter extends Voter
         }
 
         if ($this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_MODERATOR')) {
-            return true;
+            if (!self::REPORT) {
+                return true;
+            }  
         }
 
         /** @var Trick $trick */
         $trick = $subject;
 
-        if (self::EDIT) {
+        if (self::EDIT || self::REPORT) {
             return $this->canEdit($trick, $user);             
-        }
+        } 
 
         throw new \LogicException('This code should not be reached!');
     }

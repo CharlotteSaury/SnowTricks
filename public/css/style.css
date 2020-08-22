@@ -20,7 +20,12 @@ body {
     margin-right: unset;
 }
 
-h1, h2, h5, h6, button, .navbar-brand {
+h1,
+h2,
+h5,
+h6,
+button,
+.navbar-brand {
     font-family: 'MuseoModerno', cursive;
 }
 
@@ -34,11 +39,15 @@ h2 {
     font-style: italic;
 }
 
-.fa-pencil-alt, .fa-trash-alt, .custom-link {
+.fa-pencil-alt,
+.fa-trash-alt,
+.custom-link {
     color: #89ACAA;
 }
 
-.fa-pencil-alt:hover, .fa-trash-alt:hover, .custom-link:hover {
+.fa-pencil-alt:hover,
+.fa-trash-alt:hover,
+.custom-link:hover {
     color: black;
     transform: scale(1.2);
     transition: transform 200ms;
@@ -47,13 +56,14 @@ h2 {
 
 @media (max-width: 576px) {
     .container-fluid:not(.homeHeader) {
-        margin-bottom: 5rem;;
+        margin-bottom: 5rem;
+        ;
     }
 }
 
 
-
 /******* Nav *********/
+
 .navbar-brand {
     color: #89ACAA !important;
 }
@@ -75,16 +85,17 @@ h2 {
         left: -10%;
         height: 60%;
         width: 2px;
-        background-color:#89ACAA
+        background-color: #89ACAA
     }
 }
 
 @media (max-width:576px) {
     nav {
-        display:flex;
-        flex-direction:row;
+        display: flex;
+        flex-direction: row;
     }
 }
+
 
 /******* Footer *********/
 
@@ -100,6 +111,7 @@ footer {
         display: none !important;
     }
 }
+
 
 /*************************
 ******* Home Page ********
@@ -124,15 +136,16 @@ footer {
 }
 
 @keyframes arrow-nav {
-	from {
-		transform: scale(1);
-		opacity: 0.2;
-	}
-	to {
-		transform: scale(1.1);
-		opacity: 1;
-	}
+    from {
+        transform: scale(1);
+        opacity: 0.2;
+    }
+    to {
+        transform: scale(1.1);
+        opacity: 1;
+    }
 }
+
 
 /******* Header *********/
 
@@ -149,7 +162,7 @@ footer {
 
 .homeHeader .homeTitle {
     position: absolute;
-    top: 20%; 
+    top: 20%;
 }
 
 .homeHeader h1 {
@@ -172,6 +185,7 @@ footer {
         font-size: 6rem;
     }
 }
+
 
 /******* Trick List *********/
 
@@ -211,18 +225,21 @@ footer {
     font-size: 1rem;
 }
 
-#trickList .card-title a, #userTricks .card-title a {
+#trickList .card-title a,
+#userTricks .card-title a {
     text-decoration: none;
     color: black;
 }
 
-#trickList .card-title a:hover, #userTricks .card-title a:hover {
+#trickList .card-title a:hover,
+#userTricks .card-title a:hover {
     color: #89ACAA;
     transition: color 0.3s;
 }
 
-.loadMoreBtn, .loadLessBtn {
-    border : black 1px solid;
+.loadMoreBtn,
+.loadLessBtn {
+    border: black 1px solid;
     box-shadow: 1px 1px 3px 1px;
 }
 
@@ -235,20 +252,20 @@ footer {
     transition: transform 1000ms;
 }
 
+
 /*************************
 ****** Trick Page ********
 *************************/
 
-#trickPage, #editPage {
+#trickPage,
+#editPage {
     box-shadow: grey 1px 1px 10px -4px;
     border-radius: 10px;
     background-color: white;
 }
 
 .trick-bg {
-    background:linear-gradient(to bottom,
-    rgba(34, 34, 34, 1) 0%,
-    rgba(34, 34, 34, 0) 60%);
+    background: linear-gradient(to bottom, rgba(34, 34, 34, 1) 0%, rgba(34, 34, 34, 0) 60%);
 }
 
 #trickMainImg {
@@ -272,11 +289,12 @@ footer {
     position: absolute;
     top: 0.5rem;
     left: 0.5rem;
-} 
+}
 
 #trickPage h1 {
     font-size: 2rem;
 }
+
 
 /* ////// Media div /////// */
 
@@ -298,12 +316,14 @@ footer {
     transition: transform 0.3s;
 }
 
-#image-fields-list li>div, #video-fields-list li>div {
+#image-fields-list li>div,
+#video-fields-list li>div {
     display: flex;
     margin-bottom: 0.5rem;
 }
 
-#image-fields-list button, #video-fields-list button {
+#image-fields-list button,
+#video-fields-list button {
     margin-left: 1rem;
     background: none;
     border: none;
@@ -318,6 +338,7 @@ footer {
         display: none;
     }
 }
+
 
 /* ////// Trick infos div /////// */
 
@@ -340,7 +361,8 @@ footer {
     font-style: italic;
 }
 
-#trickGroup, #trickDates {
+#trickGroup,
+#trickDates {
     position: relative;
 }
 
@@ -367,8 +389,8 @@ footer {
         text-align: center;
     }
     #trickBadges {
-        display:flex;
-        flex-direction:column;
+        display: flex;
+        flex-direction: column;
         align-items: center;
     }
     #trickBadges .badge {
@@ -382,7 +404,8 @@ footer {
 
 /* ////// Comment div /////// */
 
-#trickCommentForm, #trickComments {
+#trickCommentForm,
+#trickComments {
     padding-right: 10rem;
     padding-left: 10rem;
 }
@@ -445,11 +468,13 @@ footer {
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
-    object-fit:cover;
+    object-fit: cover;
 }
 
 @media (max-width:991px) {
-    #trickInfos, #trickCommentForm, #trickComments {
+    #trickInfos,
+    #trickCommentForm,
+    #trickComments {
         padding-right: 4rem;
         padding-left: 4rem;
     }
@@ -460,7 +485,9 @@ footer {
 }
 
 @media (max-width:768px) {
-    #trickInfos, #trickCommentForm, #trickComments {
+    #trickInfos,
+    #trickCommentForm,
+    #trickComments {
         padding-right: 2rem;
         padding-left: 2rem;
     }
@@ -489,11 +516,9 @@ footer {
     #trickCommentForm a {
         font-size: 1rem;
     }
-    
     #trickCommentForm button {
         margin-top: 1rem;
     }
-    
     #trickComments {
         padding-left: 1rem;
         padding-right: 1rem;
@@ -504,44 +529,53 @@ footer {
 /*************************
 **** New Trick Page ******
 *************************/
-#newTrickInfos, #newTrickMainImage, #newMedia {
+
+#newTrickInfos,
+#newTrickMainImage,
+#newMedia {
     padding-right: 8rem;
     padding-left: 8rem;
-} 
+}
 
 .form-group textarea {
     overflow-y: scroll;
     height: 200px;
     resize: none;
- }
+}
 
- #image-fields-list, #video-fields-list {
-     padding-left: 0rem;
- }
+#image-fields-list,
+#video-fields-list {
+    padding-left: 0rem;
+}
 
- #image-fields-list li, #video-fields-list li {
-     list-style-type: none;
- }
+#image-fields-list li,
+#video-fields-list li {
+    list-style-type: none;
+}
 
- @media (max-width:576px) {
-    #newTrickInfos, #newTrickMainImage, #newMedia {
+@media (max-width:576px) {
+    #newTrickInfos,
+    #newTrickMainImage,
+    #newMedia {
         padding-right: 1rem;
         padding-left: 1rem;
-    } 
+    }
     #newMedia {
         display: none;
     }
 }
 
- /*************************
+
+/*************************
 **** edit Trick Page ******
 **************************/
 
 .mainImg-input .custom-file {
-    display:none;
+    display: none;
 }
 
-.edit-media-input .custom-file, .edit-media-input button {
+.edit-media-input .custom-file,
+.edit-media-input button {
     display: none;
 }
 
@@ -550,7 +584,7 @@ footer {
 }
 
 .card-actions button {
-    border : none;
+    border: none;
     background: none;
 }
 
@@ -588,7 +622,8 @@ footer {
     margin-bottom: 1rem;
 }
 
-.login-form .checkbox input, .login-form .checkbox {
+.login-form .checkbox input,
+.login-form .checkbox {
     margin-bottom: 0 !important;
 }
 
@@ -597,7 +632,9 @@ footer {
 }
 
 @media (min-width:992px) {
-    #alreadyAccount, #registerLink, #forgotPass2 {
+    #alreadyAccount,
+    #registerLink,
+    #forgotPass2 {
         display: none;
     }
 }
@@ -610,7 +647,7 @@ footer {
 
 @media (max-width:576px) {
     .login-div {
-        margin-bottom:5rem;
+        margin-bottom: 5rem;
     }
 }
 
@@ -634,8 +671,9 @@ footer {
 .deleted-image {
     position: relative;
 }
+
 .deleted-image::before {
-    content:"x";
+    content: "x";
     font-size: 4rem;
     position: absolute;
     top: 10%;
@@ -655,19 +693,23 @@ footer {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-  }
-  
-  /* Hide the browser's default checkbox */
-  .checkbox-label input {
+}
+
+
+/* Hide the browser's default checkbox */
+
+.checkbox-label input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
     height: 0;
     width: 0;
-  }
-  
-  /* Create a custom checkbox */
-  .checkmark {
+}
+
+
+/* Create a custom checkbox */
+
+.checkmark {
     width: fit-content;
     height: fit-content;
     font-size: 0.75rem;
@@ -675,32 +717,42 @@ footer {
     padding: 0.3rem;
     border: 1px solid darkgrey;
     border-radius: 5px;
-  }
-  
-  /* On mouse-over, add a grey background color */
-  .checkbox-label:hover input ~ .checkmark {
+}
+
+
+/* On mouse-over, add a grey background color */
+
+.checkbox-label:hover input~.checkmark {
     background-color: #ccc;
-  }
-  
-  /* When the checkbox is checked, add a blue background */
-  .checkbox-label input:checked ~ .checkmark {
+}
+
+
+/* When the checkbox is checked, add a blue background */
+
+.checkbox-label input:checked~.checkmark {
     background-color: #17a2b8;
-  }
-  
-  /* Create the checkmark/indicator (hidden when not checked) */
-  .checkmark:after {
+}
+
+
+/* Create the checkmark/indicator (hidden when not checked) */
+
+.checkmark:after {
     content: "";
     position: absolute;
     display: none;
-  }
-  
-  /* Show the checkmark when checked */
-  .checkbox-label input:checked ~ .checkmark:after {
+}
+
+
+/* Show the checkmark when checked */
+
+.checkbox-label input:checked~.checkmark:after {
     display: block;
-  }
-  
-  /* Style the checkmark/indicator */
-  .checkbox-label .checkmark:after {
+}
+
+
+/* Style the checkmark/indicator */
+
+.checkbox-label .checkmark:after {
     left: 50%;
     top: 36%;
     width: 8px;
@@ -710,4 +762,17 @@ footer {
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
-  }
+}
+
+
+/*************************
+****** Error Page ********
+*************************/
+
+.error {
+    height: 85vh;
+}
+
+.error div:first-child {
+    height: 70vh;
+}

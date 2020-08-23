@@ -340,6 +340,35 @@ footer {
 }
 
 
+/* ///// Modal Gallery /////// */
+
+.carousel-inner {
+    max-height: 100%;
+}
+
+#modalGallery {
+    padding: 5% !important;
+}
+
+#modalGallery span {
+    color: white;
+}
+
+#modalGallery .modal-header {
+    border-bottom: none;
+}
+
+#modalGallery .modal-content {
+    padding: 0 1rem 2rem 1rem;
+    background-color: black;
+}
+
+.carousel-item img {
+    max-height: 70vh;
+    object-fit: contain;
+}
+
+
 /* ////// Trick infos div /////// */
 
 #trickInfos {

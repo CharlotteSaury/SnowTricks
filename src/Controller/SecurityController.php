@@ -9,6 +9,7 @@ use App\Form\PasswordFormType;
 use App\Form\ResetPasswordType;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,16 @@ use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class SecurityController extends AbstractController
 {
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     /**
      * @Route("/register", name="app_register")
      */
@@ -42,9 +53,8 @@ class SecurityController extends AbstractController
             $token = $tokenGenerator->generateToken();
             $user->setActivationToken($token);
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
 
 
             $url = $this->generateUrl('app_verify_email', ['token' => $token]);
@@ -80,9 +90,8 @@ class SecurityController extends AbstractController
         }
         
         $user->setActivationToken(null);
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
 
         $this->addFlash('success', 'Your email address has been verified. Now login to access to all functionalities !');
 
@@ -135,9 +144,8 @@ class SecurityController extends AbstractController
                         $form->get('plainPassword')->getData()
                     )
                 );
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($user);
-                $em->flush();
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
                 $this->addFlash('success', 'Your password has been updated !');
 
                 return $this->redirectToRoute('user.resetPass');
@@ -174,9 +182,8 @@ class SecurityController extends AbstractController
 
             try {
                 $user->setResetToken($token);
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($user);
-                $em->flush();
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'An error has occured : ' . $e->getMessage());
                 return $this->redirectToRoute('app_forgotten_password');
@@ -225,9 +232,8 @@ class SecurityController extends AbstractController
                 )
             );
             $user->setResetToken(null);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
             $this->addFlash('success', 'Your password has been updated !');
 
             return $this->redirectToRoute('trick.index');

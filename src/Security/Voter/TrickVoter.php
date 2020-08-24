@@ -24,7 +24,7 @@ class TrickVoter extends Voter
     protected function supports(string $attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!self::EDIT) {
+        if (!in_array($attribute, [self::EDIT, self::REPORT])) {
             return false;
         }
 
@@ -53,7 +53,7 @@ class TrickVoter extends Voter
         /** @var Trick $trick */
         $trick = $subject;
 
-        if (self::EDIT || self::REPORT) {
+        if (in_array($attribute, [self::EDIT, self::REPORT])) {
             return $this->canEdit($trick, $user);             
         } 
 

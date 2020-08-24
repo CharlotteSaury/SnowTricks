@@ -21,7 +21,7 @@ class ImageFileDeletor
         $this->fileSystem = $fileSystem;
     }
 
-    public function deleteFile(string $type, $id, array $data, bool $bool = null)
+    public function deleteFile(string $type, int $id, array $data, bool $bool = null)
     {
         if ($type == 'trick') {
             $directory = $this->trickDirectory . $id;

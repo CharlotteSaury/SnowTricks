@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateTime;
 use Exception;
 use App\Entity\User;
 use App\Entity\Trick;
@@ -12,6 +13,7 @@ use App\Helper\VideoLinkFormatter;
 use Psr\Container\ContainerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class TrickService
@@ -99,12 +101,11 @@ class TrickService
                 return self::EDIT_FLASH_SELF;
             }
             return $trick->getAuthor()->getUsername() . self::EDIT_FLASH;
-        } else {
-            if ($trick->getParentTrick() != null) {
-                return 'A notification has been sent to ' . $trick->getAuthor()->getUsername() . 'for modification request';
-            }
-            return self::NEW_FLASH;
         }
+        if ($trick->getParentTrick() != null) {
+            return 'A notification has been sent to ' . $trick->getAuthor()->getUsername() . 'for modification request';
+        }
+        return self::NEW_FLASH;
     }
 
     public function handleMainImage(Trick $trick, Form $form)
@@ -152,5 +153,73 @@ class TrickService
             array_push($trickImages, $image->getName());
         }
         $this->imageFileDeletor->deleteFile('trick', $trick->getId(), $trickImages);
+    }
+
+    public function handleReport(Trick $reportedTrick, Request $request)
+    {
+        try {
+            $trick = $reportedTrick->getParentTrick();
+            if ($request->request->get('reported_name')) {
+                $trick->setName($reportedTrick->getName());
+            }
+            if ($request->request->get('reported_description')) {
+                $trick->setDescription($reportedTrick->getDescription());
+            }
+            if ($request->request->get('reported_mainImage')) {
+                $trick->setMainImage($reportedTrick->getMainImage());
+                $fileSystem = new Filesystem();
+                $fileSystem->copy($this->trickDirectory . $reportedTrick->getId() . '/' . $reportedTrick->getMainImage(), $this->trickDirectory . $reportedTrick->getParentTrick()->getId() . '/' . $reportedTrick->getMainImage(), true);
+            }
+            foreach ($trick->getImages() as $image) {
+                if ($request->request->get('image_' . $image->getId())) {
+                    $trick->removeImage($image);
+                }
+            }
+            foreach ($reportedTrick->getImages() as $image) {
+                if ($request->request->get('reported_image_' . $image->getId())) {
+                    $trick->addImage($image);
+                    $fileSystem = new Filesystem();
+                    $fileSystem->copy($this->trickDirectory . $reportedTrick->getId() . '/' . $image->getName(), $this->trickDirectory . $reportedTrick->getParentTrick()->getId() . '/' . $image->getName(), true);
+                }
+            }
+            foreach ($trick->getVideos() as $video) {
+                if ($request->request->get('video_' . $video->getId())) {
+                    $trick->removeVideo($video);
+                }
+            }
+            foreach ($reportedTrick->getVideos() as $video) {
+                if ($request->request->get('reported_video_' . $video->getId())) {
+                    $trick->addVideo($video);
+                }
+            }
+            foreach ($trick->getGroups() as $group) {
+                if ($request->request->get('group_' . $group->getId())) {
+                    $trick->removeGroup($group);
+                }
+            }
+            foreach ($reportedTrick->getGroups() as $group) {
+                if ($request->request->get('reported_group_' . $group->getId())) {
+                    $trick->addGroup($group);
+                }
+            }
+
+            $trick->setUpdatedAt(new DateTime());
+
+            $this->entityManager->persist($trick);
+            $this->entityManager->remove($reportedTrick);
+            $this->entityManager->flush();
+
+            if ($directory = $this->trickDirectory . $reportedTrick->getId()) {
+                $this->fileSystem->remove($directory);
+            }
+
+            $trickImages = [$trick->getMainImage()];
+            foreach ($trick->getImages() as $image) {
+                array_push($trickImages, $image->getName());
+            }
+            $this->imageFileDeletor->deleteFile('trick', $trick->getId(), $trickImages);
+        } catch (\Exception $error) {
+            throw $error;
+        }
     }
 }

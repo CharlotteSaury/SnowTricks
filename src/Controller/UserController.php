@@ -14,24 +14,26 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends AbstractController
 {
     /**
      * @var EntityManagerInterface
      */
-    private $em;
+    private $entityManager;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->em = $em;
+        $this->entityManager = $entityManager;
     }
 
     /**
      * @IsGranted("access", subject="user", message="Access denied")
      * @Route("/user/dashboard/{username}", name="user.dashboard")
+     * @return Response
      */
-    public function dashboard(User $user, TrickRepository $trickRepository, CommentRepository $commentRepository)
+    public function dashboard(User $user, TrickRepository $trickRepository, CommentRepository $commentRepository) : Response
     {
         $tricksNb = count($trickRepository->findBy(['author' => $user->getId()]));
         $commentsNb = count($commentRepository->findBy(['author' => $user->getId()]));
@@ -47,8 +49,9 @@ class UserController extends AbstractController
     /**
      * @IsGranted("access", subject="user", message="Access denied")
      * @Route("/user/profile/{username}", name="user.profile")
+     * @return Response
      */
-    public function profile(User $user)
+    public function profile(User $user): Response
     {
         return $this->render('user/profile.html.twig', [
             'user' => $user,
@@ -59,8 +62,9 @@ class UserController extends AbstractController
     /**
      * @IsGranted("access", subject="user", message="Access denied")
      * @Route("/user/edit/{username}", name="user.edit")
+     * @return Response
      */
-    public function edit(Request $request, User $user, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor)
+    public function edit(Request $request, User $user, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor) : Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -72,8 +76,8 @@ class UserController extends AbstractController
                 $avatarName = $uploaderHelper->uploadFile($avatar, 'users', 'user_' . $user->getId());
                 $user->setAvatar($avatarName);
             }
-            $this->em->persist($user);
-            $this->em->flush();
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
 
             if (!empty($avatar)) {
                 $imageFileDeletor->deleteFile('user', $user->getId(), [$avatarName]);
@@ -95,8 +99,9 @@ class UserController extends AbstractController
     /**
      * @IsGranted("ROLE_ADMIN")
      * @Route("/users", name="admin.users")
+     * @return Response
      */
-    public function users(UserRepository $userRepository)
+    public function users(UserRepository $userRepository): Response
     {
         $verifiedUsers = $userRepository->findBy(['activationToken' => null]);
         $unverifiedUsers = $userRepository->findUnverified();

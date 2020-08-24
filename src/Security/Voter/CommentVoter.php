@@ -23,7 +23,7 @@ class CommentVoter extends Voter
     protected function supports(string $attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!self::DELETE) {
+        if ($attribute != self::DELETE) {
             return false;
         }
 

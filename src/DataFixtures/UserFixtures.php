@@ -12,10 +12,16 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserFixtures extends Fixture
 {
+    /**
+     * @var UserPasswordEncoderInterface
+     */
     private $encoder;
 
     private $faker;
 
+    /**
+     * @var UploaderHelper
+     */
     private $uploaderHelper;
 
     public function __construct(UserPasswordEncoderInterface $encoder, UploaderHelper $uploaderHelper)
@@ -25,6 +31,12 @@ class UserFixtures extends Fixture
         $this->uploaderHelper = $uploaderHelper;
     }
 
+    /**
+     * Load user fixtures
+     *
+     * @param ObjectManager $manager
+     * @return void
+     */
     public function load(ObjectManager $manager)
     {
         $roles = [["ROLE_ADMIN"], ["ROLE_USER"], ["ROLE_MODERATOR"]];
@@ -73,7 +85,7 @@ class UserFixtures extends Fixture
         $manager->flush();
     }
 
-    private function fakeUploadImage($userId) :string
+    private function fakeUploadImage(int $userId) :string
     {
         $userImages = ['user1.jpg', 'user2.jpg', 'user3.jpg', 'user4.jpg', 'user5.jpg', 'user6.jpg', 'user7.jpg'];
         $randomImage = $this->faker->randomElement($userImages);

@@ -6,9 +6,9 @@ use App\Entity\User;
 use App\Entity\Trick;
 use App\Repository\TrickRepository;
 
-class ReportedTrickGenerator
+class TrickGenerator
 {
-    private $trickRepoditory;
+    private $trickRepository;
 
     public function __construct(TrickRepository $trickRepository)
     {

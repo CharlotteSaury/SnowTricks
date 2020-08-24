@@ -22,7 +22,7 @@ class UserVoter extends Voter
     protected function supports(string $attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!self::ACCESS) {
+        if ($attribute != self::ACCESS) {
             return false;
         }
 

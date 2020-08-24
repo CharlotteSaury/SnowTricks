@@ -1,9 +1,9 @@
 $(function() {
 
+    /* ****** LoadMore Tricks and LoadLess trick buttons ***** */
+
     var tricksPerPage = 5;
     var commentsPerPage = 10;
-
-    // LoadMoreTricks and LoadLessTricks buttons
 
     var tricks = $("div.trick-card-div");
     $("#arrowUp").hide();
@@ -43,7 +43,8 @@ $(function() {
 
     });
 
-    // LoadMoreComments button
+    /* ****** LoadMore comments button ***** */
+
     var comments = $("div.trick-comment");
     if (comments.length <= commentsPerPage) {
         $("#loadMoreCommentsBtn").hide();
@@ -97,18 +98,29 @@ $(function() {
         $("#dashNavPass, #dashNavAdd").parent().remove();
         $("#dashboard-top a").html("<i class='fas fa-undo-alt mr-2'></i>");
 
-        // Login, Registration, FogotPass
+        // Login, Registration, ForgotPass
         $(".login-form").prepend($(".login-div h1")).css("margin-top", "3rem");
 
         $("#newTrickImages button").html("<i class='fas fa-plus mr-2'></i><i class='fas fa-images'></i>");
         $("#newTrickVideos button").html("<i class='fas fa-plus mr-2'></i><i class='fas fa-video'></i>");
     }
 
+
     /* ******** trick page ****** */
 
     $("#trickPage #trickMedia button").click(function(e) {
         $("#trickPage #trickMedia .media-slider").css("display", "block");
         $(this).css("display", "none");
+    });
+
+    $(".trick-media").click(function() {
+        var trickId = $(this).attr("id");
+        var carouselId = "carousel" + trickId;
+        $(".carousel-item[id =" + carouselId + "]").addClass("active");
+    })
+
+    $("#modalGallery").on("hide.bs.modal", function(e) {
+        $(".carousel-item").removeClass("active");
     })
 
     /* ******** new/edit trick page ****** */
@@ -118,6 +130,25 @@ $(function() {
         let fileName = $(this).val().replace(/\\/g, "/").replace(/.*\//, "");
         $(this).parent(".custom-file").find(".custom-file-label").text(fileName);
     });
+
+    function handleDeleteButtons() {
+        $("button[data-action='delete']").click(function() {
+            var target = $(this).attr("data-target");
+            $(target).parent().remove();
+            updateCounterImage();
+            updateCounterVideo();
+        })
+    }
+
+    function updateCounterImage() {
+        var count = +$("#image-fields-list").children().length;
+        $("#image-counter").val(count);
+    }
+
+    function updateCounterVideo() {
+        var count = +$("#video-fields-list").children().length;
+        $("#video-counter").val(count);
+    }
 
     $(".add-another-collection-widget").click(function(e) {
         var list = $($(this).attr("data-list-selector"));
@@ -143,25 +174,6 @@ $(function() {
         updateCounterVideo();
     });
 
-    function handleDeleteButtons() {
-        $("button[data-action='delete']").click(function() {
-            var target = $(this).attr("data-target");
-            $(target).parent().remove();
-            updateCounterImage();
-            updateCounterVideo();
-        })
-    }
-
-    function updateCounterImage() {
-        var count = +$("#image-fields-list").children().length;
-        $("#image-counter").val(count);
-    }
-
-    function updateCounterVideo() {
-        var count = +$("#video-fields-list").children().length;
-        $("#video-counter").val(count);
-    }
-
     $(".edit-mainImg").click(function(e) {
         $(".mainImg-input .custom-file").css("display", "block");
     })
@@ -182,11 +194,8 @@ $(function() {
     $("#editPage #trickMedia button").click(function(e) {
         $("#editPage #trickMedia .media-slider").css("display", "block");
         $(this).css("display", "none");
-        $("#newMedia").css("display", "block !important")
+        $("#newMedia").css("display", "block !important");
     })
-
-
-
 
 
     /* ********** Passing user infos to modal ********* */
@@ -224,18 +233,6 @@ $(function() {
     $("#editAvatarBtn").click(function(e) {
         $(".avatar-input .custom-file").css("display", "block");
         $(this).css("display", "none");
-    })
-
-    /* ********** Modal Gallery ******* */
-
-    $(".trick-media").click(function() {
-        var trickId = $(this).attr("id");
-        var carouselId = "carousel" + trickId;
-        $(".carousel-item[id =" + carouselId + "]").addClass('active');
-    })
-
-    $("#modalGallery").on("hide.bs.modal", function(e) {
-        $(".carousel-item").removeClass("active");
     })
 
 

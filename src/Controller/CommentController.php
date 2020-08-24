@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use DateTime;
 use App\Entity\Trick;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,8 +33,9 @@ class CommentController extends AbstractController
 
     /**
      * @Route("/user/comments", name="user.comments")
+     * @return Response
      */
-    public function userComments()
+    public function userComments() : Response
     {
         $comments = $this->commentRepository->findBy(['author' => $this->getUser()->getId()]);
 
@@ -47,8 +48,9 @@ class CommentController extends AbstractController
     /**
      * @Route("/user/comment/delete{id}", name="user.comment.delete", methods="DELETE")
      * @IsGranted("delete", subject="comment", message="You are not allowed to delete other users comments")
+     * @return Response
      */
-    public function delete(Request $request, Comment $comment)
+    public function delete(Request $request, Comment $comment) : Response
     {
         if ($this->isCsrfTokenValid('comment_deletion_' . $comment->getId(), $request->get('_token'))) {
             $this->entityManager->remove($comment);
@@ -71,7 +73,7 @@ class CommentController extends AbstractController
      *
      * @param Request $request
      * @param Trick $trick
-     * @return view or $form
+     * @return Response
      */
     public function new(Request $request, Trick $trick) 
     {
@@ -84,9 +86,8 @@ class CommentController extends AbstractController
                     ->setCreatedAt(new \DateTime())
                     ->setTrick($trick);
             
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($comment);
-            $entityManager->flush();
+            $this->entityManager->persist($comment);
+            $this->entityManager->flush();
 
             $this->addFlash('successComment', 'Your comment is posted !');
 

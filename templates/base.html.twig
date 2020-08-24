@@ -3,6 +3,10 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="keywords" content="Snowtricks, snowboard, tricks, community {% if trick is defined %}, {{ trick.name }}{% endif %}">
+
+		{% block meta %}
+		{% endblock %}
 
 		<title>
 			{% block title %}Welcome!

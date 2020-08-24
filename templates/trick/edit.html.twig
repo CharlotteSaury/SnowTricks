@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block meta %}
+	<meta name="description" content="Edit trick of Snowtricks, snowboarder community to learn snowboard tricks.">
+{% endblock %}
+
 {% block title %}
 	{% if type is defined and type == "reportedTrick" %}
 		Report trick

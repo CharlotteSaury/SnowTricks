@@ -45,7 +45,7 @@ class TrickVoter extends Voter
         }
 
         if ($this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_MODERATOR')) {
-            if (!self::REPORT) {
+            if ($attribute != self::REPORT) {
                 return true;
             }  
         }

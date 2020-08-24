@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Figure
+{% block meta %}
+	<meta name="description" content="More informations about {{ trick.name }} trick on Snowtricks, snowboarder community to learn snowboard tricks.">
+{% endblock %}
+
+{% block title %}{{ trick.name }}
 {% endblock %}
 
 

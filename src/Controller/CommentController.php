@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Entity\Trick;
 use App\Entity\Comment;
 use App\Form\CommentType;
+use App\Service\CommentService;
 use App\Repository\CommentRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,19 +16,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class CommentController extends AbstractController
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-        /**
      * @var CommentRepository
      */
     private $commentRepository;
 
-    public function __construct(CommentRepository $commentRepository, EntityManagerInterface $entityManager)
+    /**
+     * @var CommentService
+     */
+    private $commentService;
+
+    public function __construct(CommentRepository $commentRepository, CommentService $commentService)
     {
         $this->commentRepository = $commentRepository;
-        $this->entityManager = $entityManager;
+        $this->commentService = $commentService;
     }
 
     /**
@@ -53,8 +53,8 @@ class CommentController extends AbstractController
     public function delete(Request $request, Comment $comment) : Response
     {
         if ($this->isCsrfTokenValid('comment_deletion_' . $comment->getId(), $request->get('_token'))) {
-            $this->entityManager->remove($comment);
-            $this->entityManager->flush();
+            $this->commentService->handleDeleteComment($comment);
+            
             if ($comment->getAuthor() == $this->getUser()) {
                 $this->addFlash('successComment', 'Your comment has been deleted !');
             } else {
@@ -82,13 +82,7 @@ class CommentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $comment->setAuthor($this->getUser())
-                    ->setCreatedAt(new \DateTime())
-                    ->setTrick($trick);
-            
-            $this->entityManager->persist($comment);
-            $this->entityManager->flush();
-
+            $comment = $this->commentService->handleNewComment($comment, $trick, $this->getUser());
             $this->addFlash('successComment', 'Your comment is posted !');
 
             return $this->redirect($this->generateUrl('trick.show', [

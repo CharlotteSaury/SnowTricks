@@ -9,6 +9,7 @@ use App\Repository\TrickRepository;
 use App\Helper\ImageFileDeletor;
 use App\Helper\UploaderHelper;
 use App\Repository\UserRepository;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,9 +24,15 @@ class UserController extends AbstractController
      */
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    public function __construct(EntityManagerInterface $entityManager, UserService $userService)
     {
         $this->entityManager = $entityManager;
+        $this->userService = $userService;
     }
 
     /**
@@ -64,24 +71,13 @@ class UserController extends AbstractController
      * @Route("/user/edit/{username}", name="user.edit")
      * @return Response
      */
-    public function edit(Request $request, User $user, UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor) : Response
+    public function edit(Request $request, User $user) : Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $avatar = $form->get('avatar')->getData();
-            if (!empty($avatar)) {
-                $avatarName = $uploaderHelper->uploadFile($avatar, 'users', 'user_' . $user->getId());
-                $user->setAvatar($avatarName);
-            }
-            $this->entityManager->persist($user);
-            $this->entityManager->flush();
-
-            if (!empty($avatar)) {
-                $imageFileDeletor->deleteFile('user', $user->getId(), [$avatarName]);
-            }
+            $this->userService->handleProfileEdition($user, $form);
             $this->addFlash('success', 'Your profile has been updated !');
 
             return $this->redirectToRoute('user.profile', [

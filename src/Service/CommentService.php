@@ -30,7 +30,6 @@ class CommentService
 
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
-            return $comment;
         } catch (Exception $exception) {
             throw $exception;
         }

@@ -82,7 +82,7 @@ class CommentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $comment = $this->commentService->handleNewComment($comment, $trick, $this->getUser());
+            $this->commentService->handleNewComment($comment, $trick, $this->getUser());
             $this->addFlash('successComment', 'Your comment is posted !');
 
             return $this->redirect($this->generateUrl('trick.show', [

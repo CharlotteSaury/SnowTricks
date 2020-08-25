@@ -43,7 +43,10 @@ class AdminController extends AbstractController
     }
 
     /**
+     * Display website statistics (users, tricks, comments)
+     * 
      * @Route("/statistics", name="statistics")
+     * 
      * @return Response
      */
     public function statistics() : Response

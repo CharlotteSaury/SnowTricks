@@ -9,7 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class PolicyController extends AbstractController
 {
     /**
+     * Display privacy policy page
+     * 
      * @Route("/privacy", name="app_privacy")
+     * @return Response
      */
     public function privacy(): Response
     {        
@@ -17,7 +20,10 @@ class PolicyController extends AbstractController
     }
 
     /**
+     * Display legal notice page
+     * 
      * @Route("/legal", name="app_legal")
+     * @return Response
      */
     public function legal(): Response
     {        

@@ -6,11 +6,8 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
-use App\Helper\ImageFileDeletor;
-use App\Helper\UploaderHelper;
 use App\Repository\UserRepository;
 use App\Service\UserService;
-use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,24 +17,24 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends AbstractController
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
      * @var UserService
      */
     private $userService;
 
-    public function __construct(EntityManagerInterface $entityManager, UserService $userService)
+    public function __construct(UserService $userService)
     {
-        $this->entityManager = $entityManager;
         $this->userService = $userService;
     }
 
     /**
+     * Display user tricks and comments number
+     * 
      * @IsGranted("access", subject="user", message="Access denied")
      * @Route("/user/dashboard/{username}", name="user.dashboard")
+     *
+     * @param User $user
+     * @param TrickRepository $trickRepository
+     * @param CommentRepository $commentRepository
      * @return Response
      */
     public function dashboard(User $user, TrickRepository $trickRepository, CommentRepository $commentRepository) : Response
@@ -54,8 +51,12 @@ class UserController extends AbstractController
     }
 
     /**
+     * Display user profile
+     * 
      * @IsGranted("access", subject="user", message="Access denied")
      * @Route("/user/profile/{username}", name="user.profile")
+     *
+     * @param User $user
      * @return Response
      */
     public function profile(User $user): Response
@@ -67,8 +68,13 @@ class UserController extends AbstractController
     }
 
     /**
+     * Handle user profile edition
+     * 
      * @IsGranted("access", subject="user", message="Access denied")
      * @Route("/user/edit/{username}", name="user.edit")
+     *
+     * @param Request $request
+     * @param User $user
      * @return Response
      */
     public function edit(Request $request, User $user) : Response
@@ -93,8 +99,12 @@ class UserController extends AbstractController
     }
 
     /**
+     * Display users list accessible to admin
+     * 
      * @IsGranted("ROLE_ADMIN")
      * @Route("/users", name="admin.users")
+     *
+     * @param UserRepository $userRepository
      * @return Response
      */
     public function users(UserRepository $userRepository): Response

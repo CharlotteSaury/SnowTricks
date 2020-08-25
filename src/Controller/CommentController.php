@@ -32,6 +32,8 @@ class CommentController extends AbstractController
     }
 
     /**
+     * Display all comments from loggued user
+     * 
      * @Route("/user/comments", name="user.comments")
      * @return Response
      */
@@ -46,8 +48,13 @@ class CommentController extends AbstractController
     }
 
     /**
+     * Handle comment deletion
+     * 
      * @Route("/user/comment/delete{id}", name="user.comment.delete", methods="DELETE")
      * @IsGranted("delete", subject="comment", message="You are not allowed to delete other users comments")
+     *
+     * @param Request $request
+     * @param Comment $comment
      * @return Response
      */
     public function delete(Request $request, Comment $comment) : Response
@@ -69,7 +76,7 @@ class CommentController extends AbstractController
     }
 
     /**
-     * Create new comment
+     * Handle new comment creation
      *
      * @param Request $request
      * @param Trick $trick

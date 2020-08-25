@@ -155,6 +155,31 @@ class TrickService
         $this->imageFileDeletor->deleteFile('trick', $trick->getId(), $trickImages);
     }
 
+    public function handleMainImageDeletion(Trick $trick)
+    {
+        try {
+            $this->imageFileDeletor->deleteFile('trick', $trick->getId(), [$trick->getMainImage()], true);
+            $trick->setMainImage(null);
+            $this->entityManager->persist($trick);
+            $this->entityManager->flush();
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
+    }
+
+    public function handleTrickDeletion(Trick $trick)
+    {
+        try {
+            if ($directory = $this->trickDirectory . $trick->getId()) {
+                $this->fileSystem->remove($directory);
+            }
+            $this->entityManager->remove($trick);
+            $this->entityManager->flush();
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
+    }
+
     public function handleReport(Trick $reportedTrick, Request $request)
     {
         try {
@@ -222,4 +247,6 @@ class TrickService
             throw $error;
         }
     }
+
+    
 }

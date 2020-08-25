@@ -60,13 +60,13 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\Length(min="2", max="30")
+     * @Assert\Length(max="30")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\Length(min="2", max="30")
+     * @Assert\Length(max="30")
      */
     private $lastName;
 

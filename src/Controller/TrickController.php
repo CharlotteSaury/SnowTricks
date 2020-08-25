@@ -2,59 +2,41 @@
 
 namespace App\Controller;
 
-use DateTime;
 use App\Entity\Trick;
 use App\Form\TrickType;
 use App\Service\TrickService;
 use App\Helper\ImageFileDeletor;
+use App\Helper\MailSenderHelper;
 use Symfony\Component\Form\Form;
 use App\Repository\TrickRepository;
-use Symfony\Component\Mime\Address;
 use App\Helper\TrickGenerator;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TrickController extends AbstractController
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
     /**
      * @var TrickRepository
      */
     private $trickRepository;
 
     /**
-     * @var FileSystem
-     */
-    private $fileSystem;
-
-    /**
-     *
      * @var TrickService
      */
     private $trickService;
 
-    public function __construct(TrickRepository $trickRepository, EntityManagerInterface $entityManager, Filesystem $fileSystem, TrickService $trickService)
+    public function __construct(TrickRepository $trickRepository, TrickService $trickService)
     {
         $this->trickRepository = $trickRepository;
-        $this->entityManager = $entityManager;
-        $this->fileSystem = $fileSystem;
         $this->trickService = $trickService;
     }
 
     /**
+     * Return trick list
+     * 
      * @Route("/", name="trick.index")
      * @return Response
      */
@@ -67,7 +49,13 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Handle trick page
+     * 
      * @Route("/trick{id}/{slug}", name="trick.show")
+     *
+     * @param Trick $trick
+     * @param Request $request
+     * @param CommentController $commentController
      * @return Response
      */
     public function show(Trick $trick, Request $request, CommentController $commentController): Response
@@ -85,7 +73,11 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Handle new trick creation
+     * 
      * @Route("/user/trick/new", name="user.trick.new")
+     *
+     * @param Request $request
      * @return Response
      */
     public function new(Request $request) : Response
@@ -109,8 +101,13 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Handle trick edition
+     * 
      * @Route("/user/trick/edit{id}", name="user.trick.edit")
      * @IsGranted("edit", subject="trick", message="Access denied")
+     *
+     * @param Trick $trick
+     * @param Request $request
      * @return Response
      */
     public function edit(Trick $trick, Request $request) : Response
@@ -133,16 +130,20 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Handle trick main image deletion
+     * 
      * @Route("/user/trick/deleteMainImage{id}", name="user.trick.delete.mainImage", methods="DELETE")
      * @IsGranted("edit", subject="trick", message="Access denied")
+     *
+     * @param Trick $trick
+     * @param Request $request
+     * @param ImageFileDeletor $imageFileDeletor
+     * @return void
      */
-    public function deleteMainImage(Trick $trick, Request $request, ImageFileDeletor $imageFileDeletor)
+    public function deleteMainImage(Trick $trick, Request $request)
     {
         if ($this->isCsrfTokenValid('mainImage_deletion_' . $trick->getId(), $request->get('_token'))) {
-            $imageFileDeletor->deleteFile('trick', $trick->getId(), [$trick->getMainImage()], true);
-            $trick->setMainImage(null);
-            $this->entityManager->persist($trick);
-            $this->entityManager->flush();
+            $this->trickService->handleMainImageDeletion($trick);
             $this->addFlash('success', 'Main image has been deleted !');
             return $this->redirectToRoute('user.trick.edit', [
                 'id' => $trick->getId()
@@ -153,17 +154,25 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Handle Trick deletion
+     * 
      * @Route("/user/trick/delete{id}", name="user.trick.delete", methods="DELETE")
      * @IsGranted("edit", subject="trick", message="Access denied")
+     *
+     * @param Request $request
+     * @param Trick $trick
+     * @return void
      */
     public function delete(Request $request, Trick $trick)
     {
         if ($this->isCsrfTokenValid('trick_deletion_' . $trick->getId(), $request->get('_token'))) {
-            if ($directory = $this->getParameter('trick_media_directory') . $trick->getId()) {
-                $this->fileSystem->remove($directory);
+            $reportedTricks = $this->trickRepository->findBy(['parentTrick' => $trick]);
+            foreach ($reportedTricks as $reportedTrick)
+            {
+                $this->trickService->handleTrickDeletion($reportedTrick);
             }
-            $this->entityManager->remove($trick);
-            $this->entityManager->flush();
+            $this->trickService->handleTrickDeletion($trick);
+
             if ($trick->getAuthor() == $this->getUser()) {
                 $this->addFlash('success', 'Your trick has been deleted !');
                 return $this->redirectToRoute('user.tricks');
@@ -176,7 +185,10 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Display loggued user tricks
+     * 
      * @Route("user/tricks", name="user.tricks")
+     *
      * @return Response
      */
     public function tricks(): Response
@@ -190,9 +202,16 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Handle trick report
+     * 
      * @Route("/user/trick/report{id}", name="user.trick.report")
+     *
+     * @param Trick $trick
+     * @param Request $request
+     * @param TrickGenerator $trickGenerator
+     * @return Response
      */
-    public function report(Trick $trick, Request $request, MailerInterface $mailer, TrickGenerator $trickGenerator)
+    public function report(Trick $trick, Request $request, TrickGenerator $trickGenerator, MailSenderHelper $mailSenderHelper): Response
     {
         $reportedTrick = $trickGenerator->transform($trick, $this->getUser());
         $form = $this->createForm(TrickType::class, $reportedTrick);
@@ -202,18 +221,11 @@ class TrickController extends AbstractController
             $reportedTrick = $this->trickService->handleCreateOrUpdate($reportedTrick, $form, $this->getUser());
             
             $url = $this->generateUrl('user.trick.reportView', ['id' => $reportedTrick->getId()]);
-            $message = (new TemplatedEmail())
-                ->from(new Address('mailer@snowtricks.com', 'No-reply Snowtricks'))
-                ->to(new Address($trick->getAuthor()->getEmail(), $trick->getAuthor()->getUsername()))
-                ->subject('Trick report')
-                ->context([
-                    'url' => $url,
-                    'user' => $reportedTrick->getAuthor()->getUsername(),
-                    'trick_name' => $trick->getName()
-                ])
-                ->htmlTemplate('email/trick_report.html.twig');
-
-            $mailer->send($message);
+            $mailSenderHelper->sendMail('trick_report', $trick->getAuthor(), [
+                'url' => $url,
+                'user' => $reportedTrick->getAuthor()->getUsername(),
+                'trick_name' => $trick->getName()
+            ]);
 
             return $this->redirectToRoute('trick.show', [
                 'id' => $trick->getId(),
@@ -229,7 +241,13 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Handle trick suggested modifications
+     * 
      * @Route("/user/reportView{id}", name="user.trick.reportView")
+     *
+     * @param Trick $reportedTrick
+     * @param Request $request
+     * @return Response
      */
     public function trickReportView(Trick $reportedTrick, Request $request)
     {

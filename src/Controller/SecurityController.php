@@ -11,7 +11,6 @@ use App\Form\RegistrationFormType;
 use App\Helper\MailSenderHelper;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -43,7 +42,12 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * Handle registration
+     * 
      * @Route("/register", name="app_register")
+     * 
+     * @param Request $request
+     * @return Response
      */
     public function register(Request $request): Response
     {        
@@ -55,7 +59,7 @@ class SecurityController extends AbstractController
             $token = $this->userService->handleNewUser($user, $form);
 
             $url = $this->generateUrl('app_verify_email', ['token' => $token]);
-            $this->mailSenderHelper->sendMail('account_confirmation', $user, $url);
+            $this->mailSenderHelper->sendMail('account_confirmation', $user, ['url' => $url]);
 
             $this->addFlash('success', 'A confirmation link has been sent to your email. Please follow the link to activate your account !');
             return $this->redirectToRoute('trick.index');
@@ -67,7 +71,12 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * Check user account activation token 
+     * 
      * @Route("/verify/{token}", name="app_verify_email")
+     *
+     * @param string $token
+     * @return Response
      */
     public function verifyUserEmail($token): Response
     {
@@ -83,7 +92,12 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * Handle user login
+     * 
      * @Route("/login", name="app_login")
+     *
+     * @param AuthenticationUtils $authenticationUtils
+     * @return Response
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -103,7 +117,12 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * 
+     * Handle user account logout
+     * 
      * @Route("/logout", name="app_logout")
+     *
+     * @return void
      */
     public function logout()
     {
@@ -111,9 +130,15 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * Handle reset password form 
+     * 
      * @Route("/user/reset_password", name="user.resetPass")
+     *
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return Response
      */
-    public function reset(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function reset(Request $request, UserPasswordEncoderInterface $passwordEncoder) : Response
     {
         $user = $this->getUser();
 
@@ -139,9 +164,15 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * 
+     * Handle forgot password page and forgot password reset link mail sending
+     * 
      * @Route("/forgot_password_link", name="app_forgotten_password")
+     *
+     * @param Request $request
+     * @return Response
      */
-    public function passwordLink(Request $request, MailerInterface $mailer)
+    public function passwordLink(Request $request)
     {
         $form = $this->createForm(ResetPasswordType::class);
         $form->handleRequest($request);
@@ -157,7 +188,7 @@ class SecurityController extends AbstractController
 
             $token = $this->userService->handleResetPassword($user);
             $url = $this->generateUrl('app_new_password', ['token' => $token]);
-            $this->mailSenderHelper->sendMail('password_reset', $user, $url);
+            $this->mailSenderHelper->sendMail('password_reset', $user, ['url' => $url]);
 
             $this->addFlash('success', 'A confirmation link has been sent to your email. Please follow the link to choose a new password !');
             return $this->redirectToRoute('trick.index');
@@ -169,7 +200,13 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * Handle password reset link verification and new password form
+     * 
      * @Route("/new_password/{token}", name="app_new_password")
+     *
+     * @param string $token
+     * @param Request $request
+     * @return Response
      */
     public function newPassword($token, Request $request)
     {

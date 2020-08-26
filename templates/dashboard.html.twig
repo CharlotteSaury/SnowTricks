@@ -39,77 +39,77 @@
 					<i class="fas fa-undo-alt mr-2"></i>Back to SnowTricks
 				</a>
 				<div class="px-4 d-flex justify-content-center">
-					<h6 class="ml-auto my-auto">
-						{% block subtitle %}
-						{% endblock %}
-					</h6>
-				</div>
-			</div>
-			<div class="row" id="dashboard-content">
-				<nav class="col-sm-3 px-0 pt-4 text-center" id="dashboard-nav">
-					<ul class="nav d-flex flex-sm-column text-left">
-						<li class="nav-item {% if nav is defined and nav == 'dashboard' %}active{% endif %}">
-							<a class="nav-link" id="dashNavDashboard" href="{{ path('user.dashboard', {username: app.user.username}) }}">Dashboard</a>
-						</li>
-						<li class="nav-item {% if nav is defined and nav == 'profile' %}active{% endif %}">
-							<a class="nav-link" id="dashNavProfile" href="{{ path('user.profile', {username: app.user.username }) }}">
-								<i class="fas fa-user mr-2"></i>Profile</a>
-						</li>
-						<li class="nav-item {% if nav is defined and nav == 'resetPass' %}active{% endif %}">
-							<a class="nav-link" id="dashNavPass" href="{{ path('user.resetPass') }}">
-								<i class="fas fa-cog mr-2"></i></i>Reset password</a>
-						</li>
-						<li class="nav-item {% if nav is defined and nav == 'myTricks' %}active{% endif %}">
-							<a class="nav-link" id="dashNavTricks" href="{{ path('user.tricks') }}">
-								<i class="fas fa-list mr-2"></i>My tricks</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" id="dashNavAdd" href="{{ path('user.trick.new') }}">
-								<i class="fas fa-plus-square mr-2"></i>Add trick</a>
-						</li>
-						<li class="nav-item {% if nav is defined and nav == 'myComments' %}active{% endif %}">
-							<a class="nav-link" id="dashNavComments" href="{{ path('user.comments') }}">
-								<i class="fas fa-comment-dots mr-2"></i>My comments</a>
-						</li>
-						{% if is_granted('ROLE_ADMIN') %}
-							<li class="nav-item {% if nav is defined and nav == 'statistics' %}active{% endif %}">
-								<a class="nav-link" id="dashNavStats" href="{{ path('admin.statistics') }}">
-									<i class="fas fa-chart-bar mr-2"></i>Statistics</a>
-							</li>
-							<li class="nav-item {% if nav is defined and nav == 'users' %}active{% endif %}">
-								<a class="nav-link" id="dashNavUsers" href="{{ path('admin.users') }}">
-									<i class="fas fa-users mr-2"></i>Users</a>
-							</li>
-						{% endif %}
-
-						<li class="nav-item">
-							<a class="nav-link" id="dashNavLogout" href="{{ path('app_logout') }}">
-								<i class="fas fa-power-off mr-2"></i>Log out</a>
-						</li>
-					</ul>
-				</nav>
-				<div class="col-sm-9 px-0"> {% block body %}{% endblock %}
-
+					<h6 class="ml-auto my-auto"> {% block subtitle %}{% endblock %}
+						</h6>
 					</div>
 				</div>
+				<div class="row" id="dashboard-content">
+					<nav class="col-sm-3 px-0 pt-4 text-center" id="dashboard-nav">
+						<ul class="nav d-flex flex-sm-column text-left">
+							<li class="nav-item {% if nav is defined and nav == 'dashboard' %}active{% endif %}">
+								<a class="nav-link" id="dashNavDashboard" href="{{ path('user.dashboard', {username: app.user.username}) }}">Dashboard</a>
+							</li>
+							<li class="nav-item {% if nav is defined and nav == 'profile' %}active{% endif %}">
+								<a class="nav-link" id="dashNavProfile" href="{{ path('user.profile', {username: app.user.username }) }}">
+									<i class="fas fa-user mr-2"></i>Profile</a>
+							</li>
+							<li class="nav-item {% if nav is defined and nav == 'resetPass' %}active{% endif %}">
+								<a class="nav-link" id="dashNavPass" href="{{ path('user.resetPass') }}">
+									<i class="fas fa-cog mr-2"></i>
+								</i>Reset password</li>
+						</a>
+					</li>
+					<li class="nav-item {% if nav is defined and nav == 'myTricks' %}active{% endif %}">
+						<a class="nav-link" id="dashNavTricks" href="{{ path('user.tricks') }}">
+							<i class="fas fa-list mr-2"></i>My tricks</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="dashNavAdd" href="{{ path('user.trick.new') }}">
+							<i class="fas fa-plus-square mr-2"></i>Add trick</a>
+					</li>
+					<li class="nav-item {% if nav is defined and nav == 'myComments' %}active{% endif %}">
+						<a class="nav-link" id="dashNavComments" href="{{ path('user.comments') }}">
+							<i class="fas fa-comment-dots mr-2"></i>My comments</a>
+					</li>
+					{% if is_granted('ROLE_ADMIN') %}
+						<li class="nav-item {% if nav is defined and nav == 'groups' %}active{% endif %}">
+							<a class="nav-link" id="dashNavGroups" href="{{ path('group.index') }}">
+								<i class="fas fa-tags mr-2"></i></i>Groups</a>
+						</li>
+						<li class="nav-item {% if nav is defined and nav == 'statistics' %}active{% endif %}">
+							<a class="nav-link" id="dashNavStats" href="{{ path('admin.stats') }}">
+								<i class="fas fa-chart-bar mr-2"></i>Statistics</a>
+						</li>
+						<li class="nav-item {% if nav is defined and nav == 'users' %}active{% endif %}">
+							<a class="nav-link" id="dashNavUsers" href="{{ path('admin.users') }}">
+								<i class="fas fa-users mr-2"></i>Users</a>
+						</li>
+					{% endif %}
 
-			</div>
+					<li class="nav-item">
+						<a class="nav-link" id="dashNavLogout" href="{{ path('app_logout') }}">
+							<i class="fas fa-power-off mr-2"></i>Log out</a>
+					</li>
+				</ul>
+			</nav>
+			<div class="col-sm-9 px-0"> {% block body %}{% endblock %}
 
-			{% include "modal.html.twig" %}
+				</div>
+			</body>
+		</html>
+	</div>
 
-			<footer class="row mx-0 py-3 text-left">
-				<p class="mb-0 ml-4">Copyright
-					<i class="far fa-copyright"></i>
-					2020</p>
-			</footer>
+</div>
 
-			{% block javascripts %}
-				<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-				<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-				<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-				<script src="{{ asset('js/main.js') }}"></script>
-			{% endblock %}
+<footer class="row mx-0 py-3 text-left">
+	<p class="mb-0 ml-4">Copyright
+		<i class="far fa-copyright"></i>
+		2020</p>
+</footer>
 
-		</body>
-
-	</html>
+{% block javascripts %}
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+	<script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}</body></html>

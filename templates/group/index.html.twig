@@ -1,0 +1,58 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}Trick groups
+{% endblock %}
+
+{% block subtitle %}
+	Trick groups
+{% endblock %}
+
+{% block body %}
+	<div class="py-4 px-4 dashboard-div" id="groups">
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-info w-100 mt-1 text-center">
+				{{ message }}
+			</div>
+		{% endfor %}
+		<div class="row pt-2">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for group in groups %}
+						<tr>
+							<td>{{ group.name }}</td>
+							<td>
+								<a class="custom-link" href="{{ path('group.edit', {id: group.id}) }}"><i class="fas fa-pencil-alt"></i></a>
+                                <a class="ml-2" data-toggle="modal" data-target="#deleteGroupModal" data-action="{{ path('group.delete', {id: group.id}) }}" data-token="{{ csrf_token('delete_group' ~ group.id) }}"><i class="fas fa-trash-alt"></i></a>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="3">no records found</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+        <div class="row">
+        {{ form_start(form) }}
+            <div class="d-flex align-items-center justify-content-center" id="newGroup">
+            {{ form_label(form.name) }}
+                <div>
+                {{ form_widget(form.name) }}
+                </div>
+                <button type="sumbit" class="btn btn-info ml-3"><i class="fas fa-plus-circle"></i></button>
+            </div>
+        {{ form_end(form) }}
+        
+        </div>
+	</div>
+
+    {% include "group/_modal_deletion.html.twig" %}
+
+{% endblock %}

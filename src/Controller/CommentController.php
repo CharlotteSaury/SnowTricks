@@ -41,7 +41,7 @@ class CommentController extends AbstractController
     {
         $comments = $this->commentRepository->findBy(['author' => $this->getUser()->getId()]);
 
-        return $this->render('user/comments.html.twig', [
+        return $this->render('comment/comments.html.twig', [
             'comments' => $comments,
             'nav' => 'myComments'
         ]);

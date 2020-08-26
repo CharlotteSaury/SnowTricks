@@ -3,10 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<meta name="keywords" content="Snowtricks, snowboard, tricks, community {% if trick is defined %}, {{ trick.name }}{% endif %}">
-
-		{% block meta %}
-		{% endblock %}
+		<meta name="keywords" content="Snowtricks, snowboard, tricks, community {% if trick is defined %}, {{ trick.name }}{% endif %}"> {% block meta %}{% endblock %}
 
 		<title>
 			{% block title %}Welcome!
@@ -46,7 +43,7 @@
 					<a class="nav-item nav-link" href="{{ path('trick.index') }}" id="navHome">Home
 						<span class="sr-only">(current)</span>
 					</a>
-					<a class="nav-item nav-link nav-separator" href="{{ path('trick.index') }}#trickList"  id="navTricks">Tricks</a>
+					<a class="nav-item nav-link nav-separator" href="{{ path('trick.index') }}#trickList" id="navTricks">Tricks</a>
 					{% if not app.user %}
 						<a class="nav-item nav-link nav-separator" href="{{ path('app_login') }}" id="navLogin">Sign in</a>
 						<a class="nav-item nav-link nav-separator" href="{{ path('app_register') }}" id="navSignup">Sign up</a>
@@ -60,8 +57,15 @@
 								<a class="dropdown-item" href="{{ path('user.tricks') }}">My tricks</a>
 								<a class="dropdown-item" href="{{ path('user.trick.new') }}">Add trick</a>
 								<a class="dropdown-item" href="{{ path('user.comments') }}">My comments</a>
+								{% if is_granted('ROLE_ADMIN') %}
+									<a class="dropdown-item" href="{{ path('group.index') }}" id="navGroups">Groups</a>
+								{% endif %}
 								<div class="dropdown-divider"></div>
 								<a class="dropdown-item" href="{{ path('user.dashboard', {username: app.user.username}) }}" id="navDashboard">Dashboard</a>
+								{% if is_granted('ROLE_ADMIN') %}
+									<a class="dropdown-item" href="{{ path('admin.users') }}" id="navUsers">Users</a>
+									<a class="dropdown-item" href="{{ path('admin.stats') }}" id="navStats">Statistics</a>
+								{% endif %}
 							</div>
 						</li>
 						<a class="nav-item nav-link nav-separator" href="{{ path('app_logout') }}" id="navLogout">Log out</a>
@@ -73,13 +77,13 @@
 
 		{% block body %}{% endblock %}
 
-		{% include "modal.html.twig" %}
-
 		<footer class="row mx-0 py-3 text-left">
 			<p class="mb-0 ml-4">Copyright
 				<i class="far fa-copyright"></i>
-				2020 | 
-				<a class="custom-link" href="{{ path('app_privacy') }}">Privacy Policy</a> | <a  class="custom-link" href="{{ path('app_legal') }}">Legal notice</a>
+				2020 |
+				<a class="custom-link" href="{{ path('app_privacy') }}">Privacy Policy</a>
+				|
+				<a class="custom-link" href="{{ path('app_legal') }}">Legal notice</a>
 			</p>
 		</footer>
 

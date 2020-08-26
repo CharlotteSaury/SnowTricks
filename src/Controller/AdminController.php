@@ -2,14 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\RoleType;
-use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Repository\TrickRepository;
 use App\Repository\CommentRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,7 +40,7 @@ class AdminController extends AbstractController
     /**
      * Display website statistics (users, tricks, comments)
      * 
-     * @Route("/statistics", name="statistics")
+     * @Route("/statistics", name="stats")
      * 
      * @return Response
      */
@@ -64,7 +59,4 @@ class AdminController extends AbstractController
             'nav' => 'statistics'
         ]);
     }
-
-
-
 }

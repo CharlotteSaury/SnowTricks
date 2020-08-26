@@ -4,25 +4,14 @@ namespace App\Service;
 
 use Exception;
 use App\Entity\User;
-use App\Helper\UploaderHelper;
-use App\Helper\ImageFileDeletor;
+use App\Service\ImageService;
+use Symfony\Component\Form\Form;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class UserService
 {
-    /**
-     * @var UploaderHelper
-     */
-    private $uploaderHelper;
-
-    /**
-     * @var ImageFileDeletor
-     */
-    private $imageFileDeletor;
-
     /**
      * @var EntityManagerInterface
      */
@@ -38,16 +27,20 @@ class UserService
      */
     private $tokenGenerator;
 
-    public function __construct(UploaderHelper $uploaderHelper, ImageFileDeletor $imageFileDeletor, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder, TokenGeneratorInterface $tokenGenerator)
+    /**
+     * @var ImageService
+     */
+    private $imageService;
+
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder, TokenGeneratorInterface $tokenGenerator, ImageService $imageService)
     {
-        $this->uploaderHelper = $uploaderHelper;
-        $this->imageFileDeletor = $imageFileDeletor;
         $this->entityManager = $entityManager;
         $this->passwordEncoder = $passwordEncoder;
         $this->tokenGenerator = $tokenGenerator;
+        $this->imageService = $imageService;
     }
 
-    public function handleNewUser(User $user, FormInterface $form) 
+    public function handleNewUser(User $user, Form $form) 
     {
         try {
             $user->setPassword(
@@ -68,20 +61,14 @@ class UserService
         
     }
     
-    public function handleProfileEdition(User $user, FormInterface $form)
+    public function handleProfileEdition(User $user, Form $form)
     {
         try {
-            $avatar = $form->get('avatar')->getData();
-            if (!empty($avatar)) {
-                $avatarName = $this->uploaderHelper->uploadFile($avatar, 'users', 'user_' . $user->getId());
-                $user->setAvatar($avatarName);
-            }
+            $this->imageService->handleAvatarEdition($user, $form);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            if (!empty($avatar)) {
-                $this->imageFileDeletor->deleteFile('user', $user->getId(), [$avatarName]);
-            }
+            $this->imageService->handleAvatarFileDeletion($user, $form);
         } catch (\Exception $exception) {
             throw $exception;
         }

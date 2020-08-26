@@ -4,12 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Trick;
 use App\Form\TrickType;
+use App\Service\ImageService;
 use App\Service\TrickService;
+use App\Helper\TrickGenerator;
 use App\Helper\ImageFileDeletor;
 use App\Helper\MailSenderHelper;
 use Symfony\Component\Form\Form;
 use App\Repository\TrickRepository;
-use App\Helper\TrickGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,10 +29,15 @@ class TrickController extends AbstractController
      */
     private $trickService;
 
-    public function __construct(TrickRepository $trickRepository, TrickService $trickService)
+    /**
+     * @var ImageService
+     */
+
+    public function __construct(TrickRepository $trickRepository, TrickService $trickService, ImageService $imageService)
     {
         $this->trickRepository = $trickRepository;
         $this->trickService = $trickService;
+        $this->imageService = $imageService;
     }
 
     /**
@@ -88,7 +94,7 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $trick = $this->trickService->handleCreateOrUpdate($trick, $form, $this->getUser());
-
+            $this->addFlash('success', 'Your trick is posted !');
             return $this->redirectToRoute('trick.show', [
                 'id' => $trick->getId(),
                 'slug' => $trick->getSlug()
@@ -117,7 +123,12 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $trick = $this->trickService->handleCreateOrUpdate($trick, $form, $trick->getAuthor());
-
+            if ($this->getUser() == $trick->getAuthor()) {
+                $this->addFlash('success', 'Your trick has been updated !');
+            } else {
+                $this->addFlash('success', $trick->getAuthor()->getUsername() . '\'s trick has been updated !');
+            }
+            
             return $this->redirectToRoute('trick.show', [
                 'id' => $trick->getId(),
                 'slug' => $trick->getSlug()
@@ -226,6 +237,7 @@ class TrickController extends AbstractController
                 'user' => $reportedTrick->getAuthor()->getUsername(),
                 'trick_name' => $trick->getName()
             ]);
+            $this->addFlash('success', 'A notification has been sent to ' . $trick->getAuthor()->getUsername() . 'for modification request');
 
             return $this->redirectToRoute('trick.show', [
                 'id' => $trick->getId(),

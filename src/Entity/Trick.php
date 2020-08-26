@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TrickRepository::class)
@@ -25,11 +26,14 @@ class Trick implements \ArrayAccess
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Regex("#^[a-zA-Z0-9-]{2,30}$#")
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(min = "6", max="3000")
      */
     private $description;
 

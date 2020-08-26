@@ -88,6 +88,7 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Assert\Type("string")
      */
     private $description;
 

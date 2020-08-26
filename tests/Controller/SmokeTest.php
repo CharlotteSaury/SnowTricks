@@ -36,7 +36,6 @@ class SmokeTest extends WebTestCase
 	{
 		return [
 			['/'],
-			['/trick1/azerty'],
 			['/login'],
 			['/register'],
 			['/legal'],

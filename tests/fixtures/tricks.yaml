@@ -1,0 +1,7 @@
+App\Entity\Trick:
+  trick1:
+    name: trick1
+    description: <text()>
+    created_at: <datetime()>
+    updated_at: <dateTime("+1month")>
+    author: '@user1'

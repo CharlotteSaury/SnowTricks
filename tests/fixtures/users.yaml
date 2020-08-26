@@ -1,0 +1,6 @@
+App\Entity\User:
+  user1:
+    username: "uniqueuser"
+    email: "unique@email.com"
+    created_at: <dateTime()>
+    password: "azerty"

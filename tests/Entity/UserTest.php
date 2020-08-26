@@ -5,11 +5,13 @@ namespace App\Tests\Entity;
 use DateTime;
 use App\Entity\User;
 use App\Tests\Utils\AssertHasErrors;
+use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class UserTest extends KernelTestCase
 {
     use AssertHasErrors;
+    use FixturesTrait;
 
     public function getEntity(): User
     {
@@ -18,7 +20,7 @@ class UserTest extends KernelTestCase
         $user->setUsername('Usertest')
             ->setEmail('test@email.com')
             ->setPlainPassword($plainPassword)
-            ->setPassword('$argon2id$v=19$m=65536,t=4,p=1$aWpLQmtzUUxuVjNhZ0pBOA$fivXTMz9mOXmqDHSk8z45nO2EbAk0yiFfT9ifAw3jlA')
+            ->setPassword('password')
             ->setCreatedAt(new \DateTime())
             ->setRoles(['ROLE_USER']);
 
@@ -73,42 +75,17 @@ class UserTest extends KernelTestCase
         }
     }
 
-
-    /*public function testInvalidRegexPlainPassword()
+    public function testInvalidUniqueUsername()
     {
-        $invalidPlainPasswords = [
-            'azerty',
-            'Azerty',
-            'Azerty1'
-        ];
-        foreach ($invalidPlainPasswords as $invalidPlainPassword) {
-            $this->assertHasErrors($this->getEntity()->setPlainPassword($invalidPlainPassword), 1);
-        }
-    }
-    public function testInvalidLengthPlainPassword()
-    {
-        $invalidPlainPasswords = [
-            'aze',
-            'thispasswordislonguerthan30characters'
-        ];
-        foreach ($invalidPlainPasswords as $invalidPlainPassword) {
-            $this->assertHasErrors($this->getEntity()->setPlainPassword($invalidPlainPassword), 1);
-        }
-    }
-
-    public function testInvalidBlankPlainPassword()
-    {
-        $this->assertHasErrors($this->getEntity()->setPlainPassword(null), 1);
-        //$this->assertHasErrors($this->getEntity()->setPlainPassword(''), 1);
-    }*/
-
-    /*public function testInvalidUniqueUsername()
-    {
-        
+        $user = $this->getEntity()->setUsername('uniqueuser');
+        $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
+        $this->assertHasErrors($user, 1);
     }
 
     public function testInvalidUniqueEmail()
     {
-        
-    }*/
+        $user = $this->getEntity()->setEmail('unique@email.com');
+        $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
+        $this->assertHasErrors($user, 1);
+    }
 }

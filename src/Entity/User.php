@@ -45,6 +45,8 @@ class User implements UserInterface, \Serializable
 
     /**
      * @Assert\Length(min="6", max="30", groups={"registration"})
+     * @Assert\NotBlank(groups={"registration"})
+     * @Assert\NotNull(groups={"registration"})
      */
     private $plainPassword;
 
@@ -60,12 +62,16 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Type("string")
+     * @Assert\Regex("#^[a-zA-Z-]*$#")
      * @Assert\Length(max="30")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Type("string")
+     * @Assert\Regex("#^[a-zA-Z-]*$#")
      * @Assert\Length(max="30")
      */
     private $lastName;

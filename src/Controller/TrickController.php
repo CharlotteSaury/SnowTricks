@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Trick;
+use App\Entity\Comment;
 use App\Form\TrickType;
-use App\Service\ImageService;
+use App\Form\CommentType;
 use App\Service\TrickService;
 use App\Helper\TrickGenerator;
+use App\Service\CommentService;
 use App\Helper\ImageFileDeletor;
 use App\Helper\MailSenderHelper;
 use Symfony\Component\Form\Form;
@@ -30,14 +32,15 @@ class TrickController extends AbstractController
     private $trickService;
 
     /**
-     * @var ImageService
+     * @var CommentService
      */
+    private $commentService;
 
-    public function __construct(TrickRepository $trickRepository, TrickService $trickService, ImageService $imageService)
+    public function __construct(TrickRepository $trickRepository, TrickService $trickService, CommentService $commentService)
     {
         $this->trickRepository = $trickRepository;
         $this->trickService = $trickService;
-        $this->imageService = $imageService;
+        $this->commentService = $commentService;
     }
 
     /**
@@ -55,7 +58,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * Handle trick page
+     * Handle trick page and new comment creation
      * 
      * @Route("/trick{id}/{slug}", name="trick.show")
      *
@@ -64,17 +67,26 @@ class TrickController extends AbstractController
      * @param CommentController $commentController
      * @return Response
      */
-    public function show(Trick $trick, Request $request, CommentController $commentController): Response
+    public function show(Trick $trick, Request $request): Response
     {
         $trick = $this->trickRepository->find($trick->getId());
-        $view = $commentController->new($request, $trick);
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
 
-        if (!$view instanceof Form) {
-            return $view;
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->commentService->handleNewComment($comment, $trick, $this->getUser());
+            $this->addFlash('successComment', 'Your comment is posted !');
+
+            return $this->redirect($this->generateUrl('trick.show', [
+                '_fragment' => 'trickCommentForm',
+                'id' => $trick->getId(),
+                'slug' => $trick->getName()
+                ]));
         }
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
-            'form' => $view->createView()
+            'form' => $form->createView()
         ]);
     }
 

@@ -74,30 +74,4 @@ class CommentController extends AbstractController
             '_fragment' => 'trickCommentForm',
             ]);
     }
-
-    /**
-     * Handle new comment creation
-     *
-     * @param Request $request
-     * @param Trick $trick
-     * @return Response
-     */
-    public function new(Request $request, Trick $trick) 
-    {
-        $comment = new Comment();
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->commentService->handleNewComment($comment, $trick, $this->getUser());
-            $this->addFlash('successComment', 'Your comment is posted !');
-
-            return $this->redirect($this->generateUrl('trick.show', [
-                '_fragment' => 'trickCommentForm',
-                'id' => $trick->getId(),
-                'slug' => $trick->getName()
-                ]));
-        }
-        return $form;
-    }
 }

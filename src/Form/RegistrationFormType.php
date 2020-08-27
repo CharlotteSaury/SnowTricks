@@ -14,6 +14,9 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class RegistrationFormType extends AbstractType
 {
@@ -45,9 +48,12 @@ class RegistrationFormType extends AbstractType
                     new Regex(
                         [
                         'pattern' => '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W)^', 
-                        'message' => 'password must contain at least a lowercase, an uppercase, a number and a special character'
+                        'message' => 'Password must contain at least a lowercase, an uppercase, a number and a special character'
                         ]
-                    )
+                        ),
+                    new NotBlank(),
+                    new NotNull(),
+                    new Length(['min' => '6', 'max' => '30'])
                 ]
             ])
             ;

@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block meta %}
+	<meta name="description" content="Trick list of Snowtricks, snowboarder community to learn snowboard tricks.">
+{% endblock %}
+
 {% block title %}Site communautaire SnowTricks
 {% endblock %}
 
@@ -10,13 +14,18 @@
 			<div class="homeTitle py-4 px-4">
 				<h1>SnowTricks</h1>
 				<h2>Learning snowboard tricks together</h2>
-				
+
 			</div>
 			{% for message in app.flashes('success') %}
-					<div class="alert alert-info w-75 mt-5 text-center mx-auto">
-						{{ message }}
-					</div>
-				{% endfor %}
+				<div class="alert alert-info w-75 mt-5 text-center mx-auto">
+					{{ message }}
+				</div>
+			{% endfor %}
+			{% for message in app.flashes('error') %}
+				<div class="alert alert-danger w-75 mt-5 text-center mx-auto">
+					{{ message }}
+				</div>
+			{% endfor %}
 
 		</div>
 
@@ -29,14 +38,14 @@
 			{% for trick in tricks %}
 				<div class="col-md-2 col-sm-4 mx-1 mb-4 trick-card-div">
 					<div class="card">
-						<img src="{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/'~trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}" class="card-img-top" alt="Trick {{ trick.name }}">
+						<img src="{% if trick.mainImage is not null %}{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}" class="card-img-top" alt="Trick {{ trick.name }}">
 						<div class="card-body d-flex flex-row {% if app.user %}justify-content-between{% else %}justify-content-center{% endif %} px-2">
 							<div class="{% if app.user %}col-8{% else %}col-12{% endif %} px-1 text-center">
 								<h5 class="card-title mb-0">
 									<a href="{{ path('trick.show', {id: trick.id, slug: trick.slug }) }}">{{ trick.name }}</a>
 								</h5>
 							</div>
-							{% if app.user and app.user.id == trick.author.id or is_granted('ROLE_ADMIN') %}
+							{% if app.user and app.user.id == trick.author.id or is_granted('ROLE_ADMIN') or is_granted('ROLE_MODERATOR') %}
 								<div class="col-4 px-0 text-center card-actions d-flex align-items-center">
 									<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
 										<i class="fas fa-pencil-alt"></i>
@@ -67,5 +76,6 @@
 		</div>
 	</div>
 
+    {% include "trick/_modal_deletion.html.twig" %}
 
 {% endblock %}

@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block meta %}
+	<meta name="description" content="Add new trick on Snowtricks, snowboarder community to learn snowboard tricks.">
+{% endblock %}
+
 {% block title %}Add new trick
 {% endblock %}
 
@@ -42,7 +46,7 @@
 						{% endfor %}
 					</ul>
 					<input type="hidden" id="video-counter">
-					<button type="button"  id="add-video" class="add-another-collection-widget btn btn-info" data-list-selector="#video-fields-list">Add a video (youtube url only)</button>
+					<button type="button"  id="add-video" class="add-another-collection-widget btn btn-info" data-list-selector="#video-fields-list">Add a video</button>
 				</div>
 			</div>
 

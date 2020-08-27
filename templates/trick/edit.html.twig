@@ -1,6 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit trick
+{% block meta %}
+	<meta name="description" content="Edit trick of Snowtricks, snowboarder community to learn snowboard tricks.">
+{% endblock %}
+
+{% block title %}
+	{% if type is defined and type == "reportedTrick" %}
+		Report trick
+	{% else %}
+		Edit trick
+	{% endif %}
+
 {% endblock %}
 
 
@@ -8,7 +18,7 @@
 	<div class="container-fluid py-5 trick-bg" id="editTrick">
 		{{ form_start(form) }}
 		<div class="container px-0 pb-5" id="editPage">
-			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
+			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ trick.mainImage) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
 				<div class="py-2 px-3 mr-auto return-btn">
 					<a href="{{ path('trick.index') }}" class="btn btn-info">
 						<i class="fas fa-undo-alt mr-2"></i>Back
@@ -19,9 +29,15 @@
 					<button class="edit-mainImg" type="button" title="Edit main image">
 						<i class="fas fa-pencil-alt"></i>
 					</button>
-					<button class="ml-3 delete-mainImg" type="button" title="Delete main image">
-						<i class="fas fa-trash-alt"></i>
-					</button>
+					{% if type is not defined or type != 'reportedTrick' %}
+						{% if trick.mainImage is not null %}
+							<a class="ml-2" data-toggle="modal" data-target="#deleteMainImageModal" data-action="{{ path('user.trick.delete.mainImage', {id: trick.id}) }}" data-token="{{ csrf_token('mainImage_deletion_' ~ trick.id) }}">
+								<i class="fas fa-trash-alt"></i>
+							</a>
+						{% endif %}
+					{% endif %}
+
+
 				</div>
 				<div class="text-center">
 					<h1 class="mb-5">{{ trick.name }}</h1>
@@ -30,11 +46,16 @@
 							First Image will be used as trick main image if not defined. If no image, default Snowtricks image will be used.
 						</div>
 					{% endif %}
-					
+
 					<div class="mainImg-input">
 						{{ form_errors(form.mainImage) }}
 						{{ form_widget(form.mainImage) }}
 					</div>
+					{% for message in app.flashes('success') %}
+						<div class="alert alert-info w-100 mt-3 text-center">
+							{{ message }}
+						</div>
+					{% endfor %}
 				</div>
 			</div>
 			<div class="row pt-5 pb-2s px-2 justify-content-center text-center" id="trickMedia">
@@ -44,7 +65,7 @@
 				{% if trick.images is not null %}
 					{% for image in form.images %}
 						<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0">
-							<img class="img-thumbnail trick-media" src="{{ asset('media/uploads/'~image.vars.value.name) }}" alt="{{ trick.name }}"/>
+							<img class="img-thumbnail trick-media" src="{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ image.vars.value.name) }}" alt="{{ trick.name }}"/>
 							<div class="edit-media-input">
 								{{ form_errors(image) }}
 								{{ form_widget(image, {'attr': {'value': 'image.vars.value'}}) }}
@@ -64,7 +85,7 @@
 				{% if trick.videos is not null %}
 					{% for video in form.videos %}
 						<div class="col-10 col-sm-3 media-slider mb-3 mx-2 px-0">
-							<iframe class="trick-media" src="https://www.youtube.com/embed/{{ video.vars.value.name[32:] }}" width="100%" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							<iframe class="trick-media" src="{{ video.vars.value.name }}" width="100%" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 							<div class="edit-media-input">
 								{{ form_errors(video) }}
 								{{ form_widget(video) }}
@@ -97,7 +118,7 @@
 
 						{% endfor %}
 					</ul>
-					<button type="button" class="add-another-collection-widget btn btn-info" data-list-selector="#video-fields-list">Add a video (youtube url only)</button>
+					<button type="button" class="add-another-collection-widget btn btn-info" data-list-selector="#video-fields-list">Add a video</button>
 				</div>
 			</div>
 
@@ -117,18 +138,24 @@
 				<div class="d-flex ml-md-auto mt-2">
 					<button type="submit" class="btn btn-info ml-2">Save</button>
 					{{ form_end(form) }}
-					<form method="post" id="trick_deletion" action="{{ path('user.trick.delete', {id: trick.id}) }}" onsubmit="return confirm('Are you sure ?');">
-						<input type="hidden" name="_method" value="DELETE">
-						<input type="hidden" name="_token" id="csrf_deletion" value="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
-						<button class="btn btn-danger ml-2">Delete</button>
-					</form>
-					
+					{% if type is not defined %}
+						<form method="post" id="trick_deletion" action="{{ path('user.trick.delete', {id: trick.id}) }}" onsubmit="return confirm('Are you sure ?');">
+							<input type="hidden" name="_method" value="DELETE">
+							<input type="hidden" name="_token" id="csrf_deletion" value="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
+							<button class="btn btn-danger ml-2">Delete</button>
+						</form>
+					{% endif %}
+
+
 				</div>
 
 			</div>
 
 		</div>
 
-		
+
 	</div>
-</div>{% endblock %}
+</div>
+{% include "trick/_modal_mainImage_deletion.html.twig" %}
+{% include "trick/_modal_deletion.html.twig" %}
+{% endblock %}

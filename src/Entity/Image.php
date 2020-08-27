@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MediaRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -23,13 +25,17 @@ class Image
      */
     private $name;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="images")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $trick;
-
     private $file;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Trick::class, mappedBy="images")
+     */
+    private $tricks;
+
+    public function __construct()
+    {
+        $this->tricks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -48,18 +54,6 @@ class Image
         return $this;
     }
 
-    public function getTrick(): ?Trick
-    {
-        return $this->trick;
-    }
-
-    public function setTrick(?Trick $trick): self
-    {
-        $this->trick = $trick;
-
-        return $this;
-    }
-
     public function getFile()
     {
         return $this->file;
@@ -68,6 +62,34 @@ class Image
     public function setFile(UploadedFile $file)
     {
         $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Trick[]
+     */
+    public function getTricks(): Collection
+    {
+        return $this->tricks;
+    }
+
+    public function addTrick(Trick $trick): self
+    {
+        if (!$this->tricks->contains($trick)) {
+            $this->tricks[] = $trick;
+            $trick->addImage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrick(Trick $trick): self
+    {
+        if ($this->tricks->contains($trick)) {
+            $this->tricks->removeElement($trick);
+            $trick->removeImage($this);
+        }
 
         return $this;
     }

@@ -4,7 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    media_directory: "%kernel.project_dir%/public/media/uploads"
+    media_directory: "%kernel.project_dir%/public/media/uploads/"
+    trick_media_directory: "%kernel.project_dir%/public/media/uploads/tricks/trick_"
+    user_media_directory: "%kernel.project_dir%/public/media/uploads/users/user_"
 
 services:
     # default configuration for services in *this* file
@@ -14,6 +16,8 @@ services:
 
         bind:
             $uploadsPath: '%kernel.project_dir%/public/media/uploads/'
+            $trickDirectory: '%kernel.project_dir%/public/media/uploads/tricks/trick_'
+            $userDirectory: '%kernel.project_dir%/public/media/uploads/users/user_'
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:

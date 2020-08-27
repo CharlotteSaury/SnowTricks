@@ -2,61 +2,64 @@
 
 namespace App\Controller;
 
-use Exception;
 use App\Entity\User;
+use App\Service\UserService;
 use App\Form\NewPasswordType;
 use App\Form\PasswordFormType;
 use App\Form\ResetPasswordType;
 use App\Form\RegistrationFormType;
+use App\Helper\MailSenderHelper;
 use App\Repository\UserRepository;
-use Symfony\Component\Mime\Address;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class SecurityController extends AbstractController
 {
+     /**
+      * @var UserRepository
+      */
+    private $userRepository;
+
     /**
-     * @Route("/register", name="app_register")
+     * @var UserService
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, TokenGeneratorInterface $tokenGenerator, MailerInterface $mailer): Response
+    private $userService;
+
+    /**
+     * @var MailSenderHelper
+     */
+    private $mailSenderHelper;
+
+    public function __construct(UserService $userService, MailSenderHelper $mailSenderHelper, UserRepository $userRepository)
+    {
+        $this->userService = $userService;
+        $this->mailSenderHelper = $mailSenderHelper;
+        $this->userRepository = $userRepository;
+    }
+
+    /**
+     * Handle registration
+     * 
+     * @Route("/register", name="app_register")
+     * 
+     * @param Request $request
+     * @return Response
+     */
+    public function register(Request $request): Response
     {        
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-                $passwordEncoder->encodePassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
-
-            $token = $tokenGenerator->generateToken();
-            $user->setActivationToken($token);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-
+            $token = $this->userService->handleNewUser($user, $form);
 
             $url = $this->generateUrl('app_verify_email', ['token' => $token]);
-
-            $message = (new TemplatedEmail())
-                ->from(new Address('mailer@snowtricks.com', 'No-reply Snowtricks'))
-                ->to(new Address($user->getEmail(), $user->getUsername()))
-                ->subject('Welcome to Snowtricks !')
-                ->context(['url' => $url])
-                ->htmlTemplate('email/account_confirmation.html.twig');
-
-            $mailer->send($message);
+            $this->mailSenderHelper->sendMail('account_confirmation', $user, ['url' => $url]);
 
             $this->addFlash('success', 'A confirmation link has been sent to your email. Please follow the link to activate your account !');
             return $this->redirectToRoute('trick.index');
@@ -68,29 +71,33 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * Check user account activation token 
+     * 
      * @Route("/verify/{token}", name="app_verify_email")
+     *
+     * @param string $token
+     * @return Response
      */
-    public function verifyUserEmail($token, UserRepository $repository): Response
+    public function verifyUserEmail($token): Response
     {
-        $user = $repository->findOneBy(['activationToken' => $token]);
-
+        $user = $this->userRepository->findOneBy(['activationToken' => $token]);
         if (!$user) {
             $this->addFlash('danger', 'Invalid token');
             return $this->redirectToRoute('trick.index');
         }
-        
-        $user->setActivationToken(null);
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
-
+        $this->userService->handleUserActivation($user);
         $this->addFlash('success', 'Your email address has been verified. Now login to access to all functionalities !');
 
         return $this->redirectToRoute('trick.index');
     }
 
     /**
+     * Handle user login
+     * 
      * @Route("/login", name="app_login")
+     *
+     * @param AuthenticationUtils $authenticationUtils
+     * @return Response
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -110,7 +117,12 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * 
+     * Handle user account logout
+     * 
      * @Route("/logout", name="app_logout")
+     *
+     * @return void
      */
     public function logout()
     {
@@ -118,9 +130,15 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * Handle reset password form 
+     * 
      * @Route("/user/reset_password", name="user.resetPass")
+     *
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return Response
      */
-    public function reset(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function reset(Request $request, UserPasswordEncoderInterface $passwordEncoder) : Response
     {
         $user = $this->getUser();
 
@@ -129,17 +147,9 @@ class SecurityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($passwordEncoder->isPasswordValid($this->getUser(), $form->get('oldPassword')->getData())) {
-                $user->setPassword(
-                    $passwordEncoder->encodePassword(
-                        $user,
-                        $form->get('plainPassword')->getData()
-                    )
-                );
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($user);
-                $em->flush();
+                $this->userService->handlePasswordUpdate($user, $form->get('plainPassword')->getData());
+                
                 $this->addFlash('success', 'Your password has been updated !');
-
                 return $this->redirectToRoute('user.resetPass');
             }
             $this->addFlash('danger', 'Your old password is not valid');
@@ -154,44 +164,31 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * 
+     * Handle forgot password page and forgot password reset link mail sending
+     * 
      * @Route("/forgot_password_link", name="app_forgotten_password")
+     *
+     * @param Request $request
+     * @return Response
      */
-    public function passwordLink(Request $request, UserRepository $repository, TokenGeneratorInterface $tokenGenerator, MailerInterface $mailer)
+    public function passwordLink(Request $request)
     {
         $form = $this->createForm(ResetPasswordType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() and $form->isValid()) {
             $data = $form->getData();
-            $user = $repository->findOneByUsername($data['username']);
+            $user = $this->userRepository->findOneBy(['username' => $data['username']]);
 
             if (!$user) {
                 $this->addFlash('danger', 'No account is associated with this username.');
                 return $this->redirectToRoute('app_forgotten_password');
             }
 
-            $token = $tokenGenerator->generateToken();
-
-            try {
-                $user->setResetToken($token);
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($user);
-                $em->flush();
-            } catch (\Exception $e) {
-                $this->addFlash('danger', 'An error has occured : ' . $e->getMessage());
-                return $this->redirectToRoute('app_forgotten_password');
-            }
-
+            $token = $this->userService->handleResetPassword($user);
             $url = $this->generateUrl('app_new_password', ['token' => $token]);
-
-            $message = (new TemplatedEmail())
-                ->from(new Address('mailer@snowtricks.com', 'No-reply Snowtricks'))
-                ->to(new Address($user->getEmail(), $user->getUsername()))
-                ->subject('Password reinitialization.')
-                ->context(['url' => $url])
-                ->htmlTemplate('email/password_reset.html.twig');
-
-            $mailer->send($message);
+            $this->mailSenderHelper->sendMail('password_reset', $user, ['url' => $url]);
 
             $this->addFlash('success', 'A confirmation link has been sent to your email. Please follow the link to choose a new password !');
             return $this->redirectToRoute('trick.index');
@@ -203,11 +200,17 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * Handle password reset link verification and new password form
+     * 
      * @Route("/new_password/{token}", name="app_new_password")
+     *
+     * @param string $token
+     * @param Request $request
+     * @return Response
      */
-    public function newPassword($token, Request $request, UserPasswordEncoderInterface $passwordEncoder, UserRepository $repository)
+    public function newPassword($token, Request $request)
     {
-        $user = $repository->findOneBy(['resetToken' => $token]);
+        $user = $this->userRepository->findOneBy(['resetToken' => $token]);
 
         if (!$user) {
             $this->addFlash('danger', 'Invalid token');
@@ -218,18 +221,8 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-                $passwordEncoder->encodePassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
-            $user->setResetToken(null);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            $this->userService->handlePasswordUpdate($user, $form->get('plainPassword')->getData());
             $this->addFlash('success', 'Your password has been updated !');
-
             return $this->redirectToRoute('trick.index');
         }
 

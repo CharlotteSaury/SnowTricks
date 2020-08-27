@@ -1,0 +1,28 @@
+App\Entity\User:
+  user_user:
+    username: "uniqueuser"
+    email: "unique@email.com"
+    created_at: <dateTime()>
+    password: \$argon2id\$v=19\$m=65536,t=4,p=1\$MXZKaEVjVnZZMXhTUHpRRw\$YvUl9NFKVrCuD32DgvqdBU7dE0H6vqBge3LwpSpp7nQ
+    roles: ["ROLE_USER"]
+
+  user2_user:
+    username: "user2"
+    email: "user2@email.com"
+    created_at: <dateTime()>
+    password: \$argon2id\$v=19\$m=65536,t=4,p=1\$MXZKaEVjVnZZMXhTUHpRRw\$YvUl9NFKVrCuD32DgvqdBU7dE0H6vqBge3LwpSpp7nQ
+    roles: ["ROLE_USER"]
+
+  user_moderator:
+    username: "moderator"
+    email: "moderator@email.com"
+    created_at: <dateTime()>
+    password: \$argon2id\$v=19\$m=65536,t=4,p=1\$MXZKaEVjVnZZMXhTUHpRRw\$YvUl9NFKVrCuD32DgvqdBU7dE0H6vqBge3LwpSpp7nQ
+    roles: ["ROLE_USER", "ROLE_MODERATOR"]
+
+  user_admin:
+    username: "admin"
+    email: "admin@email.com"
+    created_at: <dateTime()>
+    password: \$argon2id\$v=19\$m=65536,t=4,p=1\$MXZKaEVjVnZZMXhTUHpRRw\$YvUl9NFKVrCuD32DgvqdBU7dE0H6vqBge3LwpSpp7nQ
+    roles: ["ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN"]

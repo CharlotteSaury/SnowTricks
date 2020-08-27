@@ -23,7 +23,7 @@ class CommentVoter extends Voter
     protected function supports(string $attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!self::DELETE) {
+        if ($attribute != self::DELETE) {
             return false;
         }
 
@@ -43,7 +43,7 @@ class CommentVoter extends Voter
             return false;
         }
 
-        if ($this->security->isGranted('ROLE_ADMIN')) {
+        if ($this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_MODERATOR')) {
             return true;
         }
 

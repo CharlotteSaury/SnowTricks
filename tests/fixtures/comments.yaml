@@ -1,0 +1,6 @@
+App\Entity\Comment:
+  comment1:
+    content: <text()>
+    created_at: <datetime()>
+    author: '@user_user'
+    trick: '@trick1'

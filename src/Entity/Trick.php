@@ -2,18 +2,20 @@
 
 namespace App\Entity;
 
-use App\Repository\TrickRepository;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TrickRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TrickRepository::class)
  * @UniqueEntity(fields={"name"}, message="This figure already exists")
  */
-class Trick
+class Trick implements \ArrayAccess
 {
     /**
      * @ORM\Id()
@@ -24,11 +26,14 @@ class Trick
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Regex("#^[a-zA-Z0-9-]{2,30}$#")
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(min = "6", max="3000")
      */
     private $description;
 
@@ -65,12 +70,23 @@ class Trick
     private $author;
 
     /**
-     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="trick", orphanRemoval=true, cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="reportedTricks")
+     * @JoinColumn(name="parentTrick_id", referencedColumnName="id")
+     */
+    private $parentTrick;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Trick::class, mappedBy="parentTrick")
+     */
+    private $reportedTricks;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Image::class, inversedBy="tricks", cascade={"persist"})
      */
     private $images;
 
     /**
-     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="trick", orphanRemoval=true, cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity=Video::class, inversedBy="tricks", cascade={"persist"})
      */
     private $videos;
 
@@ -81,6 +97,7 @@ class Trick
         $this->updatedAt = new DateTime();
         $this->groups = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->reportedTricks = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->videos = new ArrayCollection();
     }
@@ -148,25 +165,12 @@ class Trick
         return $this->mainImage;
     }
 
-    public function setMainImage(string $mainImage): self
+    public function setMainImage($mainImage): self
     {
         $this->mainImage = $mainImage;
 
         return $this;
     }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     * @return void
-     */
-    /*public function updateTimestamps()
-    {
-        if ($this->createdAt === null) {
-            $this->setCreatedAt(new \DateTime());
-        }
-        $this->setUpdatedAt(new \DateTime());
-    }*/
 
     /**
      * @return Collection|Group[]
@@ -239,6 +243,66 @@ class Trick
         return $this;
     }
 
+    public function getParentTrick()
+    {
+        return $this->parentTrick;
+    }
+
+    public function setParentTrick($parentTrick)
+    {
+        $this->parentTrick = $parentTrick;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Trick[]
+     */
+    public function getReportedTricks(): Collection
+    {
+        return $this->reportedTricks;
+    }
+
+    public function addReportedTrick(Trick $reportedTrick): self
+    {
+        if (!$this->reportedTricks->contains($reportedTrick)) {
+            $this->reportedTricks[] = $reportedTrick;
+            $reportedTrick->setParentTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReportedTrick(Trick $reportedTrick): self
+    {
+        if ($this->reportedTricks->contains($reportedTrick)) {
+            $this->reportedTricks->removeElement($reportedTrick);
+            // set the owning side to null (unless already changed)
+            if ($reportedTrick->getParentTrick() === $this) {
+                $reportedTrick->setParentTrick(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function offsetExists($offset)
+    {
+        return property_exists($this, $offset);
+    }
+    public function offsetGet($offset)
+    {
+        return $this->$offset;
+    }
+    public function offsetSet($offset, $value)
+    {
+        $this->$offset = $value;
+    }
+    public function offsetUnset($offset)
+    {
+        unset($this->$offset);
+    }
+
     /**
      * @return Collection|Image[]
      */
@@ -251,7 +315,6 @@ class Trick
     {
         if (!$this->images->contains($image)) {
             $this->images[] = $image;
-            $image->setTrick($this);
         }
 
         return $this;
@@ -261,10 +324,6 @@ class Trick
     {
         if ($this->images->contains($image)) {
             $this->images->removeElement($image);
-            // set the owning side to null (unless already changed)
-            if ($image->getTrick() === $this) {
-                $image->setTrick(null);
-            }
         }
 
         return $this;
@@ -282,7 +341,6 @@ class Trick
     {
         if (!$this->videos->contains($video)) {
             $this->videos[] = $video;
-            $video->setTrick($this);
         }
 
         return $this;
@@ -292,13 +350,8 @@ class Trick
     {
         if ($this->videos->contains($video)) {
             $this->videos->removeElement($video);
-            // set the owning side to null (unless already changed)
-            if ($video->getTrick() === $this) {
-                $video->setTrick(null);
-            }
         }
 
         return $this;
     }
-
 }

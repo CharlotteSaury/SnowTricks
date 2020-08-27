@@ -1,34 +1,63 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Figure
+{% block meta %}
+	<meta name="description" content="More informations about {{ trick.name }} trick on Snowtricks, snowboarder community to learn snowboard tricks.">
+{% endblock %}
+
+{% block title %}{{ trick.name }}
 {% endblock %}
 
 
 {% block body %}
 	<div class="container-fluid py-5 trick-bg">
 		<div class="container-lg px-0" id="trickPage">
-			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/'~trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/'~trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
+			<div class="row d-flex flex-column justify-content-center align-items-center" id="trickMainImg" style="background: url('{% if trick.mainImage is not null %}{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ trick.mainImage) }}{% elseif trick.images is not empty %}{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ trick.images[0].name) }}{% else %}{{ asset('media/images/home.jpg') }}{% endif %}');">
 				<div class="py-2 px-3 mr-auto return-btn">
 					<a href="{{ path('trick.index') }}#trickList" class="btn btn-info">
-						<i class="fas fa-undo-alt mr-2"></i>Retour
+						<i class="fas fa-undo-alt mr-2"></i>Back
 					</a>
 				</div>
-				{% if app.user and app.user.id == trick.author.id or is_granted('ROLE_ADMIN') %}
-					<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
+				{% if app.user %}
+					{% if app.user.id == trick.author.id %}
+						<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
+							<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
+								<i class="fas fa-pencil-alt"></i>
+							</a>
+							<a class="ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
+								<i class="fas fa-trash-alt"></i>
+							</a>
+						</div>
+					{% elseif app.user.id != trick.author.id and not (is_granted('ROLE_ADMIN') or is_granted('ROLE_MODERATOR')) %}
+						<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
+							<a class="custom-link ml-1" href="{{ path('user.trick.report', {id: trick.id}) }}">
+								Report trick
+							</a>
+						</div>
+					{% elseif is_granted('ROLE_ADMIN') or is_granted('ROLE_MODERATOR') %}
+						<div class="card-actions trick-actions py-2 px-3 mt-2 ml-auto mr-2">
 
-						<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
-							<i class="fas fa-pencil-alt"></i>
-						</a>
-						<a class="ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
-							<i class="fas fa-trash-alt"></i>
-						</a>
-					</div>
+							<a href="{{ path('user.trick.edit', {id: trick.id}) }}">
+								<i class="fas fa-pencil-alt"></i>
+							</a>
+							<a class="ml-2" data-toggle="modal" data-target="#deleteTrickModal" data-action="{{ path('user.trick.delete', {id: trick.id}) }}" data-token="{{ csrf_token('trick_deletion_' ~ trick.id) }}">
+								<i class="fas fa-trash-alt"></i>
+							</a>
+							<a class="custom-link ml-1" href="{{ path('user.trick.report', {id: trick.id}) }}">
+								Report trick
+							</a>
+						</div>
+					{% endif %}
 				{% endif %}
 				<div class="text-center">
 					<h1>{{ trick.name }}</h1>
 				</div>
 				{% for message in app.flashes('success') %}
 					<div class="alert alert-info w-75 mt-3 text-center">
+						{{ message }}
+					</div>
+				{% endfor %}
+				{% for message in app.flashes('error') %}
+					<div class="alert alert-danger w-75 mt-3 text-center">
 						{{ message }}
 					</div>
 				{% endfor %}
@@ -42,23 +71,51 @@
 				{% if trick.images is not null %}
 					{% for image in trick.images %}
 						<div class="media-slider mb-3 mx-2">
-							<img class="img-thumbnail trick-media" width="175" src="{{ asset('media/uploads/'~image.name) }}" alt="{{ trick.name }}"/>
+							<img class="img-thumbnail trick-media" data-toggle="modal" data-target="#modalGallery" id="{{ loop.index }}" width="175" src="{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ image.name) }}" alt="{{ trick.name }}"/>
 						</div>
 					{% endfor %}
 				{% endif %}
 				{% if trick.videos is not null %}
 					{% for video in trick.videos %}
 						<div class="media-slider mb-3 mx-2">
-							<iframe class="trick-media" src="https://www.youtube.com/embed/{{ video.name[32:] }}" width="250" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							<iframe class="trick-media" id="{{ loop.index + trick.images|length }}" src="{{ video.name }}" width="250" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 						</div>
 					{% endfor %}
 				{% endif %}
 			</div>
 
+			<!-- Modal Gallery -->
+
+			<div id="modalGallery" class="modal">
+				
+				<div class="modal-content">
+					<div class="modal-header">
+						<span class="close cursor" class="close" data-dismiss="modal" aria-label="Close">&times;</span>
+					</div>
+					<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+						<div class="carousel-inner">
+							{% for image in trick.images %}
+								<div class="carousel-item" id="carousel{{ loop.index }}">
+									<img src="{{ asset('media/uploads/tricks/trick_' ~ trick.id ~ '/' ~ image.name) }}" class="d-block w-100" alt="{{ trick.name }}">
+								</div>
+							{% endfor %}
+						</div>
+						<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<span class="sr-only">Previous</span>
+						</a>
+						<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+							<span class="sr-only">Next</span>
+						</a>
+					</div>
+				</div>
+			</div>
+
 			<div class="row py-3 d-flex flex-column align-items-center pb-0 text-justify" id="trickInfos">
 				<p>{{ trick.description | nl2br }}</p>
 				<div class="row py-3 justify-content-center" id="trickBadges">
-					<a href="#" class="badge badge-light mr-2" title="More about author" data-toggle="modal" data-target="#userModal" {% if trick.author.avatar is not null %} data-avatar="{{ trick.author.avatar }}" {% else %} data-avatar="{{ asset('media/images/snowboarder.png') }}" {% endif %} {% if trick.author.description is not null %} data-description="{{ trick.author.description }}" {% endif %} {% if trick.author.firstName is not null and trick.author.lastName is not null %} data-name="{{ trick.author.firstName }} {{ trick.author.lastName }} as {{ trick.author.username }}" {% else %} data-name="{{ trick.author.username }}" {% endif %}>
+					<a href="#" class="badge badge-light mr-2" title="More about author" data-toggle="modal" data-target="#userModal" {% if trick.author.avatar is not null %} data-avatar="{{ asset('media/uploads/users/user_' ~ trick.author.id ~ '/' ~ trick.author.avatar) }}" {% else %} data-avatar="{{ asset('media/images/snowboarder.png') }}" {% endif %} {% if trick.author.description is not null %} data-description="{{ trick.author.description }}" {% endif %} {% if trick.author.firstName is not null and trick.author.lastName is not null %} data-name="{{ trick.author.firstName }} {{ trick.author.lastName }} as {{ trick.author.username }}" {% else %} data-name="{{ trick.author.username }}" {% endif %}>
 						By :
 						{% if trick.author.firstName is not null and trick.author.lastName is not null %}
 							{{ trick.author.firstName }}
@@ -116,12 +173,12 @@
 					{% for comment in trick.comments %}
 						<div class="d-flex justify-content-start align-items-center mb-3 w-100 trick-comment">
 							<div class="trick-comment-avatar">
-								<img class="avatar mr-4" src="{%if comment.author.avatar is not null %}{{ comment.author.getAvatar() }}{% else %}{{ asset('media/images/snowboarder.png') }}{% endif %}"/>
+								<img class="avatar mr-4" src="{% if comment.author.avatar is not null %}{{ asset('media/uploads/users/user_' ~ comment.author.id ~ '/' ~ comment.author.avatar) }}{% else %}{{ asset('media/images/snowboarder.png') }}{% endif %}"/>
 							</div>
 							<div class="text-justify trick-comment-content mb-2">
 								<p>{{ comment.content }}</p>
 								<p class="pr-2 mb-0">
-									<a href="#" class="custom-link" title="More about author" data-toggle="modal" data-target="#userModal" {% if comment.author.avatar is not null %} data-avatar="{{ comment.author.avatar }}" {% else %} data-avatar="{{ asset('media/images/snowboarder.png') }}" {% endif %} {% if comment.author.description is not null %} data-description="{{ comment.author.description }}" {% endif %} {% if comment.author.firstName is not null and comment.author.lastName is not null %} data-name="{{ comment.author.firstName }} {{ comment.author.lastName }} as {{ comment.author.username }}" {% else %} data-name="{{ comment.author.username }}" {% endif %}>
+									<a href="#" class="custom-link" title="More about author" data-toggle="modal" data-target="#userModal" {% if comment.author.avatar is not null %} data-avatar="{{ asset('media/uploads/users/user_' ~ comment.author.id ~ '/' ~ comment.author.avatar) }}" {% else %} data-avatar="{{ asset('media/images/snowboarder.png') }}" {% endif %} {% if comment.author.description is not null %} data-description="{{ comment.author.description }}" {% endif %} {% if comment.author.firstName is not null and comment.author.lastName is not null %} data-name="{{ comment.author.firstName }} {{ comment.author.lastName }} as {{ comment.author.username }}" {% else %} data-name="{{ comment.author.username }}" {% endif %}>
 										{% if comment.author.firstName is not null and comment.author.lastName is not null %}
 											{{ comment.author.firstName }}
 											{{ comment.author.lastName }}
@@ -131,7 +188,7 @@
 									</a>
 									-
 									{{ comment.createdAt|format_datetime(locale='us') }}
-									{% if app.user and app.user.id == comment.author.id %}
+									{% if app.user and app.user.id == comment.author.id  or is_granted('ROLE_ADMIN') or is_granted('ROLE_MODERATOR')%}
 										-
 										<a class="ml-2" data-toggle="modal" data-target="#deleteCommentModal" data-action="{{ path('user.comment.delete', {id: comment.id}) }}" data-token="{{ csrf_token('comment_deletion_' ~ comment.id) }}">
 											<i class="fas fa-trash-alt"></i>
@@ -151,4 +208,8 @@
 			</div>
 		</div>
 	</div>
-</div>{% endblock %}
+</div>
+{% include "comment/_modal_deletion.html.twig" %}
+{% include "trick/_modal_deletion.html.twig" %}
+{% include "user/_modal_profile.html.twig" %}
+{% endblock %}

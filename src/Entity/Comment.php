@@ -21,7 +21,7 @@ class Comment
     /**
      * @ORM\Column(type="text")
      * @Assert\Length(min="2", max="1000")
-     *  @Assert\NotBlank
+     * @Assert\NotBlank
      */
     private $content;
 

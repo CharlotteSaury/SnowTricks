@@ -1,0 +1,37 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}Edit group
+{% endblock %}
+
+{% block subtitle %}
+	Edit group
+{% endblock %}
+
+{% block body %}
+    <div class="py-4 px-4 dashboard-div justify-content-center" id="groups">
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-info w-100 mt-1 text-center">
+				{{ message }}
+			</div>
+		{% endfor %}
+		<div class="row pt-2 justify-content-center">
+        {{ form_start(form) }}
+            <div class="d-flex align-items-center justify-content-center" id="newGroup">
+                <label for= ></label>
+                <div>
+                {{ form_errors(form.name) }}
+                {{ form_widget(form.name) }}
+                </div>
+                <button type="sumbit" class="btn btn-info ml-3">Save changes</button>
+            </div>
+        {{ form_end(form) }}
+        
+        </div>
+        <div class="row justify-content-center mt-5">
+        <a class="btn btn-info" href="{{ path('group.index') }}">back to list</a>
+        </div>
+        
+    </div>
+
+    
+{% endblock %}

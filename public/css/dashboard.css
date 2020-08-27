@@ -1,14 +1,12 @@
-
 /*************************
 ******* Global ********
 *************************/
-
 
 #dashboard-nav {
     background-color: whitesmoke;
 }
 
-#dashboard-nav li a{
+#dashboard-nav li a {
     color: #89ACAA;
     text-decoration: none;
     font-size: 0.9rem;
@@ -43,22 +41,22 @@
     .btn-small {
         display: none;
     }
-    #dashboard-nav li:hover, #dashboard-nav .active{
+    #dashboard-nav li:hover,
+    #dashboard-nav .active {
         background-color: white;
         border-left: 3px solid #89ACAA;
     }
-    
     #dashboard-nav .nav-item {
         padding-left: 1rem;
     }
 }
 
-@media (max-width:576px) {    
+@media (max-width:576px) {
     #dashboard-nav .nav-link {
         padding: .5rem .75rem;
     }
     #dashboard-nav {
-        justify-content:center;
+        justify-content: center;
     }
 }
 
@@ -77,21 +75,24 @@
     font-size: 0.90rem;
 }
 
+.report-nb {
+    color: red;
+}
 
 
 /*************************
 ******* Profile page ********
 *************************/
 
- .avatar-input .custom-file{
-     display: none;
- }
+.avatar-input .custom-file {
+    display: none;
+}
 
- #profile li {
-     list-style-type: none;
- }
+#profile li {
+    list-style-type: none;
+}
 
- 
+
 /*************************
 ******* stats page ********
 *************************/
@@ -101,6 +102,7 @@
     align-self: center;
     margin-top: 1rem;
 }
+
 
 /*************************
 ******* users page ********
@@ -118,7 +120,6 @@
     .responsive-table-custom {
         display: none;
     }
-
     #adminUsers .table {
         font-size: 0.8rem;
     }
@@ -131,4 +132,14 @@
 
 #resetPass a {
     display: block;
+}
+
+
+/*************************
+******* groups page ********
+*************************/
+
+#newGroup label {
+    margin-right: 1rem;
+    ;
 }

@@ -19,11 +19,12 @@ class TrickVoter extends Voter
     }
 
     const EDIT = 'edit';
+    const REPORT = 'report';
 
     protected function supports(string $attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!self::EDIT) {
+        if (!in_array($attribute, [self::EDIT, self::REPORT])) {
             return false;
         }
 
@@ -43,16 +44,18 @@ class TrickVoter extends Voter
             return false;
         }
 
-        if ($this->security->isGranted('ROLE_ADMIN')) {
-            return true;
+        if ($this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_MODERATOR')) {
+            if ($attribute != self::REPORT) {
+                return true;
+            }  
         }
 
         /** @var Trick $trick */
         $trick = $subject;
 
-        if (self::EDIT) {
+        if (in_array($attribute, [self::EDIT, self::REPORT])) {
             return $this->canEdit($trick, $user);             
-        }
+        } 
 
         throw new \LogicException('This code should not be reached!');
     }

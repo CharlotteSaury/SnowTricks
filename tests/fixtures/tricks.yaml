@@ -5,3 +5,11 @@ App\Entity\Trick:
     created_at: <datetime()>
     updated_at: <dateTime("+1month")>
     author: '@user_user'
+
+  trick_reported:
+    name: trick2
+    description: <text()>
+    created_at: <datetime()>
+    updated_at: <dateTime("+1month")>
+    author: '@user2_user'
+    parentTrick: '@trick1'

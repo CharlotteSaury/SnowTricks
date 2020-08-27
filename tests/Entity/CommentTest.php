@@ -23,7 +23,7 @@ class CommentTest extends KernelTestCase
         $comment = new Comment();
         $comment->setContent('comment 1')
             ->setCreatedAt(new \DateTime())
-            ->setAuthor($fixtures['user1'])
+            ->setAuthor($fixtures['user_user'])
             ->setTrick($fixtures['trick1']);
 
         return $comment;

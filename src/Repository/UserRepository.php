@@ -30,16 +30,6 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->getOneOrNullResult();
     }
 
-    public function findOneByUsername($value): ?User
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.username = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-
     public function findUnverified()
     {
         return $this->createQueryBuilder('u')

@@ -179,7 +179,7 @@ class SecurityController extends AbstractController
 
         if ($form->isSubmitted() and $form->isValid()) {
             $data = $form->getData();
-            $user = $this->userRepository->findOneByUsername($data['username']);
+            $user = $this->userRepository->findOneBy(['username' => $data['username']]);
 
             if (!$user) {
                 $this->addFlash('danger', 'No account is associated with this username.');

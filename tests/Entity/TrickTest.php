@@ -24,7 +24,7 @@ class TrickTest extends KernelTestCase
             ->setDescription('description')
             ->setCreatedAt(new \DateTime())
             ->setUpdatedAt(new \DateTime())
-            ->setAuthor($fixtures['user1']);
+            ->setAuthor($fixtures['user_user']);
 
         return $trick;
     }

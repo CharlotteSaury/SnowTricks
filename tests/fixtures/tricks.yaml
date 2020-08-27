@@ -4,4 +4,4 @@ App\Entity\Trick:
     description: <text()>
     created_at: <datetime()>
     updated_at: <dateTime("+1month")>
-    author: '@user1'
+    author: '@user_user'

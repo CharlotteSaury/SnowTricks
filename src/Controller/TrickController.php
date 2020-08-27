@@ -11,7 +11,6 @@ use App\Helper\TrickGenerator;
 use App\Service\CommentService;
 use App\Helper\ImageFileDeletor;
 use App\Helper\MailSenderHelper;
-use Symfony\Component\Form\Form;
 use App\Repository\TrickRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -161,7 +160,7 @@ class TrickController extends AbstractController
      * @param Trick $trick
      * @param Request $request
      * @param ImageFileDeletor $imageFileDeletor
-     * @return void
+     * @return Response
      */
     public function deleteMainImage(Trick $trick, Request $request)
     {
@@ -184,7 +183,7 @@ class TrickController extends AbstractController
      *
      * @param Request $request
      * @param Trick $trick
-     * @return void
+     * @return Response
      */
     public function delete(Request $request, Trick $trick)
     {
@@ -236,7 +235,7 @@ class TrickController extends AbstractController
      */
     public function report(Trick $trick, Request $request, TrickGenerator $trickGenerator, MailSenderHelper $mailSenderHelper): Response
     {
-        $reportedTrick = $trickGenerator->transform($trick, $this->getUser());
+        $reportedTrick = $trickGenerator->clone($trick, $this->getUser());
         $form = $this->createForm(TrickType::class, $reportedTrick);
         $form->handleRequest($request);
 

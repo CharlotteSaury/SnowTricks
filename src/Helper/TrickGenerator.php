@@ -14,7 +14,7 @@ class TrickGenerator
     {
         $this->trickRepository = $trickRepository;
     }
-    public function transform(Trick $trick, User $user)
+    public function clone(Trick $trick, User $user)
     {
         $reportedTricks = count($this->trickRepository->findBy(['parentTrick' => $trick]));
         $reportedTrick = new Trick();

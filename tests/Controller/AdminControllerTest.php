@@ -12,6 +12,9 @@ class AdminControllerTest extends WebTestCase
     use NeedLogin;
     use FixturesTrait;
 
+    /**
+     * Test redirection to login page when trying to access statistics for visitors
+     */
     public function testStatisticPageNotAuthenticated()
     {
         $client = static::createClient();
@@ -19,24 +22,28 @@ class AdminControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
     
+    /**
+     * Test forbidden access to statistics page when not admin
+     */
     public function testStatisticPageAuthenticatedUser()
     {
         $client = static::createClient();
         $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
-        $this->login($client, $users['user_user']);
-        $client->request('GET', '/admin/statistics');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $unauthorizedUsers = [
+            $users['user_user'],
+            $users['user_moderator']
+        ];
+        foreach ($unauthorizedUsers as $user) {
+            $this->login($client, $user);
+            $client->request('GET', '/admin/statistics');
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        }
+        
     }
 
-    public function testStatisticPageAuthenticatedModerator()
-    {
-        $client = static::createClient();
-        $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
-        $this->login($client, $users['user_moderator']);
-        $client->request('GET', '/admin/statistics');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
+    /**
+     * Test access to statistics page when admin
+     */
     public function testStatisticPageAuthenticatedAdmin()
     {
         $client = static::createClient();

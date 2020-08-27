@@ -13,8 +13,9 @@ class GroupControllerTest extends WebTestCase
     use FixturesTrait;
 
     /**
-	 * @dataProvider provideAdminAccessibleUrls
-	 */
+     * Test redirection to login page for unloggued visitors when trying to access provideAdminAccessibleUrls
+     * @dataProvider provideAdminAccessibleUrls
+     */
     public function testPagesNotAuthenticated($method, $url)
     {
         $client = static::createClient();
@@ -30,61 +31,64 @@ class GroupControllerTest extends WebTestCase
             ['DELETE', '/admin/group1']
         ];
     }
-    
+
+    /**
+     * Test forbidden access to group index page when not admin
+     */
     public function testIndexPageAuthenticatedUser()
     {
         $client = static::createClient();
         $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
-        $this->login($client, $users['user_user']);
-        $client->request('GET', '/admin/groups');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $unauthorizedUsers = [
+            $users['user_user'],
+            $users['user_moderator']
+        ];
+        foreach ($unauthorizedUsers as $user) {
+            $this->login($client, $user);
+            $client->request('GET', '/admin/groups');
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        }
     }
 
-    public function testIndexPageAuthenticatedModerator()
-    {
-        $client = static::createClient();
-        $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
-        $this->login($client, $users['user_moderator']);
-        $client->request('GET', '/admin/groups');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
+    /**
+     * Test forbidden access to group edition page when not admin
+     */
     public function testEditPageAuthenticatedUser()
     {
         $client = static::createClient();
         $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
-        $this->login($client, $users['user_user']);
-        $client->request('GET', '/admin/group1/edit');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $unauthorizedUsers = [
+            $users['user_user'],
+            $users['user_moderator']
+        ];
+        foreach ($unauthorizedUsers as $user) {
+            $this->login($client, $user);
+            $client->request('GET', '/admin/group1/edit');
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        }
     }
 
-    public function testEditPageAuthenticatedModerator()
-    {
-        $client = static::createClient();
-        $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
-        $this->login($client, $users['user_moderator']);
-        $client->request('GET', '/admin/group1/edit');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
+    /**
+     * Test forbidden access to group deletion when not admin
+     */
     public function testDeleteGroupAuthenticatedUser()
     {
         $client = static::createClient();
         $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
-        $this->login($client, $users['user_user']);
-        $client->request('DELETE', '/admin/group1');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $unauthorizedUsers = [
+            $users['user_user'],
+            $users['user_moderator']
+        ];
+        foreach ($unauthorizedUsers as $user) {
+            $this->login($client, $user);
+            $client->request('DELETE', '/admin/group1');
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        }
     }
 
-    public function testDeleteGroupAuthenticatedModerator()
-    {
-        $client = static::createClient();
-        $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
-        $this->login($client, $users['user_moderator']);
-        $client->request('DELETE', '/admin/group1');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
+    /**
+     * Test access to group index page if admin
+     */
     public function testPagesAuthenticatedAdmin()
     {
         $client = static::createClient();
@@ -98,7 +102,9 @@ class GroupControllerTest extends WebTestCase
         $this->assertSelectorExists('nav');
     }
 
-
+    /**
+     * Test access to group edit page when admin
+     */
     public function testEditPageAuthenticatedAdmin()
     {
         $client = static::createClient();
@@ -112,6 +118,9 @@ class GroupControllerTest extends WebTestCase
         $this->assertSelectorExists('nav');
     }
 
+    /**
+     * Test redirection after group deletion when admin
+     */
     public function testDeletePageAuthenticatedAdmin()
     {
         $client = static::createClient();
@@ -121,5 +130,4 @@ class GroupControllerTest extends WebTestCase
         $client->request('DELETE', '/admin/group1');
         $this->assertResponseRedirects();
     }
-
 }

@@ -12,6 +12,10 @@ class TrickControllerTest extends WebTestCase
     use NeedLogin;
     use FixturesTrait;
 
+    /**
+     * Load fixtures files
+     * @return Array
+     */
     public function loadCustomFixtures()
     {
         return $this->loadFixtureFiles([

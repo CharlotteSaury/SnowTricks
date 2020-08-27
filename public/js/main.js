@@ -95,7 +95,8 @@ $(function() {
         $("#dashNavComments").html("<i class='fas fa-comment-dots'></i>");
         $("#dashNavStats").html("<i class='fas fa-chart-bar'></i>");
         $("#dashNavUsers").html("<i class='fas fa-users'></i>");
-        $("#dashNavPass, #dashNavAdd").parent().remove();
+        $("#dashNavGroups").html("<i class='fas fa-tags'></i>");
+        $("#dashNavPass, #dashNavAdd").remove();
         $("#dashboard-top a").html("<i class='fas fa-undo-alt mr-2'></i>");
 
         // Login, Registration, ForgotPass

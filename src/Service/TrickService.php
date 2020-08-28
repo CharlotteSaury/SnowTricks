@@ -2,11 +2,11 @@
 
 namespace App\Service;
 
-use App\Entity\Trick;
-use App\Entity\User;
 use DateTime;
+use App\Entity\User;
+use App\Entity\Trick;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class TrickService
@@ -38,7 +38,7 @@ class TrickService
      *
      * @return Trick $trick
      */
-    public function handleCreateOrUpdate(Trick $trick, Form $form, User $author)
+    public function handleCreateOrUpdate(Trick $trick, FormInterface $form, User $author)
     {
         try {
             $trick->setAuthor($author);

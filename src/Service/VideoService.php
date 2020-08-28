@@ -4,8 +4,8 @@ namespace App\Service;
 
 use App\Entity\Trick;
 use App\Helper\VideoLinkFormatter;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormInterface;
 
 class VideoService
 {
@@ -24,7 +24,7 @@ class VideoService
      *
      * @return void
      */
-    public function handleNewVideos(Trick $trick, Form $form)
+    public function handleNewVideos(Trick $trick, FormInterface $form)
     {
         try {
             $videos = $form->get('videos')->getData();

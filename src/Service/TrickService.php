@@ -36,7 +36,7 @@ class TrickService
     /**
      * Handle trick creation or update in database.
      *
-     * @return void
+     * @return Trick $trick
      */
     public function handleCreateOrUpdate(Trick $trick, Form $form, User $author)
     {

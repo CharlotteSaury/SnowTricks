@@ -10,6 +10,9 @@ use Symfony\Component\Security\Core\Security;
 
 class CommentVoter extends Voter
 {
+    /**
+     * @var Security
+     */
     private $security;
 
     public function __construct(Security $security)
@@ -56,6 +59,11 @@ class CommentVoter extends Voter
         throw new \LogicException('This code should not be reached!');
     }
 
+    /**
+     * @param Comment $comment
+     * @param User $user
+     * @return boolean
+     */
     private function canDelete(Comment $comment, User $user)
     {
         return $user === $comment->getAuthor();

@@ -2,12 +2,12 @@
 
 namespace App\Service;
 
-use App\Entity\Trick;
 use App\Entity\User;
-use App\Helper\ImageFileDeletor;
+use App\Entity\Trick;
 use App\Helper\UploaderHelper;
+use App\Helper\ImageFileDeletor;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
 class ImageService
@@ -45,7 +45,7 @@ class ImageService
      *
      * @return void
      */
-    public function handleMainImage(Trick $trick, Form $form)
+    public function handleMainImage(Trick $trick, FormInterface $form)
     {
         try {
             $mainImage = $form->get('mainImage')->getData();
@@ -63,7 +63,7 @@ class ImageService
      *
      * @return void
      */
-    public function handleImages(Trick $trick, Form $form)
+    public function handleImages(Trick $trick, FormInterface $form)
     {
         try {
             $images = $form->get('images')->getData();
@@ -185,7 +185,7 @@ class ImageService
      *
      * @return void
      */
-    public function handleAvatarEdition(User $user, Form $form)
+    public function handleAvatarEdition(User $user, FormInterface $form)
     {
         try {
             $avatar = $form->get('avatar')->getData();
@@ -203,7 +203,7 @@ class ImageService
      *
      * @return void
      */
-    public function handleAvatarFileDeletion(User $user, Form $form)
+    public function handleAvatarFileDeletion(User $user, FormInterface $form)
     {
         $avatar = $form->get('avatar')->getData();
         if (!empty($avatar)) {

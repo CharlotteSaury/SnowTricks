@@ -10,6 +10,9 @@ use Symfony\Component\Security\Core\Security;
 
 class TrickVoter extends Voter
 {
+    /**
+     * @var Security
+     */
     private $security;
 
     public function __construct(Security $security)
@@ -59,6 +62,11 @@ class TrickVoter extends Voter
         throw new \LogicException('This code should not be reached!');
     }
 
+    /**
+     * @param Trick $trick
+     * @param User $user
+     * @return boolean
+     */
     private function canEdit(Trick $trick, User $user)
     {
         return $user === $trick->getAuthor();

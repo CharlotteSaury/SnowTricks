@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
@@ -41,9 +41,9 @@ class UserService
     /**
      * Handle new user creation.
      *
-     * @return void
+     * @return String $token
      */
-    public function handleNewUser(User $user, Form $form)
+    public function handleNewUser(User $user, FormInterface $form)
     {
         try {
             $user->setPassword(
@@ -69,7 +69,7 @@ class UserService
      *
      * @return void
      */
-    public function handleProfileEdition(User $user, Form $form)
+    public function handleProfileEdition(User $user, FormInterface $form)
     {
         try {
             $this->imageService->handleAvatarEdition($user, $form);
@@ -120,7 +120,7 @@ class UserService
     /**
      * Handle reset password token generation.
      *
-     * @return void
+     * @return String $token
      */
     public function handleResetPassword(User $user)
     {

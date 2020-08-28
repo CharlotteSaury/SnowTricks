@@ -6,6 +6,9 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class UploaderHelper
 {
+    /**
+     * @var String
+     */
     private $uploadsPath;
 
     public function __construct(string $uploadsPath)

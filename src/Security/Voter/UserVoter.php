@@ -9,6 +9,9 @@ use Symfony\Component\Security\Core\Security;
 
 class UserVoter extends Voter
 {
+    /**
+     * @var Security
+     */
     private $security;
 
     public function __construct(Security $security)
@@ -55,6 +58,11 @@ class UserVoter extends Voter
         throw new \LogicException('This code should not be reached!');
     }
 
+    /**
+     * @param User $user
+     * @param User $currentUser
+     * @return boolean
+     */
     private function canAccess(User $user, User $currentUser)
     {
         return $user === $currentUser;

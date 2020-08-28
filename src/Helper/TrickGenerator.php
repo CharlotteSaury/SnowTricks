@@ -8,6 +8,9 @@ use App\Repository\TrickRepository;
 
 class TrickGenerator
 {
+    /**
+     * @var TrickRepository
+     */
     private $trickRepository;
 
     public function __construct(TrickRepository $trickRepository)
@@ -18,7 +21,7 @@ class TrickGenerator
     /**
      * Handle reported trick creation by clining parent trick properties.
      *
-     * @return void
+     * @return Trick 
      */
     public function clone(Trick $trick, User $user)
     {

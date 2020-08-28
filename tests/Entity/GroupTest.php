@@ -2,7 +2,6 @@
 
 namespace App\Tests\Entity;
 
-use DateTime;
 use App\Entity\Group;
 use App\Tests\Utils\AssertHasErrors;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
@@ -37,10 +36,10 @@ class GroupTest extends KernelTestCase
     public function testInvalidUniqueName()
     {
         $this->loadFixtureFiles([
-            dirname(__DIR__) . '/fixtures/groups.yaml'
+            \dirname(__DIR__).'/fixtures/groups.yaml',
         ]);
         $group = new Group();
-        $group->setName('grab'); 
+        $group->setName('grab');
         $this->assertHasErrors($group, 1);
     }
 }

@@ -23,7 +23,7 @@ class Video
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $name;
-  
+
     private $link;
 
     /**
@@ -52,7 +52,7 @@ class Video
 
         return $this;
     }
-      
+
     public function getLink(): ?string
     {
         return $this->link;

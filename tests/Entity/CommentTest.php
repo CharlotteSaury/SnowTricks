@@ -2,8 +2,6 @@
 
 namespace App\Tests\Entity;
 
-use DateTime;
-use Faker\Factory;
 use App\Entity\Comment;
 use App\Tests\Utils\AssertHasErrors;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
@@ -17,8 +15,8 @@ class CommentTest extends KernelTestCase
     public function getEntity(): Comment
     {
         $fixtures = $this->loadFixtureFiles([
-            dirname(__DIR__) . '/fixtures/users.yaml',
-            dirname(__DIR__) . '/fixtures/tricks.yaml'
+            \dirname(__DIR__).'/fixtures/users.yaml',
+            \dirname(__DIR__).'/fixtures/tricks.yaml',
         ]);
         $comment = new Comment();
         $comment->setContent('comment 1')
@@ -43,5 +41,4 @@ class CommentTest extends KernelTestCase
     {
         $this->assertHasErrors($this->getEntity()->setContent(''), 2);
     }
-    
 }

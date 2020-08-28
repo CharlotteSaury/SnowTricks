@@ -12,11 +12,13 @@ class UploaderHelper
     {
         $this->uploadsPath = $uploadsPath;
     }
+
     public function uploadFile(File $file, string $type, string $folderName): string
     {
-        $destination = $this->uploadsPath . $type . '/' . $folderName;
-        $newFileName =  md5(uniqid()) . '.' . $file->guessExtension();
+        $destination = $this->uploadsPath.$type.'/'.$folderName;
+        $newFileName = md5(uniqid()).'.'.$file->guessExtension();
         $file->move($destination, $newFileName);
+
         return $newFileName;
     }
 }

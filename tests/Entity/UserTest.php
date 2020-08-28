@@ -2,7 +2,6 @@
 
 namespace App\Tests\Entity;
 
-use DateTime;
 use App\Entity\User;
 use App\Tests\Utils\AssertHasErrors;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
@@ -50,7 +49,7 @@ class UserTest extends KernelTestCase
             'azerty@',
             '@email.com',
             '@email',
-            'azerty@email'
+            'azerty@email',
         ];
         foreach ($invalidEmails as $invalidEmail) {
             $this->assertHasErrors($this->getEntity()->setEmail($invalidEmail), 1);
@@ -67,7 +66,7 @@ class UserTest extends KernelTestCase
         $invalidNames = [
             123456,
             'User1',
-            'Namelonguerthanthirtycharacters'
+            'Namelonguerthanthirtycharacters',
         ];
         foreach ($invalidNames as $invalidName) {
             $this->assertHasErrors($this->getEntity()->setFirstName($invalidName), 1);
@@ -78,14 +77,14 @@ class UserTest extends KernelTestCase
     public function testInvalidUniqueUsername()
     {
         $user = $this->getEntity()->setUsername('uniqueuser');
-        $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
+        $this->loadFixtureFiles([\dirname(__DIR__).'/fixtures/users.yaml']);
         $this->assertHasErrors($user, 1);
     }
 
     public function testInvalidUniqueEmail()
     {
         $user = $this->getEntity()->setEmail('unique@email.com');
-        $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
+        $this->loadFixtureFiles([\dirname(__DIR__).'/fixtures/users.yaml']);
         $this->assertHasErrors($user, 1);
     }
 }

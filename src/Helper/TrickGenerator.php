@@ -2,8 +2,8 @@
 
 namespace App\Helper;
 
-use App\Entity\User;
 use App\Entity\Trick;
+use App\Entity\User;
 use App\Repository\TrickRepository;
 
 class TrickGenerator
@@ -14,11 +14,12 @@ class TrickGenerator
     {
         $this->trickRepository = $trickRepository;
     }
+
     public function clone(Trick $trick, User $user)
     {
-        $reportedTricks = count($this->trickRepository->findBy(['parentTrick' => $trick]));
+        $reportedTricks = \count($this->trickRepository->findBy(['parentTrick' => $trick]));
         $reportedTrick = new Trick();
-        $reportedTrick->setName($trick->getName() . '(' . ($reportedTricks + 1) . ')')
+        $reportedTrick->setName($trick->getName().'('.($reportedTricks + 1).')')
             ->setDescription($trick->getDescription())
             ->setMainImage($trick->getMainImage())
             ->setParentTrick($trick)
@@ -32,6 +33,7 @@ class TrickGenerator
         foreach ($trick->getVideos() as $video) {
             $reportedTrick->addVideo($video);
         }
+
         return $reportedTrick;
     }
 }

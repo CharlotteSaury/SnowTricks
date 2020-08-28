@@ -4,13 +4,12 @@ namespace App\Security\Voter;
 
 use App\Entity\Comment;
 use App\Entity\User;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Security;
 
 class CommentVoter extends Voter
 {
-
     private $security;
 
     public function __construct(Security $security)
@@ -23,7 +22,7 @@ class CommentVoter extends Voter
     protected function supports(string $attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if ($attribute != self::DELETE) {
+        if (self::DELETE !== $attribute) {
             return false;
         }
 
@@ -50,8 +49,8 @@ class CommentVoter extends Voter
         /** @var Comment $comment */
         $comment = $subject;
 
-        if ($attribute == self::DELETE) {
-                return $this->canDelete($comment, $user);
+        if (self::DELETE === $attribute) {
+            return $this->canDelete($comment, $user);
         }
 
         throw new \LogicException('This code should not be reached!');

@@ -6,11 +6,11 @@ use App\Entity\Group;
 use App\Form\GroupType;
 use App\Repository\GroupRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @IsGranted("ROLE_ADMIN", message="Access denied")
@@ -39,13 +39,14 @@ class GroupController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->persist($group);
             $this->entityManager->flush();
-            $this->addFlash('success', $group->getName() . ' has been added to group list !');
+            $this->addFlash('success', $group->getName().' has been added to group list !');
 
             return $this->redirectToRoute('group.index');
         }
+
         return $this->render('group/index.html.twig', [
             'groups' => $groupRepository->findAll(),
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -60,6 +61,7 @@ class GroupController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
             $this->addFlash('success', 'Group name has been updated !');
+
             return $this->redirectToRoute('group.index');
         }
 

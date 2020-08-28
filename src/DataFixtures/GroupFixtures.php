@@ -13,11 +13,11 @@ class GroupFixtures extends Fixture
         $faker = \Faker\Factory::create();
         $groups = ['grab', 'rotation', 'flip', 'slide', 'one foot trick', 'old school'];
 
-        for ($i = 0; $i < count($groups); $i++) {
+        for ($i = 0; $i < \count($groups); ++$i) {
             $group = new Group();
             $group->setName($groups[$i]);
             $manager->persist($group);
-            $this->addReference('group'. $i, $group);
+            $this->addReference('group'.$i, $group);
         }
         $manager->flush();
     }

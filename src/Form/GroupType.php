@@ -14,7 +14,7 @@ class GroupType extends AbstractType
     {
         $builder
             ->add('name', TypeTextType::class, [
-                'label' => 'Add new group :'
+                'label' => 'Add new group :',
             ])
         ;
     }

@@ -14,12 +14,13 @@ class VideoLinkFormatter
     public function format(string $link): string
     {
         if (preg_match(self::REGEX_YOUTUBE, $link, $matches)) {
-            $formattedName = self::URL_YOUTUBE . $matches[1];
+            $formattedName = self::URL_YOUTUBE.$matches[1];
         } elseif (preg_match(self::REGEX_DAILYMOTION, $link, $matches)) {
-            $formattedName = self::URL_DAILYMOTION . $matches[1];
+            $formattedName = self::URL_DAILYMOTION.$matches[1];
         } elseif (preg_match(self::REGEX_VIMEO, $link, $matches)) {
-            $formattedName = self::URL_VIMEO . $matches[1];
+            $formattedName = self::URL_VIMEO.$matches[1];
         }
+
         return $formattedName;
     }
 }

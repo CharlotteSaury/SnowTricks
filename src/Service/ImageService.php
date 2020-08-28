@@ -2,12 +2,12 @@
 
 namespace App\Service;
 
-use App\Entity\User;
 use App\Entity\Trick;
-use App\Helper\UploaderHelper;
+use App\Entity\User;
 use App\Helper\ImageFileDeletor;
-use Symfony\Component\Form\Form;
+use App\Helper\UploaderHelper;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
 class ImageService
@@ -28,7 +28,7 @@ class ImageService
     private $fileSystem;
 
     /**
-     * @var String
+     * @var string
      */
     private $trickDirectory;
 
@@ -41,10 +41,8 @@ class ImageService
     }
 
     /**
-     * Handle new main image upload
+     * Handle new main image upload.
      *
-     * @param Trick $trick
-     * @param Form $form
      * @return void
      */
     public function handleMainImage(Trick $trick, Form $form)
@@ -52,7 +50,7 @@ class ImageService
         try {
             $mainImage = $form->get('mainImage')->getData();
             if (!empty($mainImage)) {
-                $mainImageName = $this->uploaderHelper->uploadFile($mainImage, 'tricks', 'trick_' . $trick->getId());
+                $mainImageName = $this->uploaderHelper->uploadFile($mainImage, 'tricks', 'trick_'.$trick->getId());
                 $trick->setMainImage($mainImageName);
             }
         } catch (\Exception $exception) {
@@ -61,10 +59,8 @@ class ImageService
     }
 
     /**
-     * Handle new images upload
+     * Handle new images upload.
      *
-     * @param Trick $trick
-     * @param Form $form
      * @return void
      */
     public function handleImages(Trick $trick, Form $form)
@@ -72,8 +68,8 @@ class ImageService
         try {
             $images = $form->get('images')->getData();
             foreach ($images as $image) {
-                if ($image->getFile() != null) {
-                    $imageName = $this->uploaderHelper->uploadFile($image->getFile(), 'tricks', 'trick_' . $trick->getId());
+                if (null !== $image->getFile()) {
+                    $imageName = $this->uploaderHelper->uploadFile($image->getFile(), 'tricks', 'trick_'.$trick->getId());
 
                     $image->setName($imageName);
                     $trick->addImage($image);
@@ -85,9 +81,8 @@ class ImageService
     }
 
     /**
-     * Handle image file uploads deletion after trick edition if deleted
+     * Handle image file uploads deletion after trick edition if deleted.
      *
-     * @param Trick $trick
      * @return void
      */
     public function handleImageFiles(Trick $trick)
@@ -104,36 +99,33 @@ class ImageService
     }
 
     /**
-     * handle folder name edition after trick persistence
+     * handle folder name edition after trick persistence.
      *
-     * @param Trick $trick
      * @return void
      */
-    public function handleImageFolderRename(Trick $trick) 
+    public function handleImageFolderRename(Trick $trick)
     {
         if ($this->fileSystem->exists($this->trickDirectory)) {
-            $this->fileSystem->rename($this->trickDirectory, $this->trickDirectory . $trick->getId());
+            $this->fileSystem->rename($this->trickDirectory, $this->trickDirectory.$trick->getId());
         }
     }
 
     /**
-     * Handle image file uploads folder deletion after trick edition
+     * Handle image file uploads folder deletion after trick edition.
      *
-     * @param Trick $trick
      * @return void
      */
-    public function handleImageFolderDeletion(Trick $trick) 
+    public function handleImageFolderDeletion(Trick $trick)
     {
-        $directory = $this->trickDirectory . $trick->getId();
+        $directory = $this->trickDirectory.$trick->getId();
         if ($this->fileSystem->exists($directory)) {
             $this->fileSystem->remove($directory);
         }
     }
 
     /**
-     * Handle main image deletion
+     * Handle main image deletion.
      *
-     * @param Trick $trick
      * @return void
      */
     public function handleMainImageDeletion(Trick $trick)
@@ -146,10 +138,8 @@ class ImageService
     }
 
     /**
-     * Handle reported main image edition
+     * Handle reported main image edition.
      *
-     * @param Trick $reportedTrick
-     * @param Request $request
      * @return void
      */
     public function handleMainImageReport(Trick $reportedTrick, Request $request)
@@ -158,7 +148,7 @@ class ImageService
             $trick = $reportedTrick->getParentTrick();
             if ($request->request->get('reported_mainImage')) {
                 $trick->setMainImage($reportedTrick->getMainImage());
-                $this->fileSystem->copy($this->trickDirectory . $reportedTrick->getId() . '/' . $reportedTrick->getMainImage(), $this->trickDirectory . $reportedTrick->getParentTrick()->getId() . '/' . $reportedTrick->getMainImage(), true);
+                $this->fileSystem->copy($this->trickDirectory.$reportedTrick->getId().'/'.$reportedTrick->getMainImage(), $this->trickDirectory.$reportedTrick->getParentTrick()->getId().'/'.$reportedTrick->getMainImage(), true);
             }
         } catch (\Exception $exception) {
             throw $exception;
@@ -166,10 +156,8 @@ class ImageService
     }
 
     /**
-     * Handle new reported images and deleted reported images
+     * Handle new reported images and deleted reported images.
      *
-     * @param Trick $reportedTrick
-     * @param Request $request
      * @return void
      */
     public function handleImageReport(Trick $reportedTrick, Request $request)
@@ -177,14 +165,14 @@ class ImageService
         try {
             $trick = $reportedTrick->getParentTrick();
             foreach ($trick->getImages() as $image) {
-                if ($request->request->get('image_' . $image->getId())) {
+                if ($request->request->get('image_'.$image->getId())) {
                     $trick->removeImage($image);
                 }
             }
             foreach ($reportedTrick->getImages() as $image) {
-                if ($request->request->get('reported_image_' . $image->getId())) {
+                if ($request->request->get('reported_image_'.$image->getId())) {
                     $trick->addImage($image);
-                    $this->fileSystem->copy($this->trickDirectory . $reportedTrick->getId() . '/' . $image->getName(), $this->trickDirectory . $reportedTrick->getParentTrick()->getId() . '/' . $image->getName(), true);
+                    $this->fileSystem->copy($this->trickDirectory.$reportedTrick->getId().'/'.$image->getName(), $this->trickDirectory.$reportedTrick->getParentTrick()->getId().'/'.$image->getName(), true);
                 }
             }
         } catch (\Exception $exception) {
@@ -193,18 +181,16 @@ class ImageService
     }
 
     /**
-     * Handle user avatar edition
+     * Handle user avatar edition.
      *
-     * @param User $user
-     * @param Form $form
      * @return void
      */
-    public function handleAvatarEdition(User $user, Form $form) 
+    public function handleAvatarEdition(User $user, Form $form)
     {
         try {
             $avatar = $form->get('avatar')->getData();
             if (!empty($avatar)) {
-                $avatarName = $this->uploaderHelper->uploadFile($avatar, 'users', 'user_' . $user->getId());
+                $avatarName = $this->uploaderHelper->uploadFile($avatar, 'users', 'user_'.$user->getId());
                 $user->setAvatar($avatarName);
             }
         } catch (\Exception $exception) {
@@ -213,10 +199,8 @@ class ImageService
     }
 
     /**
-     * Handle avatar file deletion after edition
+     * Handle avatar file deletion after edition.
      *
-     * @param User $user
-     * @param Form $form
      * @return void
      */
     public function handleAvatarFileDeletion(User $user, Form $form)

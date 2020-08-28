@@ -3,13 +3,12 @@
 namespace App\Security\Voter;
 
 use App\Entity\User;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Security;
 
 class UserVoter extends Voter
 {
-
     private $security;
 
     public function __construct(Security $security)
@@ -22,7 +21,7 @@ class UserVoter extends Voter
     protected function supports(string $attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if ($attribute != self::ACCESS) {
+        if (self::ACCESS !== $attribute) {
             return false;
         }
 
@@ -49,8 +48,8 @@ class UserVoter extends Voter
         /** @var User $user */
         $user = $subject;
 
-        if ($attribute == self::ACCESS) {
-                return $this->canAccess($user, $currentUser);
+        if (self::ACCESS === $attribute) {
+            return $this->canAccess($user, $currentUser);
         }
 
         throw new \LogicException('This code should not be reached!');

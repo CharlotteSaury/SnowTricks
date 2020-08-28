@@ -10,8 +10,8 @@ trait AssertHasErrors
         $errors = self::$container->get('validator')->validate($entity);
         $messages = [];
         /** @var ConstraintViolation $error */
-        foreach($errors as $error) {
-            $messages[] = $error->getPropertyPath() . ' => ' . $error->getMessage();
+        foreach ($errors as $error) {
+            $messages[] = $error->getPropertyPath().' => '.$error->getMessage();
         }
         $this->assertCount($number, $errors, implode(', ', $messages));
     }

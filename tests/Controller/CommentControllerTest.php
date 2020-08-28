@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Controller;
 
 use App\Tests\Utils\NeedLogin;
-use Symfony\Component\HttpFoundation\Response;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class CommentControllerTest extends WebTestCase
 {
@@ -13,20 +13,22 @@ class CommentControllerTest extends WebTestCase
     use FixturesTrait;
 
     /**
-     * Load fixtures files
-     * @return Array
+     * Load fixtures files.
+     *
+     * @return array
      */
     public function loadCustomFixtures()
     {
         return $this->loadFixtureFiles([
-            dirname(__DIR__) . '/fixtures/tricks.yaml',
-            dirname(__DIR__) . '/fixtures/users.yaml',
-            dirname(__DIR__) . '/fixtures/comments.yaml'
+            \dirname(__DIR__).'/fixtures/tricks.yaml',
+            \dirname(__DIR__).'/fixtures/users.yaml',
+            \dirname(__DIR__).'/fixtures/comments.yaml',
         ]);
     }
 
     /**
-     * Test redirection to login page if unauthenticated visitor try to access restricted pages (provideUserAccessibleUrls)
+     * Test redirection to login page if unauthenticated visitor try to access restricted pages (provideUserAccessibleUrls).
+     *
      * @dataProvider provideUserAccessibleUrls
      */
     public function testPagesNotAuthenticated($method, $url)
@@ -40,12 +42,12 @@ class CommentControllerTest extends WebTestCase
     {
         return [
             ['GET', '/user/comments'],
-            ['DELETE', '/user/comment/delete1']
+            ['DELETE', '/user/comment/delete1'],
         ];
     }
 
     /**
-     * Test access to user comment page for authenticated user
+     * Test access to user comment page for authenticated user.
      */
     public function testCommentsPageAuthenticatedUser()
     {
@@ -59,7 +61,7 @@ class CommentControllerTest extends WebTestCase
     }
 
     /**
-     * Test redirection after successful comment deletion for authorized users (author, moderator, admin)
+     * Test redirection after successful comment deletion for authorized users (author, moderator, admin).
      */
     public function testCommentDeletionRightUser()
     {
@@ -68,7 +70,7 @@ class CommentControllerTest extends WebTestCase
         $authorizedUsers = [
             $fixtures['user_user'],
             $fixtures['user_moderator'],
-            $fixtures['user_admin']
+            $fixtures['user_admin'],
         ];
         foreach ($authorizedUsers as $user) {
             $this->login($client, $user);
@@ -78,7 +80,7 @@ class CommentControllerTest extends WebTestCase
     }
 
     /**
-     * Test forbidden access to other user's comment deletion
+     * Test forbidden access to other user's comment deletion.
      */
     public function testCommentDeletionWrongUser()
     {

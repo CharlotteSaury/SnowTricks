@@ -10,9 +10,9 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 trait NeedLogin
 {
     /**
-     * Connect a user on client using cookie system
+     * Connect a user on client using cookie system.
      **/
-    public function login (KernelBrowser $client, User $user)
+    public function login(KernelBrowser $client, User $user)
     {
         $session = $client->getContainer()->get('session');
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
@@ -22,5 +22,4 @@ trait NeedLogin
         $cookie = new Cookie($session->getName(), $session->getId());
         $client->getCookieJar()->set($cookie);
     }
-
 }

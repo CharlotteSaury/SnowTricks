@@ -2,12 +2,12 @@
 
 namespace App\Service;
 
-use DateTime;
-use Exception;
-use App\Entity\User;
-use App\Entity\Trick;
 use App\Entity\Comment;
+use App\Entity\Trick;
+use App\Entity\User;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 
 class CommentService
 {
@@ -16,7 +16,7 @@ class CommentService
      */
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager) 
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
@@ -35,7 +35,7 @@ class CommentService
         }
     }
 
-    public function handleDeleteComment(Comment $comment) 
+    public function handleDeleteComment(Comment $comment)
     {
         try {
             $this->entityManager->remove($comment);

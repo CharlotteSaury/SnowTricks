@@ -4,7 +4,6 @@ namespace App\Security;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -74,6 +73,7 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Invalid username and/or password');
         }
+
         return $user;
     }
 
@@ -85,11 +85,13 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
-            if (stristr($targetPath, 'register')) {
+            if (mb_stristr($targetPath, 'register')) {
                 return new RedirectResponse($this->urlGenerator->generate('trick.index'));
             }
+
             return new RedirectResponse($targetPath);
         }
+
         return new RedirectResponse($this->urlGenerator->generate('trick.index'));
     }
 

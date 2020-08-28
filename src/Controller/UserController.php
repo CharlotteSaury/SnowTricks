@@ -9,10 +9,10 @@ use App\Repository\TrickRepository;
 use App\Repository\UserRepository;
 use App\Service\UserService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
@@ -27,57 +27,45 @@ class UserController extends AbstractController
     }
 
     /**
-     * Display user tricks and comments number
-     * 
+     * Display user tricks and comments number.
+     *
      * @IsGranted("access", subject="user", message="Access denied")
      * @Route("/user/dashboard/{username}", name="user.dashboard")
-     *
-     * @param User $user
-     * @param TrickRepository $trickRepository
-     * @param CommentRepository $commentRepository
-     * @return Response
      */
-    public function dashboard(User $user, TrickRepository $trickRepository, CommentRepository $commentRepository) : Response
+    public function dashboard(User $user, TrickRepository $trickRepository, CommentRepository $commentRepository): Response
     {
-        $tricksNb = count($trickRepository->findBy(['author' => $user->getId()]));
-        $commentsNb = count($commentRepository->findBy(['author' => $user->getId()]));
+        $tricksNb = \count($trickRepository->findBy(['author' => $user->getId()]));
+        $commentsNb = \count($commentRepository->findBy(['author' => $user->getId()]));
 
         return $this->render('user/dashboard.html.twig', [
             'user' => $user,
             'tricksNb' => $tricksNb,
             'commentsNb' => $commentsNb,
-            'nav' => 'dashboard'
+            'nav' => 'dashboard',
         ]);
     }
 
     /**
-     * Display user profile
-     * 
+     * Display user profile.
+     *
      * @IsGranted("access", subject="user", message="Access denied")
      * @Route("/user/profile/{username}", name="user.profile")
-     *
-     * @param User $user
-     * @return Response
      */
     public function profile(User $user): Response
     {
         return $this->render('user/profile.html.twig', [
             'user' => $user,
-            'nav' => 'profile'
+            'nav' => 'profile',
         ]);
     }
 
     /**
-     * Handle user profile edition
-     * 
+     * Handle user profile edition.
+     *
      * @IsGranted("access", subject="user", message="Access denied")
      * @Route("/user/edit/{username}", name="user.edit")
-     *
-     * @param Request $request
-     * @param User $user
-     * @return Response
      */
-    public function edit(Request $request, User $user) : Response
+    public function edit(Request $request, User $user): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -87,25 +75,22 @@ class UserController extends AbstractController
             $this->addFlash('success', 'Your profile has been updated !');
 
             return $this->redirectToRoute('user.profile', [
-                'username' => $user->getUsername()
+                'username' => $user->getUsername(),
             ]);
         }
 
         return $this->render('user/edit.html.twig', [
             'user' => $user,
             'nav' => 'profile',
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * Display users list accessible to admin
-     * 
+     * Display users list accessible to admin.
+     *
      * @IsGranted("ROLE_ADMIN")
      * @Route("/users", name="admin.users")
-     *
-     * @param UserRepository $userRepository
-     * @return Response
      */
     public function users(UserRepository $userRepository): Response
     {
@@ -115,7 +100,7 @@ class UserController extends AbstractController
         return $this->render('admin/users.html.twig', [
             'verifiedUsers' => $verifiedUsers,
             'unverifiedUsers' => $unverifiedUsers,
-            'nav' => 'users'
+            'nav' => 'users',
         ]);
     }
 }

@@ -2,11 +2,9 @@
 
 namespace App\Service;
 
-use Exception;
 use App\Entity\User;
-use App\Service\ImageService;
-use Symfony\Component\Form\Form;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
@@ -40,7 +38,7 @@ class UserService
         $this->imageService = $imageService;
     }
 
-    public function handleNewUser(User $user, Form $form) 
+    public function handleNewUser(User $user, Form $form)
     {
         try {
             $user->setPassword(
@@ -54,13 +52,13 @@ class UserService
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
+
             return $token;
         } catch (\Exception $exception) {
             throw $exception;
         }
-        
     }
-    
+
     public function handleProfileEdition(User $user, Form $form)
     {
         try {
@@ -97,19 +95,19 @@ class UserService
         } catch (\Exception $exception) {
             throw $exception;
         }
-        
     }
 
     public function handleResetPassword(User $user)
-    {   
+    {
         try {
             $token = $this->tokenGenerator->generateToken();
-                $user->setResetToken($token);
-                $this->entityManager->persist($user);
-                $this->entityManager->flush();
-                return $token;
-            } catch (\Exception $exception) {
-                throw $exception;
-            }
+            $user->setResetToken($token);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+            return $token;
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
     }
 }

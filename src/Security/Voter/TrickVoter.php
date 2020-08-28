@@ -2,15 +2,17 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\User;
 use App\Entity\Trick;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Security;
 
 class TrickVoter extends Voter
 {
-
+    /**
+     * @var Security
+     */
     private $security;
 
     public function __construct(Security $security)
@@ -24,7 +26,7 @@ class TrickVoter extends Voter
     protected function supports(string $attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, [self::EDIT, self::REPORT])) {
+        if (!\in_array($attribute, [self::EDIT, self::REPORT], true)) {
             return false;
         }
 
@@ -45,21 +47,26 @@ class TrickVoter extends Voter
         }
 
         if ($this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_MODERATOR')) {
-            if ($attribute != self::REPORT) {
+            if (self::REPORT !== $attribute) {
                 return true;
-            }  
+            }
         }
 
         /** @var Trick $trick */
         $trick = $subject;
 
-        if (in_array($attribute, [self::EDIT, self::REPORT])) {
-            return $this->canEdit($trick, $user);             
-        } 
+        if (\in_array($attribute, [self::EDIT, self::REPORT], true)) {
+            return $this->canEdit($trick, $user);
+        }
 
         throw new \LogicException('This code should not be reached!');
     }
 
+    /**
+     * @param Trick $trick
+     * @param User $user
+     * @return boolean
+     */
     private function canEdit(Trick $trick, User $user)
     {
         return $user === $trick->getAuthor();

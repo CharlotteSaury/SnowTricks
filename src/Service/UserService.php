@@ -2,11 +2,9 @@
 
 namespace App\Service;
 
-use Exception;
 use App\Entity\User;
-use App\Service\ImageService;
-use Symfony\Component\Form\Form;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
@@ -40,7 +38,12 @@ class UserService
         $this->imageService = $imageService;
     }
 
-    public function handleNewUser(User $user, Form $form) 
+    /**
+     * Handle new user creation.
+     *
+     * @return String $token
+     */
+    public function handleNewUser(User $user, FormInterface $form)
     {
         try {
             $user->setPassword(
@@ -54,14 +57,19 @@ class UserService
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
+
             return $token;
         } catch (\Exception $exception) {
             throw $exception;
         }
-        
     }
-    
-    public function handleProfileEdition(User $user, Form $form)
+
+    /**
+     * Handle user profile edition.
+     *
+     * @return void
+     */
+    public function handleProfileEdition(User $user, FormInterface $form)
     {
         try {
             $this->imageService->handleAvatarEdition($user, $form);
@@ -74,6 +82,11 @@ class UserService
         }
     }
 
+    /**
+     * Handle activation token deletion after user activation by activation link.
+     *
+     * @return void
+     */
     public function handleUserActivation(User $user)
     {
         try {
@@ -85,6 +98,11 @@ class UserService
         }
     }
 
+    /**
+     * Handle password update.
+     *
+     * @return void
+     */
     public function handlePasswordUpdate(User $user, string $password)
     {
         try {
@@ -97,19 +115,24 @@ class UserService
         } catch (\Exception $exception) {
             throw $exception;
         }
-        
     }
 
+    /**
+     * Handle reset password token generation.
+     *
+     * @return String $token
+     */
     public function handleResetPassword(User $user)
-    {   
+    {
         try {
             $token = $this->tokenGenerator->generateToken();
-                $user->setResetToken($token);
-                $this->entityManager->persist($user);
-                $this->entityManager->flush();
-                return $token;
-            } catch (\Exception $exception) {
-                throw $exception;
-            }
+            $user->setResetToken($token);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+            return $token;
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
     }
 }

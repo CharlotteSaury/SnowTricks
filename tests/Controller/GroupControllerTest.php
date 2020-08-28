@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Controller;
 
 use App\Tests\Utils\NeedLogin;
-use Symfony\Component\HttpFoundation\Response;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class GroupControllerTest extends WebTestCase
 {
@@ -13,7 +13,8 @@ class GroupControllerTest extends WebTestCase
     use FixturesTrait;
 
     /**
-     * Test redirection to login page for unloggued visitors when trying to access provideAdminAccessibleUrls
+     * Test redirection to login page for unloggued visitors when trying to access provideAdminAccessibleUrls.
+     *
      * @dataProvider provideAdminAccessibleUrls
      */
     public function testPagesNotAuthenticated($method, $url)
@@ -28,20 +29,20 @@ class GroupControllerTest extends WebTestCase
         return [
             ['GET', '/admin/groups'],
             ['GET', '/admin/group1/edit'],
-            ['DELETE', '/admin/group1']
+            ['DELETE', '/admin/group1'],
         ];
     }
 
     /**
-     * Test forbidden access to group index page when not admin
+     * Test forbidden access to group index page when not admin.
      */
     public function testIndexPageAuthenticatedUser()
     {
         $client = static::createClient();
-        $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
+        $users = $this->loadFixtureFiles([\dirname(__DIR__).'/fixtures/users.yaml']);
         $unauthorizedUsers = [
             $users['user_user'],
-            $users['user_moderator']
+            $users['user_moderator'],
         ];
         foreach ($unauthorizedUsers as $user) {
             $this->login($client, $user);
@@ -51,15 +52,15 @@ class GroupControllerTest extends WebTestCase
     }
 
     /**
-     * Test forbidden access to group edition page when not admin
+     * Test forbidden access to group edition page when not admin.
      */
     public function testEditPageAuthenticatedUser()
     {
         $client = static::createClient();
-        $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
+        $users = $this->loadFixtureFiles([\dirname(__DIR__).'/fixtures/users.yaml']);
         $unauthorizedUsers = [
             $users['user_user'],
-            $users['user_moderator']
+            $users['user_moderator'],
         ];
         foreach ($unauthorizedUsers as $user) {
             $this->login($client, $user);
@@ -69,15 +70,15 @@ class GroupControllerTest extends WebTestCase
     }
 
     /**
-     * Test forbidden access to group deletion when not admin
+     * Test forbidden access to group deletion when not admin.
      */
     public function testDeleteGroupAuthenticatedUser()
     {
         $client = static::createClient();
-        $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
+        $users = $this->loadFixtureFiles([\dirname(__DIR__).'/fixtures/users.yaml']);
         $unauthorizedUsers = [
             $users['user_user'],
-            $users['user_moderator']
+            $users['user_moderator'],
         ];
         foreach ($unauthorizedUsers as $user) {
             $this->login($client, $user);
@@ -87,12 +88,12 @@ class GroupControllerTest extends WebTestCase
     }
 
     /**
-     * Test access to group index page if admin
+     * Test access to group index page if admin.
      */
     public function testPagesAuthenticatedAdmin()
     {
         $client = static::createClient();
-        $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
+        $users = $this->loadFixtureFiles([\dirname(__DIR__).'/fixtures/users.yaml']);
         $this->login($client, $users['user_admin']);
         $client->request('GET', '/admin/groups');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -103,13 +104,13 @@ class GroupControllerTest extends WebTestCase
     }
 
     /**
-     * Test access to group edit page when admin
+     * Test access to group edit page when admin.
      */
     public function testEditPageAuthenticatedAdmin()
     {
         $client = static::createClient();
-        $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
-        $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/groups.yaml']);
+        $users = $this->loadFixtureFiles([\dirname(__DIR__).'/fixtures/users.yaml']);
+        $this->loadFixtureFiles([\dirname(__DIR__).'/fixtures/groups.yaml']);
         $this->login($client, $users['user_admin']);
         $client->request('GET', '/admin/group1/edit');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -119,13 +120,13 @@ class GroupControllerTest extends WebTestCase
     }
 
     /**
-     * Test redirection after group deletion when admin
+     * Test redirection after group deletion when admin.
      */
     public function testDeletePageAuthenticatedAdmin()
     {
         $client = static::createClient();
-        $users = $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/users.yaml']);
-        $this->loadFixtureFiles([dirname(__DIR__) . '/fixtures/groups.yaml']);
+        $users = $this->loadFixtureFiles([\dirname(__DIR__).'/fixtures/users.yaml']);
+        $this->loadFixtureFiles([\dirname(__DIR__).'/fixtures/groups.yaml']);
         $this->login($client, $users['user_admin']);
         $client->request('DELETE', '/admin/group1');
         $this->assertResponseRedirects();

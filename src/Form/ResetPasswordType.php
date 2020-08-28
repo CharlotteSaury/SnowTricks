@@ -14,13 +14,13 @@ class ResetPasswordType extends AbstractType
     {
         $builder
             ->add('username', TextType::class, [
-                'required' => true
+                'required' => true,
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Ask for reset password',
                 'attr' => [
-                    'class' => 'btn btn-info mt-3'
-                ]
+                    'class' => 'btn btn-info mt-3',
+                ],
             ])
         ;
     }

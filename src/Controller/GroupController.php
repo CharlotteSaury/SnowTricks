@@ -6,11 +6,11 @@ use App\Entity\Group;
 use App\Form\GroupType;
 use App\Repository\GroupRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @IsGranted("ROLE_ADMIN", message="Access denied")
@@ -28,6 +28,8 @@ class GroupController extends AbstractController
     }
 
     /**
+     * Display group list page restricted to admin.
+     *
      * @Route("/admin/groups", name="group.index", methods={"GET", "POST"})
      */
     public function index(GroupRepository $groupRepository, Request $request): Response
@@ -39,17 +41,20 @@ class GroupController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->persist($group);
             $this->entityManager->flush();
-            $this->addFlash('success', $group->getName() . ' has been added to group list !');
+            $this->addFlash('success', $group->getName().' has been added to group list !');
 
             return $this->redirectToRoute('group.index');
         }
+
         return $this->render('group/index.html.twig', [
             'groups' => $groupRepository->findAll(),
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
     /**
+     * Handle group name edition.
+     *
      * @Route("/admin/group{id}/edit", name="group.edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Group $group): Response
@@ -60,6 +65,7 @@ class GroupController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
             $this->addFlash('success', 'Group name has been updated !');
+
             return $this->redirectToRoute('group.index');
         }
 
@@ -70,6 +76,8 @@ class GroupController extends AbstractController
     }
 
     /**
+     * Handle group deletion.
+     *
      * @Route("/admin/group{id}", name="group.delete", methods={"DELETE"})
      */
     public function delete(Request $request, Group $group): Response

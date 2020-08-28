@@ -3,9 +3,9 @@
 namespace App\Helper;
 
 use App\Entity\User;
-use Symfony\Component\Mime\Address;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 class MailSenderHelper
 {
@@ -23,15 +23,20 @@ class MailSenderHelper
         $this->mailer = $mailer;
     }
 
+    /**
+     * Handle mail sending for registration, forgot password and trick report features.
+     *
+     * @return void
+     */
     public function sendMail(string $type, User $user, array $data)
     {
         try {
-            $subject = strtoupper($type);
+            $subject = mb_strtoupper($type);
             $message = (new TemplatedEmail())
                 ->from(new Address('mailer@snowtricks.com', 'No-reply Snowtricks'))
                 ->to(new Address($user->getEmail(), $user->getUsername()))
                 ->context($data)
-                ->htmlTemplate('email/' . $type . '.html.twig');
+                ->htmlTemplate('email/'.$type.'.html.twig');
 
             switch ($subject) {
                 case 'ACCOUNT_CONFIRMATION':

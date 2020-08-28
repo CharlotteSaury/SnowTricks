@@ -3,25 +3,25 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Service\UserService;
 use App\Form\NewPasswordType;
 use App\Form\PasswordFormType;
-use App\Form\ResetPasswordType;
 use App\Form\RegistrationFormType;
+use App\Form\ResetPasswordType;
 use App\Helper\MailSenderHelper;
 use App\Repository\UserRepository;
+use App\Service\UserService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-     /**
-      * @var UserRepository
-      */
+    /**
+     * @var UserRepository
+     */
     private $userRepository;
 
     /**
@@ -42,15 +42,12 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * Handle registration
-     * 
+     * Handle registration.
+     *
      * @Route("/register", name="app_register")
-     * 
-     * @param Request $request
-     * @return Response
      */
     public function register(Request $request): Response
-    {        
+    {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -62,6 +59,7 @@ class SecurityController extends AbstractController
             $this->mailSenderHelper->sendMail('account_confirmation', $user, ['url' => $url]);
 
             $this->addFlash('success', 'A confirmation link has been sent to your email. Please follow the link to activate your account !');
+
             return $this->redirectToRoute('trick.index');
         }
 
@@ -71,18 +69,18 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * Check user account activation token 
-     * 
+     * Check user account activation token.
+     *
      * @Route("/verify/{token}", name="app_verify_email")
      *
      * @param string $token
-     * @return Response
      */
     public function verifyUserEmail($token): Response
     {
         $user = $this->userRepository->findOneBy(['activationToken' => $token]);
         if (!$user) {
             $this->addFlash('danger', 'Invalid token');
+
             return $this->redirectToRoute('trick.index');
         }
         $this->userService->handleUserActivation($user);
@@ -92,12 +90,9 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * Handle user login
-     * 
-     * @Route("/login", name="app_login")
+     * Handle user login.
      *
-     * @param AuthenticationUtils $authenticationUtils
-     * @return Response
+     * @Route("/login", name="app_login")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -112,14 +107,13 @@ class SecurityController extends AbstractController
 
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
-            'error' => $error
+            'error' => $error,
         ]);
     }
 
     /**
-     * 
-     * Handle user account logout
-     * 
+     * Handle user account logout.
+     *
      * @Route("/logout", name="app_logout")
      *
      * @return void
@@ -130,15 +124,11 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * Handle reset password form 
-     * 
-     * @Route("/user/reset_password", name="user.resetPass")
+     * Handle reset password form.
      *
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @return Response
+     * @Route("/user/reset_password", name="user.resetPass")
      */
-    public function reset(Request $request, UserPasswordEncoderInterface $passwordEncoder) : Response
+    public function reset(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = $this->getUser();
 
@@ -148,28 +138,28 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($passwordEncoder->isPasswordValid($this->getUser(), $form->get('oldPassword')->getData())) {
                 $this->userService->handlePasswordUpdate($user, $form->get('plainPassword')->getData());
-                
+
                 $this->addFlash('success', 'Your password has been updated !');
+
                 return $this->redirectToRoute('user.resetPass');
             }
             $this->addFlash('danger', 'Your old password is not valid');
+
             return $this->redirectToRoute('user.resetPass');
         }
 
         return $this->render('security/reset_password.html.twig', [
             'user' => $user,
             'nav' => 'resetPass',
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * 
-     * Handle forgot password page and forgot password reset link mail sending
-     * 
+     * Handle forgot password page and forgot password reset link mail sending.
+     *
      * @Route("/forgot_password_link", name="app_forgotten_password")
      *
-     * @param Request $request
      * @return Response
      */
     public function passwordLink(Request $request)
@@ -183,6 +173,7 @@ class SecurityController extends AbstractController
 
             if (!$user) {
                 $this->addFlash('danger', 'No account is associated with this username.');
+
                 return $this->redirectToRoute('app_forgotten_password');
             }
 
@@ -191,21 +182,22 @@ class SecurityController extends AbstractController
             $this->mailSenderHelper->sendMail('password_reset', $user, ['url' => $url]);
 
             $this->addFlash('success', 'A confirmation link has been sent to your email. Please follow the link to choose a new password !');
+
             return $this->redirectToRoute('trick.index');
         }
 
         return $this->render('security/forgot_password.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * Handle password reset link verification and new password form
-     * 
+     * Handle password reset link verification and new password form.
+     *
      * @Route("/new_password/{token}", name="app_new_password")
      *
      * @param string $token
-     * @param Request $request
+     *
      * @return Response
      */
     public function newPassword($token, Request $request)
@@ -214,6 +206,7 @@ class SecurityController extends AbstractController
 
         if (!$user) {
             $this->addFlash('danger', 'Invalid token');
+
             return $this->redirectToRoute('app_login');
         }
 
@@ -223,12 +216,13 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->userService->handlePasswordUpdate($user, $form->get('plainPassword')->getData());
             $this->addFlash('success', 'Your password has been updated !');
+
             return $this->redirectToRoute('trick.index');
         }
 
         return $this->render('security/new_password.html.twig', [
             'user' => $user,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 }

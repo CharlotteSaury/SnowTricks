@@ -208,7 +208,7 @@ class User implements UserInterface, \Serializable
     {
         return $this->plainPassword;
     }
- 
+
     public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
@@ -278,16 +278,18 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function getRoles() : array
+    public function getRoles(): array
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
+
         return array_unique($roles);
     }
 
     public function setRoles(array $roles)
     {
         $this->roles = $roles;
+
         return $this;
     }
 
@@ -314,7 +316,7 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * String representation of object
+     * String representation of object.
      *
      * @return string the string representation of the object or null
      */
@@ -323,14 +325,15 @@ class User implements UserInterface, \Serializable
         return serialize([
             $this->id,
             $this->username,
-            $this->password
+            $this->password,
         ]);
     }
 
     /**
-     * Construct the object
+     * Construct the object.
      *
      * @param string $serialized <p> The string representation of the object </p>
+     *
      * @return void
      */
     public function unserialize($serialized)
@@ -339,7 +342,7 @@ class User implements UserInterface, \Serializable
             $this->id,
             $this->username,
             $this->password
-        ) = \unserialize($serialized, ['allowed_classes' => false]);
+        ) = unserialize($serialized, ['allowed_classes' => false]);
     }
 
     public function getDescription(): ?string
@@ -377,5 +380,4 @@ class User implements UserInterface, \Serializable
 
         return $this;
     }
-
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Controller;
 
 use App\Tests\Utils\NeedLogin;
-use Symfony\Component\HttpFoundation\Response;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class TrickControllerTest extends WebTestCase
 {
@@ -13,21 +13,22 @@ class TrickControllerTest extends WebTestCase
     use FixturesTrait;
 
     /**
-     * Load fixtures files
-     * @return Array
+     * Load fixtures files.
+     *
+     * @return array
      */
     public function loadCustomFixtures()
     {
         return $this->loadFixtureFiles([
-            dirname(__DIR__) . '/fixtures/tricks.yaml',
-            dirname(__DIR__) . '/fixtures/users.yaml',
-            dirname(__DIR__) . '/fixtures/comments.yaml',
-            dirname(__DIR__) . '/fixtures/groups.yaml'
+            \dirname(__DIR__).'/fixtures/tricks.yaml',
+            \dirname(__DIR__).'/fixtures/users.yaml',
+            \dirname(__DIR__).'/fixtures/comments.yaml',
+            \dirname(__DIR__).'/fixtures/groups.yaml',
         ]);
     }
 
     /**
-     * Test access to index page for visitors
+     * Test access to index page for visitors.
      */
     public function testIndexPageNotAuthenticated()
     {
@@ -42,7 +43,7 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test access to trick1 page for visitors, absence of comment form and edition/deletion buttons
+     * Test access to trick1 page for visitors, absence of comment form and edition/deletion buttons.
      */
     public function testShowPageNotAuthenticated()
     {
@@ -58,7 +59,7 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test access to trick1 page for authenticated user not author and access to comment form
+     * Test access to trick1 page for authenticated user not author and access to comment form.
      */
     public function testShowPageAuthenticatedUserNotAuthor()
     {
@@ -75,7 +76,7 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test access to trick1 page for authenticated user author and access to edition/deletion buttons
+     * Test access to trick1 page for authenticated user author and access to edition/deletion buttons.
      */
     public function testShowPageAuthenticatedUserAuthor()
     {
@@ -90,7 +91,7 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test access to trick1 page for admin and moderator and access to edition/deletion/report buttons
+     * Test access to trick1 page for admin and moderator and access to edition/deletion/report buttons.
      */
     public function testShowPageAuthenticatedAdminOrModerator()
     {
@@ -98,7 +99,7 @@ class TrickControllerTest extends WebTestCase
         $fixtures = $this->loadCustomFixtures();
         $users = [
             $fixtures['user_moderator'],
-            $fixtures['user_admin']
+            $fixtures['user_admin'],
         ];
         foreach ($users as $user) {
             $this->login($client, $user);
@@ -111,7 +112,8 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test Redirection to login route for visitors trying to access pages that require authenticated status
+     * Test Redirection to login route for visitors trying to access pages that require authenticated status.
+     *
      * @dataProvider provideAuthenticatedUserAccessibleUrls
      */
     public function testUnaccessiblePagesNotAuthenticated($method, $url)
@@ -130,12 +132,12 @@ class TrickControllerTest extends WebTestCase
             ['DELETE', '/user/trick/delete1'],
             ['GET', '/user/tricks'],
             ['GET', '/user/trick/report1'],
-            ['GET', '/user/reportView1']
+            ['GET', '/user/reportView1'],
         ];
     }
 
     /**
-     * Test access to new trick page for authenticated user/moderator/admin
+     * Test access to new trick page for authenticated user/moderator/admin.
      */
     public function testNewTrickPageAuthenticatedUser()
     {
@@ -150,7 +152,7 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test access to trick1 edition page for authorized users (author, admin, moderator)
+     * Test access to trick1 edition page for authorized users (author, admin, moderator).
      */
     public function testEditTrickPageGoodAuthenticatedUser()
     {
@@ -165,7 +167,7 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test forbidden access to trick1 edition page for unauthorized users
+     * Test forbidden access to trick1 edition page for unauthorized users.
      */
     public function testEditTrickPageWrongAuthenticatedUser()
     {
@@ -177,7 +179,7 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test access to reportView page for trick author
+     * Test access to reportView page for trick author.
      */
     public function testReportViewTrickAuthor()
     {
@@ -189,7 +191,7 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test forbidden access to reportView page for other user than author
+     * Test forbidden access to reportView page for other user than author.
      */
     public function testReportViewTrickNotAuthorizedUser()
     {
@@ -201,7 +203,7 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test access to user tricks page for loggued user
+     * Test access to user tricks page for loggued user.
      */
     public function testUserTricksPageAccess()
     {
@@ -213,7 +215,7 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test access to trick1 deletion for authorized users (author, admin, moderator)
+     * Test access to trick1 deletion for authorized users (author, admin, moderator).
      */
     public function testTrickDeletionGoodAuthenticatedUser()
     {
@@ -228,7 +230,7 @@ class TrickControllerTest extends WebTestCase
     }
 
     /**
-     * Test forbidden access to trick1 deletion for unauthorized users
+     * Test forbidden access to trick1 deletion for unauthorized users.
      */
     public function testTrickDeletionWrongAuthenticatedUser()
     {

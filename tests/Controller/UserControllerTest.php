@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Controller;
 
 use App\Tests\Utils\NeedLogin;
-use Symfony\Component\HttpFoundation\Response;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserControllerTest extends WebTestCase
 {
@@ -13,18 +13,20 @@ class UserControllerTest extends WebTestCase
     use FixturesTrait;
 
     /**
-     * Load fixtures files
-     * @return Array
+     * Load fixtures files.
+     *
+     * @return array
      */
     public function loadCustomFixtures()
     {
         return $this->loadFixtureFiles([
-            dirname(__DIR__) . '/fixtures/users.yaml'
+            \dirname(__DIR__).'/fixtures/users.yaml',
         ]);
     }
 
     /**
-     * Test Redirection to login page for visitors looking to visit restricted pages (provideUserAccessibleUrls)
+     * Test Redirection to login page for visitors looking to visit restricted pages (provideUserAccessibleUrls).
+     *
      * @dataProvider provideUserAccessibleUrls
      */
     public function testPagesNotAuthenticated($method, $url)
@@ -40,65 +42,65 @@ class UserControllerTest extends WebTestCase
             ['GET', '/user/dashboard/uniqueuser'],
             ['GET', '/user/profile/uniqueuser'],
             ['GET', '/user/edit/uniqueuser'],
-            ['GET', '/users']
+            ['GET', '/users'],
         ];
     }
 
     /**
-     * Test access to dashboard for loggued user
+     * Test access to dashboard for loggued user.
      */
     public function testDashboardPageGoodAuthenticatedUser()
     {
         $client = static::createClient();
-        $fixtures = $this->loadCustomFixtures(); 
+        $fixtures = $this->loadCustomFixtures();
         $this->login($client, $fixtures['user_user']);
         $client->request('GET', '/user/dashboard/uniqueuser');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
     /**
-     * Test forbidden access to user dashboard for another authenticated user
+     * Test forbidden access to user dashboard for another authenticated user.
      */
     public function testDashboardPageWrongAuthenticatedUser()
     {
         $client = static::createClient();
-        $fixtures = $this->loadCustomFixtures(); 
+        $fixtures = $this->loadCustomFixtures();
         $this->login($client, $fixtures['user2_user']);
         $client->request('GET', '/user/dashboard/uniqueuser');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     /**
-     * Test access to profile page of loggued user
+     * Test access to profile page of loggued user.
      */
     public function testProfilePageGoodAuthenticatedUser()
     {
         $client = static::createClient();
-        $fixtures = $this->loadCustomFixtures(); 
+        $fixtures = $this->loadCustomFixtures();
         $this->login($client, $fixtures['user_user']);
         $client->request('GET', '/user/profile/uniqueuser');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
     /**
-     * Test forbidden access to another user profile page
+     * Test forbidden access to another user profile page.
      */
     public function testProfilePageWrongAuthenticatedUser()
     {
         $client = static::createClient();
-        $fixtures = $this->loadCustomFixtures(); 
+        $fixtures = $this->loadCustomFixtures();
         $this->login($client, $fixtures['user2_user']);
         $client->request('GET', '/user/profile/uniqueuser');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     /**
-     * Test access to edit page of loggued user
+     * Test access to edit page of loggued user.
      */
     public function testEditProfilePageGoodAuthenticatedUser()
     {
         $client = static::createClient();
-        $fixtures = $this->loadCustomFixtures(); 
+        $fixtures = $this->loadCustomFixtures();
         $this->login($client, $fixtures['user_user']);
         $client->request('GET', '/user/edit/uniqueuser');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -110,15 +112,15 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
-     * Test forbidden access to another user edit profile page (role_user or role_moderator)
+     * Test forbidden access to another user edit profile page (role_user or role_moderator).
      */
     public function testEditProfilePageWrongAuthenticatedUser()
     {
         $client = static::createClient();
-        $fixtures = $this->loadCustomFixtures(); 
+        $fixtures = $this->loadCustomFixtures();
         $unauthorizedUsers = [
             $fixtures['user2_user'],
-            $fixtures['user_moderator']
+            $fixtures['user_moderator'],
         ];
         foreach ($unauthorizedUsers as $user) {
             $this->login($client, $user);
@@ -128,27 +130,27 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
-     * Test admin access to another user edit profile page
+     * Test admin access to another user edit profile page.
      */
     public function testEditProfilePageWrongAuthenticatedAdmin()
     {
         $client = static::createClient();
-        $fixtures = $this->loadCustomFixtures(); 
+        $fixtures = $this->loadCustomFixtures();
         $this->login($client, $fixtures['user_admin']);
         $client->request('GET', '/user/edit/uniqueuser');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
     /**
-     * Test forbidden access to restricted admin users list page for user and moderator
+     * Test forbidden access to restricted admin users list page for user and moderator.
      */
     public function testAdminUsersPageAuthenticatedUser()
     {
         $client = static::createClient();
-        $fixtures = $this->loadCustomFixtures(); 
+        $fixtures = $this->loadCustomFixtures();
         $unauthorizedUsers = [
             $fixtures['user_user'],
-            $fixtures['user_moderator']
+            $fixtures['user_moderator'],
         ];
         foreach ($unauthorizedUsers as $user) {
             $this->login($client, $user);
@@ -158,12 +160,12 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
-     * Test access to restricted admin users list page for admin
+     * Test access to restricted admin users list page for admin.
      */
     public function testAdminUsersPageAuthenticatedAdmin()
     {
         $client = static::createClient();
-        $fixtures = $this->loadCustomFixtures(); 
+        $fixtures = $this->loadCustomFixtures();
         $this->login($client, $fixtures['user_admin']);
         $client->request('GET', '/users');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);

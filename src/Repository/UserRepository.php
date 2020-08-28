@@ -30,6 +30,11 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->getOneOrNullResult();
     }
 
+    /**
+     * Return unactivated user accounts.
+     *
+     * @return User[] Returns an array of User objects
+     */
     public function findUnverified()
     {
         return $this->createQueryBuilder('u')

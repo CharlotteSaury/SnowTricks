@@ -4,12 +4,11 @@ namespace App\Form;
 
 use App\Entity\Image;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\Image as ImageConstraint;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
-
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image as ImageConstraint;
 
 class ImageType extends AbstractType
 {
@@ -20,16 +19,16 @@ class ImageType extends AbstractType
                 'label' => false,
                 'required' => false,
                 'constraints' => [
-                    new ImageConstraint()
-                ]
+                    new ImageConstraint(),
+                ],
             ])
             ->add('delete', ButtonType::class, [
                 'label_html' => true,
                 'label' => '<i class="fas fa-times"></i>',
                 'attr' => [
                     'data-action' => 'delete',
-                    'data-target' => '#trick_images___name__'
-                ]
+                    'data-target' => '#trick_images___name__',
+                ],
             ]);
     }
 

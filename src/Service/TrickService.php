@@ -3,11 +3,10 @@
 namespace App\Service;
 
 use DateTime;
-use Exception;
 use App\Entity\User;
 use App\Entity\Trick;
-use Symfony\Component\Form\Form;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class TrickService
@@ -34,7 +33,12 @@ class TrickService
         $this->imageService = $imageService;
     }
 
-    public function handleCreateOrUpdate(Trick $trick, Form $form, User $author)
+    /**
+     * Handle trick creation or update in database.
+     *
+     * @return Trick $trick
+     */
+    public function handleCreateOrUpdate(Trick $trick, FormInterface $form, User $author)
     {
         try {
             $trick->setAuthor($author);
@@ -42,7 +46,7 @@ class TrickService
             $this->imageService->handleImages($trick, $form);
             $this->videoService->handleNewVideos($trick, $form);
 
-            if ($trick->getId() != null) {
+            if (null !== $trick->getId()) {
                 $trick->setUpdatedAt(new \DateTime());
             }
 
@@ -55,9 +59,13 @@ class TrickService
         } catch (\Exception $exception) {
             throw $exception;
         }
-        
     }
 
+    /**
+     * Handle trick deletion in database.
+     *
+     * @return void
+     */
     public function handleTrickDeletion(Trick $trick)
     {
         try {
@@ -69,6 +77,11 @@ class TrickService
         }
     }
 
+    /**
+     * Handle trick main image deletion.
+     *
+     * @return void
+     */
     public function handleMainImageDeletion(Trick $trick)
     {
         try {
@@ -81,6 +94,11 @@ class TrickService
         }
     }
 
+    /**
+     * Handle parent trick update after reported trick suggested modification by author.
+     *
+     * @return void
+     */
     public function handleReport(Trick $reportedTrick, Request $request)
     {
         try {
@@ -96,12 +114,12 @@ class TrickService
             $this->imageService->handleImageReport($reportedTrick, $request);
             $this->videoService->handleVideoReport($reportedTrick, $request);
             foreach ($trick->getGroups() as $group) {
-                if ($request->request->get('group_' . $group->getId())) {
+                if ($request->request->get('group_'.$group->getId())) {
                     $trick->removeGroup($group);
                 }
             }
             foreach ($reportedTrick->getGroups() as $group) {
-                if ($request->request->get('reported_group_' . $group->getId())) {
+                if ($request->request->get('reported_group_'.$group->getId())) {
                     $trick->addGroup($group);
                 }
             }
@@ -113,11 +131,8 @@ class TrickService
 
             $this->imageService->handleImageFolderDeletion($reportedTrick);
             $this->imageService->handleImageFiles($trick);
-            
         } catch (\Exception $error) {
             throw $error;
         }
     }
-
-    
 }

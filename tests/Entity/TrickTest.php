@@ -2,7 +2,6 @@
 
 namespace App\Tests\Entity;
 
-use DateTime;
 use App\Entity\Trick;
 use App\Tests\Utils\AssertHasErrors;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
@@ -16,8 +15,8 @@ class TrickTest extends KernelTestCase
     public function getEntity(): Trick
     {
         $fixtures = $this->loadFixtureFiles([
-            dirname(__DIR__) . '/fixtures/users.yaml',
-            dirname(__DIR__) . '/fixtures/tricks.yaml'
+            \dirname(__DIR__).'/fixtures/users.yaml',
+            \dirname(__DIR__).'/fixtures/tricks.yaml',
         ]);
         $trick = new Trick();
         $trick->setName('trick')

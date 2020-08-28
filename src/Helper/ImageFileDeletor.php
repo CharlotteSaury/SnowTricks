@@ -2,16 +2,23 @@
 
 namespace App\Helper;
 
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\File;
 
 class ImageFileDeletor
 {
+    /**
+     * @var string
+     */
     private $trickDirectory;
 
+    /**
+     * @var string
+     */
     private $userDirectory;
 
+    /**
+     * @var Filesystem
+     */
     private $fileSystem;
 
     public function __construct(string $trickDirectory, string $userDirectory, Filesystem $fileSystem)
@@ -21,24 +28,31 @@ class ImageFileDeletor
         $this->fileSystem = $fileSystem;
     }
 
+    /**
+     * Delete image files that are not associated with user or trick after edition/deletion.
+     *
+     * @param bool $bool
+     *
+     * @return void
+     */
     public function deleteFile(string $type, int $id, array $data, bool $bool = null)
     {
-        if ($type == 'trick') {
-            $directory = $this->trickDirectory . $id;
-        } elseif ($type == 'user') {
-            $directory = $this->userDirectory . $id;
+        if ('trick' === $type) {
+            $directory = $this->trickDirectory.$id;
+        } elseif ('user' === $type) {
+            $directory = $this->userDirectory.$id;
         }
         if ($this->fileSystem->exists($directory)) {
             if (opendir($directory)) {
                 foreach (scandir($directory) as $file) {
-                    if ($file != '.' && $file != '..') {
+                    if ('.' !== $file && '..' !== $file) {
                         if ($bool) {
-                            if (in_array($file, $data)) {
-                                $this->fileSystem->remove($directory . '/' . $file);
+                            if (\in_array($file, $data, true)) {
+                                $this->fileSystem->remove($directory.'/'.$file);
                             }
                         } else {
-                            if (!in_array($file, $data)) {
-                                $this->fileSystem->remove($directory . '/' . $file);
+                            if (!\in_array($file, $data, true)) {
+                                $this->fileSystem->remove($directory.'/'.$file);
                             }
                         }
                     }

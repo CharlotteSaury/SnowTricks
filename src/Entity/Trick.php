@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use DateTime;
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TrickRepository;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -90,7 +90,6 @@ class Trick implements \ArrayAccess
      */
     private $videos;
 
-
     public function __construct()
     {
         $this->createdAt = new DateTime();
@@ -121,7 +120,7 @@ class Trick implements \ArrayAccess
 
     public function getSlug(): ?string
     {
-        return strtolower(str_replace(' ', '_', $this->name));
+        return mb_strtolower(str_replace(' ', '_', $this->name));
     }
 
     public function getDescription(): ?string
@@ -263,7 +262,7 @@ class Trick implements \ArrayAccess
         return $this->reportedTricks;
     }
 
-    public function addReportedTrick(Trick $reportedTrick): self
+    public function addReportedTrick(self $reportedTrick): self
     {
         if (!$this->reportedTricks->contains($reportedTrick)) {
             $this->reportedTricks[] = $reportedTrick;
@@ -273,7 +272,7 @@ class Trick implements \ArrayAccess
         return $this;
     }
 
-    public function removeReportedTrick(Trick $reportedTrick): self
+    public function removeReportedTrick(self $reportedTrick): self
     {
         if ($this->reportedTricks->contains($reportedTrick)) {
             $this->reportedTricks->removeElement($reportedTrick);
@@ -290,14 +289,17 @@ class Trick implements \ArrayAccess
     {
         return property_exists($this, $offset);
     }
+
     public function offsetGet($offset)
     {
         return $this->$offset;
     }
+
     public function offsetSet($offset, $value)
     {
         $this->$offset = $value;
     }
+
     public function offsetUnset($offset)
     {
         unset($this->$offset);

@@ -1,19 +1,15 @@
 <?php
 
-$enteteFichier = <<<COMMENT
-Ceci sera ajouté dans tous vos fichiers PHP en entête.
-
-(c) Zozor <zozor@openclassrooms.com>
-
-A adapter et ré-utiliser selon vos besoins!
-COMMENT;
+use PhpCsFixer\Config;
+use PhpCsFixer\Finder;
 
 $finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__)
+    ->in('src')
+    ->in('tests')
     ->exclude('config')
     ->exclude('var')
-    ->exclude('public/bundles')
-    ->exclude('public/build')
+    //->exclude('public/bundles')
+    //->exclude('public/build')
     // exclut les fichiers générés
     ->notPath('bin/console')
     ->notPath('public/index.php')
@@ -25,7 +21,6 @@ return PhpCsFixer\Config::create()
         '@Symfony' => true,
         '@Symfony:risky' => true,
         'array_syntax' => ['syntax' => 'short'],
-        'header_comment' => ['header' => $enteteFichier, 'separate' => 'both'],
         'linebreak_after_opening_tag' => true,
         'mb_str_functions' => true,
         'no_php4_constructor' => true,

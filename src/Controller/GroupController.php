@@ -28,6 +28,8 @@ class GroupController extends AbstractController
     }
 
     /**
+     * Display group list page restricted to admin.
+     *
      * @Route("/admin/groups", name="group.index", methods={"GET", "POST"})
      */
     public function index(GroupRepository $groupRepository, Request $request): Response
@@ -51,6 +53,8 @@ class GroupController extends AbstractController
     }
 
     /**
+     * Handle group name edition.
+     *
      * @Route("/admin/group{id}/edit", name="group.edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Group $group): Response
@@ -72,6 +76,8 @@ class GroupController extends AbstractController
     }
 
     /**
+     * Handle group deletion.
+     *
      * @Route("/admin/group{id}", name="group.delete", methods={"DELETE"})
      */
     public function delete(Request $request, Group $group): Response

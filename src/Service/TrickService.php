@@ -33,6 +33,11 @@ class TrickService
         $this->imageService = $imageService;
     }
 
+    /**
+     * Handle trick creation or update in database.
+     *
+     * @return void
+     */
     public function handleCreateOrUpdate(Trick $trick, Form $form, User $author)
     {
         try {
@@ -56,6 +61,11 @@ class TrickService
         }
     }
 
+    /**
+     * Handle trick deletion in database.
+     *
+     * @return void
+     */
     public function handleTrickDeletion(Trick $trick)
     {
         try {
@@ -67,6 +77,11 @@ class TrickService
         }
     }
 
+    /**
+     * Handle trick main image deletion.
+     *
+     * @return void
+     */
     public function handleMainImageDeletion(Trick $trick)
     {
         try {
@@ -79,6 +94,11 @@ class TrickService
         }
     }
 
+    /**
+     * Handle parent trick update after reported trick suggested modification by author.
+     *
+     * @return void
+     */
     public function handleReport(Trick $reportedTrick, Request $request)
     {
         try {

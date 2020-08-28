@@ -38,6 +38,11 @@ class UserService
         $this->imageService = $imageService;
     }
 
+    /**
+     * Handle new user creation.
+     *
+     * @return void
+     */
     public function handleNewUser(User $user, Form $form)
     {
         try {
@@ -59,6 +64,11 @@ class UserService
         }
     }
 
+    /**
+     * Handle user profile edition.
+     *
+     * @return void
+     */
     public function handleProfileEdition(User $user, Form $form)
     {
         try {
@@ -72,6 +82,11 @@ class UserService
         }
     }
 
+    /**
+     * Handle activation token deletion after user activation by activation link.
+     *
+     * @return void
+     */
     public function handleUserActivation(User $user)
     {
         try {
@@ -83,6 +98,11 @@ class UserService
         }
     }
 
+    /**
+     * Handle password update.
+     *
+     * @return void
+     */
     public function handlePasswordUpdate(User $user, string $password)
     {
         try {
@@ -97,6 +117,11 @@ class UserService
         }
     }
 
+    /**
+     * Handle reset password token generation.
+     *
+     * @return void
+     */
     public function handleResetPassword(User $user)
     {
         try {

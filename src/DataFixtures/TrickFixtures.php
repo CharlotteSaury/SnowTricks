@@ -15,10 +15,16 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class TrickFixtures extends Fixture implements DependentFixtureInterface
 {
+    /**
+     * @var UploaderHelper
+     */
     private $uploaderHelper;
 
     private $faker;
 
+    /**
+     * @var VideoLinkFormatter
+     */
     private $videoLinkFormatter;
 
     public function __construct(VideoLinkFormatter $videoLinkFormatter, UploaderHelper $uploaderHelper)
@@ -28,6 +34,11 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
         $this->faker = \Faker\Factory::create();
     }
 
+    /**
+     * Load trick fixtures.
+     *
+     * @return void
+     */
     public function load(ObjectManager $manager)
     {
         $videos = [

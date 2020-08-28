@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class VideoService
 {
+    /**
+     * @var VideoLinkFormatter
+     */
     private $videoLinkFormatter;
 
     public function __construct(VideoLinkFormatter $videoLinkFormatter)
@@ -16,6 +19,11 @@ class VideoService
         $this->videoLinkFormatter = $videoLinkFormatter;
     }
 
+    /**
+     * Handle formatting new video link and creation in database.
+     *
+     * @return void
+     */
     public function handleNewVideos(Trick $trick, Form $form)
     {
         try {
@@ -32,6 +40,11 @@ class VideoService
         }
     }
 
+    /**
+     * Handle video creation/deletion after trick report.
+     *
+     * @return void
+     */
     public function handleVideoReport(Trick $reportedTrick, Request $request)
     {
         try {

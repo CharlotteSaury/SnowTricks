@@ -23,6 +23,11 @@ class MailSenderHelper
         $this->mailer = $mailer;
     }
 
+    /**
+     * Handle mail sending for registration, forgot password and trick report features.
+     *
+     * @return void
+     */
     public function sendMail(string $type, User $user, array $data)
     {
         try {

@@ -21,6 +21,11 @@ class CommentService
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * Handle new comment creation in database.
+     *
+     * @return void
+     */
     public function handleNewComment(Comment $comment, Trick $trick, User $author)
     {
         try {
@@ -35,6 +40,11 @@ class CommentService
         }
     }
 
+    /**
+     * Handle comment deletion in database.
+     *
+     * @return void
+     */
     public function handleDeleteComment(Comment $comment)
     {
         try {

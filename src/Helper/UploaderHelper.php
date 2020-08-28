@@ -13,6 +13,9 @@ class UploaderHelper
         $this->uploadsPath = $uploadsPath;
     }
 
+    /**
+     * Handle uploading image file and move to proper directory.
+     */
     public function uploadFile(File $file, string $type, string $folderName): string
     {
         $destination = $this->uploadsPath.$type.'/'.$folderName;

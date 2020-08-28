@@ -8,6 +8,11 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class GroupFixtures extends Fixture
 {
+    /**
+     * Load group fixtures.
+     *
+     * @return void
+     */
     public function load(ObjectManager $manager)
     {
         $faker = \Faker\Factory::create();

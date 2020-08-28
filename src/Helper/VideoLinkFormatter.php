@@ -11,6 +11,9 @@ class VideoLinkFormatter
     const URL_DAILYMOTION = 'https://www.dailymotion.com/embed/video/';
     const URL_VIMEO = 'https://player.vimeo.com/video/';
 
+    /**
+     * Handle video link format before persisting in database.
+     */
     public function format(string $link): string
     {
         if (preg_match(self::REGEX_YOUTUBE, $link, $matches)) {

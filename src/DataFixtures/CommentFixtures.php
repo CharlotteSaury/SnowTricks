@@ -9,6 +9,11 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class CommentFixtures extends Fixture implements DependentFixtureInterface
 {
+    /**
+     * Load comment fixtures.
+     *
+     * @return void
+     */
     public function load(ObjectManager $manager)
     {
         $faker = \Faker\Factory::create();

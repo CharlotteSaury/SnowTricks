@@ -11,8 +11,8 @@ $finder = PhpCsFixer\Finder::create()
     //->exclude('public/bundles')
     //->exclude('public/build')
     // exclut les fichiers générés
-    //->notPath('bin/console')
-    //->notPath('public/index.php')
+    ->notPath('bin/console')
+    ->notPath('public/index.php')
 ;
 
 return PhpCsFixer\Config::create()

@@ -15,6 +15,11 @@ class TrickGenerator
         $this->trickRepository = $trickRepository;
     }
 
+    /**
+     * Handle reported trick creation by clining parent trick properties.
+     *
+     * @return void
+     */
     public function clone(Trick $trick, User $user)
     {
         $reportedTricks = \count($this->trickRepository->findBy(['parentTrick' => $trick]));

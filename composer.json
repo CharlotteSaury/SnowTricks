@@ -2,12 +2,13 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^7.2.5",
+        "php": "7.4.7",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "friendsofphp/php-cs-fixer": "^2.16",
         "fzaninotto/faker": "^1.9",
         "liip/test-fixtures-bundle": "^1.9",
+        "ocramius/proxy-manager": "^2.8",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "5.1.*",
         "symfony/console": "5.1.*",
@@ -25,6 +26,7 @@
         "symfony/notifier": "5.1.*",
         "symfony/orm-pack": "*",
         "symfony/process": "5.1.*",
+        "symfony/requirements-checker": "^1.1",
         "symfony/security-bundle": "5.1.*",
         "symfony/serializer-pack": "*",
         "symfony/string": "5.1.*",
@@ -75,7 +77,8 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "requirements-checker": "script"
         },
         "post-install-cmd": [
             "@auto-scripts"

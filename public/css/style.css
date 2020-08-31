@@ -1,23 +1,15 @@
-/*** Colors *****
-Taupe: #CDBDB2
-Spearmint: #89ACAA
-Honeysuckle: #BB616C
-Navy Blue: #183A50
-*/
-
-
 /*************************
 ******* Global ********
 *************************/
 
 body {
-    position: relative;
-    font-family: 'Roboto', sans-serif;
+  position: relative;
+  font-family: 'Roboto', sans-serif;
 }
 
 .row {
-    margin-left: unset;
-    margin-right: unset;
+  margin-left: unset;
+  margin-right: unset;
 }
 
 h1,
@@ -26,90 +18,89 @@ h5,
 h6,
 button,
 .navbar-brand {
-    font-family: 'MuseoModerno', cursive;
+  font-family: 'MuseoModerno', cursive;
 }
 
 h1 {
-    color: white;
-    text-shadow: 2px 0 0 black, 2px 2px 0 black, 0 2px 0 black, -2px 2px 0 black, -2px 0 0 black, -2px -2px 0 black, 0 -2px 0 black, 2px -2px 0 black;
+  color: white;
+  text-shadow: 2px 0 0 black, 2px 2px 0 black, 0 2px 0 black, -2px 2px 0 black, -2px 0 0 black, -2px -2px 0 black, 0 -2px 0 black, 2px -2px 0 black;
 }
 
 h2 {
-    font-size: 1.5rem;
-    font-style: italic;
+  font-size: 1.5rem;
+  font-style: italic;
 }
 
 .fa-pencil-alt,
 .fa-trash-alt,
 .custom-link {
-    color: #89ACAA;
+  color: #89acaa;
 }
 
 .fa-pencil-alt:hover,
 .fa-trash-alt:hover,
 .custom-link:hover {
-    color: black;
-    transform: scale(1.2);
-    transition: transform 200ms;
-    text-decoration: none;
+  color: black;
+  transform: scale(1.2);
+  transition: transform 200ms;
+  text-decoration: none;
 }
 
 @media (max-width: 576px) {
-    .container-fluid:not(.homeHeader) {
-        margin-bottom: 5rem;
-        ;
-    }
+  .container-fluid:not(.homeHeader) {
+    margin-bottom: 5rem;
+  }
 }
 
 
 /******* Nav *********/
 
 .navbar-brand {
-    color: #89ACAA !important;
+  color: #89acaa !important;
 }
 
 .nav-separator {
-    position: relative;
-    margin-left: 1rem;
+  position: relative;
+  margin-left: 1rem;
 }
 
 .nav-link .active a {
-    font-weight: bold !important;
-    color: #89ACAA !important;
+  font-weight: bold !important;
+  color: #89acaa !important;
 }
 
 @media (min-width:576px) {
-    .nav-separator::before {
-        content: "";
-        position: absolute;
-        left: -10%;
-        height: 60%;
-        width: 2px;
-        background-color: #89ACAA
-    }
+  .nav-separator::before {
+    content: "";
+    position: absolute;
+    left: -10%;
+    height: 60%;
+    width: 2px;
+    background-color: #89acaa;
+  }
 }
 
 @media (max-width:576px) {
-    nav {
-        display: flex;
-        flex-direction: row;
-    }
+  nav {
+    display: flex;
+    flex-direction: row;
+  }
 }
 
 
 /******* Footer *********/
 
 footer {
-    background-color: black;
-    color: #89ACAA;
-    font-style: italic;
-    font-size: 0.7rem;
+  background-color: black;
+  color: #89acaa;
+  font-style: italic;
+  font-size: 0.7rem;
 }
 
 @media (max-width:576px) {
-    footer {
-        display: none !important;
-    }
+  footer {
+    display: none !important;
+  }
 }
 
 
@@ -118,138 +109,138 @@ footer {
 *************************/
 
 .fa-arrow-down {
-    color: #89ACAA;
-    font-size: 2rem;
-    position: absolute;
-    right: 2rem;
-    bottom: 2rem;
-    animation: arrow-nav 1000ms forwards infinite alternate;
+  color: #89acaa;
+  font-size: 2rem;
+  position: absolute;
+  right: 2rem;
+  bottom: 2rem;
+  animation: arrow-nav 1000ms forwards infinite alternate;
 }
 
 .fa-arrow-up {
-    color: #89ACAA;
-    font-size: 2rem;
-    position: absolute;
-    right: 1rem;
-    bottom: 0rem;
-    animation: arrow-nav 1000ms forwards infinite alternate;
+  color: #89acaa;
+  font-size: 2rem;
+  position: absolute;
+  right: 1rem;
+  bottom: 0rem;
+  animation: arrow-nav 1000ms forwards infinite alternate;
 }
 
 @keyframes arrow-nav {
-    from {
-        transform: scale(1);
-        opacity: 0.2;
-    }
-    to {
-        transform: scale(1.1);
-        opacity: 1;
-    }
+  from {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  to {
+    transform: scale(1.1);
+    opacity: 1;
+  }
 }
 
 
 /******* Header *********/
 
 #home {
-    position: relative;
+  position: relative;
 }
 
 .homeHeader {
-    background: url("../media/images/home.jpg") no-repeat fixed;
-    background-position: top;
-    position: relative;
-    height: 94vh;
+  background: url("../media/images/home.jpg") no-repeat fixed;
+  background-position: top;
+  position: relative;
+  height: 94vh;
 }
 
 .homeHeader .homeTitle {
-    position: absolute;
-    top: 20%;
+  position: absolute;
+  top: 20%;
 }
 
 .homeHeader h1 {
-    font-size: 2.7rem;
-    color: white;
+  font-size: 2.7rem;
+  color: white;
 }
 
 .homeHeader h2 {
-    color: #89ACAA;
+  color: #89acaa;
 }
 
 .homeHeader .alert {
-    position: absolute;
-    bottom: 30%;
-    left: 1.5rem;
+  position: absolute;
+  bottom: 30%;
+  left: 1.5rem;
 }
 
 @media (min-width:650px) {
-    .homeHeader h1 {
-        font-size: 6rem;
-    }
+  .homeHeader h1 {
+    font-size: 6rem;
+  }
 }
 
 
 /******* Trick List *********/
 
 #trickList {
-    position: relative;
-    padding: 5rem 0;
+  position: relative;
+  padding: 5rem 0;
 }
 
 .trick-card-div {
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
 }
 
 #trickList .card {
-    box-shadow: grey 0px 0px 20px -7px;
-    border-radius: 2%;
-    transform: scale(1);
-    transition: transform 0.3s;
+  box-shadow: grey 0px 0px 20px -7px;
+  border-radius: 2%;
+  transform: scale(1);
+  transition: transform 0.3s;
 }
 
 #trickList .card:hover {
-    transform: scale(1.05);
-    transition: transform 0.3s;
+  transform: scale(1.05);
+  transition: transform 0.3s;
 }
 
 #trickList .card-img-top {
-    border-radius: 2% 2% 0% 0%;
-    height: 8rem;
-    object-fit: cover;
+  border-radius: 2% 2% 0% 0%;
+  height: 8rem;
+  object-fit: cover;
 }
 
 #trickList .card-title {
-    text-transform: capitalize;
+  text-transform: capitalize;
 }
 
 #trickList .card-title {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 #trickList .card-title a,
 #userTricks .card-title a {
-    text-decoration: none;
-    color: black;
+  text-decoration: none;
+  color: black;
 }
 
 #trickList .card-title a:hover,
 #userTricks .card-title a:hover {
-    color: #89ACAA;
-    transition: color 0.3s;
+  color: #89acaa;
+  transition: color 0.3s;
 }
 
 .loadMoreBtn,
 .loadLessBtn {
-    border: black 1px solid;
-    box-shadow: 1px 1px 3px 1px;
+  border: black 1px solid;
+  box-shadow: 1px 1px 3px 1px;
 }
 
 .fa-spinner {
-    color: #89ACAA;
+  color: #89acaa;
 }
 
 .fa-spinner:hover {
-    transform: rotate(360deg);
-    transition: transform 1000ms;
+  transform: rotate(360deg);
+  transition: transform 1000ms;
 }
 
 
@@ -259,175 +250,175 @@ footer {
 
 #trickPage,
 #editPage {
-    box-shadow: grey 1px 1px 10px -4px;
-    border-radius: 10px;
-    background-color: white;
+  box-shadow: grey 1px 1px 10px -4px;
+  border-radius: 10px;
+  background-color: white;
 }
 
 .trick-bg {
-    background: linear-gradient(to bottom, rgba(34, 34, 34, 1) 0%, rgba(34, 34, 34, 0) 60%);
+  background: linear-gradient(to bottom, rgba(34, 34, 34, 1) 0%, rgba(34, 34, 34, 0) 60%);
 }
 
 #trickMainImg {
-    background-size: cover !important;
-    background-repeat: no-repeat;
-    border-radius: 10px 10px 0px 0px;
-    min-height: 30rem;
-    position: relative;
+  background-size: cover !important;
+  background-repeat: no-repeat;
+  border-radius: 10px 10px 0px 0px;
+  min-height: 30rem;
+  position: relative;
 }
 
 .trick-actions {
-    border: #89ACAA 1px solid;
-    border-radius: 5px;
-    background-color: whitesmoke;
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+  border: #89acaa 1px solid;
+  border-radius: 5px;
+  background-color: whitesmoke;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
 }
 
 .return-btn {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
 }
 
 #trickPage h1 {
-    font-size: 2rem;
+  font-size: 2rem;
 }
 
 
 /* ////// Media div /////// */
 
 #trickPage #trickMedia button {
-    display: none;
+  display: none;
 }
 
 .trick-media {
-    height: 10rem;
-    object-fit: cover;
-    border: none !important;
-    padding: 0;
-    box-shadow: grey 1px 1px 5px -1px;
-    border-radius: 5px;
+  height: 10rem;
+  object-fit: cover;
+  border: none !important;
+  padding: 0;
+  box-shadow: grey 1px 1px 5px -1px;
+  border-radius: 5px;
 }
 
 .trick-media:hover {
-    transform: scale(1.05);
-    transition: transform 0.3s;
+  transform: scale(1.05);
+  transition: transform 0.3s;
 }
 
 #image-fields-list li>div,
 #video-fields-list li>div {
-    display: flex;
-    margin-bottom: 0.5rem;
+  display: flex;
+  margin-bottom: 0.5rem;
 }
 
 #image-fields-list button,
 #video-fields-list button {
-    margin-left: 1rem;
-    background: none;
-    border: none;
-    color: #89ACAA;
+  margin-left: 1rem;
+  background: none;
+  border: none;
+  color: #89acaa;
 }
 
 @media (max-width:576px) {
-    #trickPage #trickMedia button {
-        display: block;
-    }
-    #trickPage .media-slider {
-        display: none;
-    }
+  #trickPage #trickMedia button {
+    display: block;
+  }
+  #trickPage .media-slider {
+    display: none;
+  }
 }
 
 
 /* ///// Modal Gallery /////// */
 
 .carousel-inner {
-    max-height: 100%;
+  max-height: 100%;
 }
 
 #modalGallery {
-    padding: 5% !important;
+  padding: 5% !important;
 }
 
 #modalGallery span {
-    color: white;
+  color: white;
 }
 
 #modalGallery .modal-header {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 #modalGallery .modal-content {
-    padding: 0 1rem 2rem 1rem;
-    background-color: black;
+  padding: 0 1rem 2rem 1rem;
+  background-color: black;
 }
 
 .carousel-item img {
-    max-height: 70vh;
-    object-fit: contain;
+  max-height: 70vh;
+  object-fit: contain;
 }
 
 
 /* ////// Trick infos div /////// */
 
 #trickInfos {
-    padding-right: 7rem;
-    padding-left: 7rem;
+  padding-right: 7rem;
+  padding-left: 7rem;
 }
 
 #trickInfos .badge {
-    padding: 0.4rem !important;
-    letter-spacing: 0.05rem;
-    align-self: center;
+  padding: 0.4rem !important;
+  letter-spacing: 0.05rem;
+  align-self: center;
 }
 
 #trickInfos .badge span {
-    font-weight: 100;
-    font-size: 0.6rem;
-    display: block;
-    margin-top: 0.5rem;
-    font-style: italic;
+  font-weight: 100;
+  font-size: 0.6rem;
+  display: block;
+  margin-top: 0.5rem;
+  font-style: italic;
 }
 
 #trickGroup,
 #trickDates {
-    position: relative;
+  position: relative;
 }
 
 #trickDates::before {
-    top: 0;
+  top: 0;
 }
 
 #trickPage hr {
-    border-top: rgba(137, 172, 170, 0.2) 1px solid;
-    margin-right: 9rem;
-    margin-left: 9rem;
+  border-top: rgba(137, 172, 170, 0.2) 1px solid;
+  margin-right: 9rem;
+  margin-left: 9rem;
 }
 
 #userModal .modal-dialog {
-    max-width: 75%;
+  max-width: 75%;
 }
 
 #userModalAvatar {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 @media (max-width:767px) {
-    #userModalInfos {
-        text-align: center;
-    }
-    #trickBadges {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    #trickBadges .badge {
-        margin-bottom: 1rem;
-    }
-    #userModal .modal-dialog {
-        max-width: 95%;
-    }
+  #userModalInfos {
+    text-align: center;
+  }
+  #trickBadges {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #trickBadges .badge {
+    margin-bottom: 1rem;
+  }
+  #userModal .modal-dialog {
+    max-width: 95%;
+  }
 }
 
 
@@ -435,123 +426,123 @@ footer {
 
 #trickCommentForm,
 #trickComments {
-    padding-right: 10rem;
-    padding-left: 10rem;
+  padding-right: 10rem;
+  padding-left: 10rem;
 }
 
 #trickCommentForm a {
-    text-decoration: none;
-    color: #89ACAA;
-    font-size: 1.3rem;
-    font-weight: bold;
-    font-style: italic;
+  text-decoration: none;
+  color: #89acaa;
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-style: italic;
 }
 
 #trickCommentForm a:hover {
-    color: black;
+  color: black;
 }
 
 #trickCommentForm form {
-    width: 100%;
+  width: 100%;
 }
 
 #trickCommentForm textarea {
-    height: 5rem;
+  height: 5rem;
 }
 
 .textarea-comment {
-    width: 70%;
-    margin-bottom: 0;
+  width: 70%;
+  margin-bottom: 0;
 }
 
 .trick-comment-content {
-    background-color: rgba(137, 172, 170, 0.1);
-    border-radius: 5px;
-    padding: 1rem;
-    position: relative;
-    width: 85%;
+  background-color: rgba(137, 172, 170, 0.1);
+  border-radius: 5px;
+  padding: 1rem;
+  position: relative;
+  width: 85%;
 }
 
 .trick-comment-content::before {
-    content: '';
-    position: absolute;
-    left: -1rem;
-    top: -0.3rem;
-    border-top: white solid 1rem;
-    border-bottom: rgba(137, 172, 170, 0.1) solid 1rem;
-    border-left: white solid 1rem;
+  content: '';
+  position: absolute;
+  left: -1rem;
+  top: -0.3rem;
+  border-top: white solid 1rem;
+  border-bottom: rgba(137, 172, 170, 0.1) solid 1rem;
+  border-left: white solid 1rem;
 }
 
 .trick-comment-content p:last-child {
-    font-style: italic;
-    font-weight: bold;
-    font-size: 0.75rem;
-    text-align: right;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 0.75rem;
+  text-align: right;
 }
 
 .trick-comment-avatar {
-    width: 15%;
+  width: 15%;
 }
 
 .avatar {
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 @media (max-width:991px) {
-    #trickInfos,
-    #trickCommentForm,
-    #trickComments {
-        padding-right: 4rem;
-        padding-left: 4rem;
-    }
-    #trickPage hr {
-        margin-right: 4rem;
-        margin-left: 4rem;
-    }
+  #trickInfos,
+  #trickCommentForm,
+  #trickComments {
+    padding-right: 4rem;
+    padding-left: 4rem;
+  }
+  #trickPage hr {
+    margin-right: 4rem;
+    margin-left: 4rem;
+  }
 }
 
 @media (max-width:768px) {
-    #trickInfos,
-    #trickCommentForm,
-    #trickComments {
-        padding-right: 2rem;
-        padding-left: 2rem;
-    }
-    #trickPage hr {
-        margin-right: 2rem;
-        margin-left: 2rem;
-    }
-    .avatar {
-        width: 4rem;
-        height: 4rem;
-        border-radius: 50%;
-    }
-    .textarea-comment {
-        width: 100%;
-    }
+  #trickInfos,
+  #trickCommentForm,
+  #trickComments {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
+  #trickPage hr {
+    margin-right: 2rem;
+    margin-left: 2rem;
+  }
+  .avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+  }
+  .textarea-comment {
+    width: 100%;
+  }
 }
 
 @media (max-width:576px) {
-    .avatar {
-        width: 3rem;
-        height: 3rem;
-    }
-    .trick-comment-avatar {
-        width: 20%;
-    }
-    #trickCommentForm a {
-        font-size: 1rem;
-    }
-    #trickCommentForm button {
-        margin-top: 1rem;
-    }
-    #trickComments {
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
+  .avatar {
+    width: 3rem;
+    height: 3rem;
+  }
+  .trick-comment-avatar {
+    width: 20%;
+  }
+  #trickCommentForm a {
+    font-size: 1rem;
+  }
+  #trickCommentForm button {
+    margin-top: 1rem;
+  }
+  #trickComments {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 
@@ -562,36 +553,36 @@ footer {
 #newTrickInfos,
 #newTrickMainImage,
 #newMedia {
-    padding-right: 8rem;
-    padding-left: 8rem;
+  padding-right: 8rem;
+  padding-left: 8rem;
 }
 
 .form-group textarea {
-    overflow-y: scroll;
-    height: 200px;
-    resize: none;
+  overflow-y: scroll;
+  height: 200px;
+  resize: none;
 }
 
 #image-fields-list,
 #video-fields-list {
-    padding-left: 0rem;
+  padding-left: 0rem;
 }
 
 #image-fields-list li,
 #video-fields-list li {
-    list-style-type: none;
+  list-style-type: none;
 }
 
 @media (max-width:576px) {
-    #newTrickInfos,
-    #newTrickMainImage,
-    #newMedia {
-        padding-right: 1rem;
-        padding-left: 1rem;
-    }
-    #newMedia {
-        display: none;
-    }
+  #newTrickInfos,
+  #newTrickMainImage,
+  #newMedia {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+  #newMedia {
+    display: none;
+  }
 }
 
 
@@ -600,34 +591,34 @@ footer {
 **************************/
 
 .mainImg-input .custom-file {
-    display: none;
+  display: none;
 }
 
 .edit-media-input .custom-file,
 .edit-media-input button {
-    display: none;
+  display: none;
 }
 
 .edit-media-input .custom-file {
-    margin-top: 1rem;
+  margin-top: 1rem;
 }
 
 .card-actions button {
-    border: none;
-    background: none;
+  border: none;
+  background: none;
 }
 
 #editPage #trickMedia .btn {
-    display: none;
+  display: none;
 }
 
 @media (max-width:576px) {
-    #editPage #trickMedia .btn {
-        display: block;
-    }
-    #editPage .media-slider {
-        display: none;
-    }
+  #editPage #trickMedia .btn {
+    display: block;
+  }
+  #editPage .media-slider {
+    display: none;
+  }
 }
 
 
@@ -636,48 +627,48 @@ footer {
 *************************/
 
 .login-div {
-    min-height: 79vh;
+  min-height: 79vh;
 }
 
 .login-form {
-    border: black 1px solid;
-    box-shadow: grey 1px 1px 6px 0px;
-    padding: 2rem 3rem;
-    border-radius: 2px;
-    background-color: whitesmoke;
+  border: black 1px solid;
+  box-shadow: grey 1px 1px 6px 0px;
+  padding: 2rem 3rem;
+  border-radius: 2px;
+  background-color: whitesmoke;
 }
 
 .login-form input {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .login-form .checkbox input,
 .login-form .checkbox {
-    margin-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 #forgotPass2 {
-    display: block;
+  display: block;
 }
 
 @media (min-width:992px) {
-    #alreadyAccount,
-    #registerLink,
-    #forgotPass2 {
-        display: none;
-    }
+  #alreadyAccount,
+  #registerLink,
+  #forgotPass2 {
+    display: none;
+  }
 }
 
 @media (max-width:991px) {
-    #forgotPass {
-        display: none;
-    }
+  #forgotPass {
+    display: none;
+  }
 }
 
 @media (max-width:576px) {
-    .login-div {
-        margin-bottom: 5rem;
-    }
+  .login-div {
+    margin-bottom: 5rem;
+  }
 }
 
 
@@ -686,111 +677,111 @@ footer {
 *************************/
 
 .reported {
-    color: red;
+  color: red;
 }
 
 .reported input {
-    inline-size: fit-content;
+  inline-size: fit-content;
 }
 
 .badge-deleted {
-    text-decoration: line-through;
+  text-decoration: line-through;
 }
 
 .deleted-image {
-    position: relative;
+  position: relative;
 }
 
 .deleted-image::before {
-    content: "x";
-    font-size: 4rem;
-    position: absolute;
-    top: 10%;
-    left: 44%;
-    color: red;
-    z-index: 20;
+  content: "x";
+  font-size: 4rem;
+  position: absolute;
+  top: 10%;
+  left: 44%;
+  color: red;
+  z-index: 20;
 }
 
 .checkbox-label {
-    display: block;
-    position: relative;
-    padding-left: 0.5rem;
-    margin-right: 2rem;
-    cursor: pointer;
-    font-size: 22px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  display: block;
+  position: relative;
+  padding-left: 0.5rem;
+  margin-right: 2rem;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 
 /* Hide the browser's default checkbox */
 
 .checkbox-label input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
 }
 
 
 /* Create a custom checkbox */
 
 .checkmark {
-    width: fit-content;
-    height: fit-content;
-    font-size: 0.75rem;
-    color: darkgrey;
-    padding: 0.3rem;
-    border: 1px solid darkgrey;
-    border-radius: 5px;
+  width: fit-content;
+  height: fit-content;
+  font-size: 0.75rem;
+  color: darkgrey;
+  padding: 0.3rem;
+  border: 1px solid darkgrey;
+  border-radius: 5px;
 }
 
 
 /* On mouse-over, add a grey background color */
 
 .checkbox-label:hover input~.checkmark {
-    background-color: #ccc;
+  background-color: #ccc;
 }
 
 
 /* When the checkbox is checked, add a blue background */
 
 .checkbox-label input:checked~.checkmark {
-    background-color: #17a2b8;
+  background-color: #17a2b8;
 }
 
 
 /* Create the checkmark/indicator (hidden when not checked) */
 
 .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
+  content: "";
+  position: absolute;
+  display: none;
 }
 
 
 /* Show the checkmark when checked */
 
 .checkbox-label input:checked~.checkmark:after {
-    display: block;
+  display: block;
 }
 
 
 /* Style the checkmark/indicator */
 
 .checkbox-label .checkmark:after {
-    left: 50%;
-    top: 36%;
-    width: 8px;
-    height: 12px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
+  left: 50%;
+  top: 36%;
+  width: 8px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 
@@ -799,9 +790,9 @@ footer {
 *************************/
 
 .error {
-    height: 85vh;
+  height: 85vh;
 }
 
 .error div:first-child {
-    height: 70vh;
+  height: 70vh;
 }

@@ -27,7 +27,10 @@ class Trick implements \ArrayAccess
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
-     * @Assert\Regex("#^[a-zA-Z0-9-]{2,30}$#")
+     * @Assert\Regex(
+     *      pattern="#^[-'a-zA-ZÀ-ÖØ-öø-ÿ ]+$#",
+     *      message="Trick name must only contain letters, numbers and accented letters"
+     * )
      */
     private $name;
 

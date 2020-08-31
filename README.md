@@ -29,7 +29,7 @@ Project 6 of OpenClassrooms "PHP/Symfony app developper" course.
 <ul>
     <li>a) Update DATABASE_URL .env file with your database configuration.
         <pre>
-            <code>DATABASE_URL=mysql://username:password@127.0.0.1:3306/snowtricks_dev?serverVersion=mariadb-10.4.10</code>
+            <code>DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name</code>
         </pre>
     </li>
     <li>b) Create database: 
@@ -54,6 +54,7 @@ Project 6 of OpenClassrooms "PHP/Symfony app developper" course.
 # Usage
 
 For admin access : 
+
     - if you used fictive data (see 3-d)), you can login with following accounts :
         - user account :
             username : User

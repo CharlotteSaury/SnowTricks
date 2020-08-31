@@ -24,9 +24,9 @@
 				{{ form_row(form.plainPassword.first) }}
 				{{ form_row(form.plainPassword.second) }}
 
-				<div class="form-group">
+				<div class="form-group d-flex justify-content-center">
 					{{ form_widget(form.agreeTerms) }}
-					{{ form_label(form.agreeTerms) }}
+					<p>I agree to the <a href="{{ path('app_privacy') }}">terms</a></p>
 				</div>
 
 				<button type="submit" class="btn btn-info mb-2">Create an account</button>

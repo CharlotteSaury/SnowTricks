@@ -52,7 +52,6 @@ h2 {
   }
 }
 
-
 /******* Nav *********/
 
 .navbar-brand {
@@ -69,7 +68,7 @@ h2 {
   color: #89acaa !important;
 }
 
-@media (min-width:576px) {
+@media (min-width: 576px) {
   .nav-separator::before {
     content: "";
     position: absolute;
@@ -80,13 +79,12 @@ h2 {
   }
 }
 
-@media (max-width:576px) {
+@media (max-width: 576px) {
   nav {
     display: flex;
     flex-direction: row;
   }
 }
-
 
 /******* Footer *********/
 
@@ -97,12 +95,11 @@ footer {
   font-size: 0.7rem;
 }
 
-@media (max-width:576px) {
+@media (max-width: 576px) {
   footer {
     display: none !important;
   }
 }
-
 
 /*************************
 ******* Home Page ********
@@ -131,12 +128,12 @@ footer {
     transform: scale(1);
     opacity: 0.2;
   }
+  
   to {
     transform: scale(1.1);
     opacity: 1;
   }
 }
-
 
 /******* Header *********/
 
@@ -171,12 +168,11 @@ footer {
   left: 1.5rem;
 }
 
-@media (min-width:650px) {
+@media (min-width: 650px) {
   .homeHeader h1 {
     font-size: 6rem;
   }
 }
-
 
 /******* Trick List *********/
 
@@ -210,9 +206,6 @@ footer {
 
 #trickList .card-title {
   text-transform: capitalize;
-}
-
-#trickList .card-title {
   font-size: 1rem;
 }
 
@@ -242,7 +235,6 @@ footer {
   transform: rotate(360deg);
   transition: transform 1000ms;
 }
-
 
 /*************************
 ****** Trick Page ********
@@ -286,12 +278,7 @@ footer {
   font-size: 2rem;
 }
 
-
 /* ////// Media div /////// */
-
-#trickPage #trickMedia button {
-  display: none;
-}
 
 .trick-media {
   height: 10rem;
@@ -307,8 +294,8 @@ footer {
   transition: transform 0.3s;
 }
 
-#image-fields-list li>div,
-#video-fields-list li>div {
+#image-fields-list li > div,
+#video-fields-list li > div {
   display: flex;
   margin-bottom: 0.5rem;
 }
@@ -321,15 +308,19 @@ footer {
   color: #89acaa;
 }
 
-@media (max-width:576px) {
+#trickPage #trickMedia button {
+  display: none;
+}
+
+@media (max-width: 576px) {
   #trickPage #trickMedia button {
     display: block;
   }
+  
   #trickPage .media-slider {
     display: none;
   }
 }
-
 
 /* ///// Modal Gallery /////// */
 
@@ -358,7 +349,6 @@ footer {
   max-height: 70vh;
   object-fit: contain;
 }
-
 
 /* ////// Trick infos div /////// */
 
@@ -404,7 +394,7 @@ footer {
   max-width: 100%;
 }
 
-@media (max-width:767px) {
+@media (max-width: 767px) {
   #userModalInfos {
     text-align: center;
   }
@@ -420,7 +410,6 @@ footer {
     max-width: 95%;
   }
 }
-
 
 /* ////// Comment div /////// */
 
@@ -491,60 +480,67 @@ footer {
   object-fit: cover;
 }
 
-@media (max-width:991px) {
+@media (max-width: 991px) {
   #trickInfos,
   #trickCommentForm,
   #trickComments {
     padding-right: 4rem;
     padding-left: 4rem;
   }
+  
   #trickPage hr {
     margin-right: 4rem;
     margin-left: 4rem;
   }
 }
 
-@media (max-width:768px) {
+@media (max-width: 768px) {
   #trickInfos,
   #trickCommentForm,
   #trickComments {
     padding-right: 2rem;
     padding-left: 2rem;
   }
+  
   #trickPage hr {
     margin-right: 2rem;
     margin-left: 2rem;
   }
+  
   .avatar {
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
   }
+  
   .textarea-comment {
     width: 100%;
   }
 }
 
-@media (max-width:576px) {
+@media (max-width: 576px) {
   .avatar {
     width: 3rem;
     height: 3rem;
   }
+  
   .trick-comment-avatar {
     width: 20%;
   }
+  
   #trickCommentForm a {
     font-size: 1rem;
   }
+  
   #trickCommentForm button {
     margin-top: 1rem;
   }
+  
   #trickComments {
     padding-left: 1rem;
     padding-right: 1rem;
   }
 }
-
 
 /*************************
 **** New Trick Page ******
@@ -573,18 +569,18 @@ footer {
   list-style-type: none;
 }
 
-@media (max-width:576px) {
+@media (max-width: 576px) {
   #newTrickInfos,
   #newTrickMainImage,
   #newMedia {
     padding-right: 1rem;
     padding-left: 1rem;
   }
+  
   #newMedia {
     display: none;
   }
 }
-
 
 /*************************
 **** edit Trick Page ******
@@ -612,15 +608,15 @@ footer {
   display: none;
 }
 
-@media (max-width:576px) {
+@media (max-width: 576px) {
   #editPage #trickMedia .btn {
     display: block;
   }
+  
   #editPage .media-slider {
     display: none;
   }
 }
-
 
 /*************************
 ****** Login Page ********
@@ -651,7 +647,7 @@ footer {
   display: block;
 }
 
-@media (min-width:992px) {
+@media (min-width: 992px) {
   #alreadyAccount,
   #registerLink,
   #forgotPass2 {
@@ -659,18 +655,17 @@ footer {
   }
 }
 
-@media (max-width:991px) {
+@media (max-width: 991px) {
   #forgotPass {
     display: none;
   }
 }
 
-@media (max-width:576px) {
+@media (max-width: 576px) {
   .login-div {
     margin-bottom: 5rem;
   }
 }
-
 
 /*************************
 ****** Trick reportView Page ********
@@ -715,7 +710,6 @@ footer {
   user-select: none;
 }
 
-
 /* Hide the browser's default checkbox */
 
 .checkbox-label input {
@@ -725,7 +719,6 @@ footer {
   height: 0;
   width: 0;
 }
-
 
 /* Create a custom checkbox */
 
@@ -739,20 +732,17 @@ footer {
   border-radius: 5px;
 }
 
-
 /* On mouse-over, add a grey background color */
 
 .checkbox-label:hover input~.checkmark {
   background-color: #ccc;
 }
 
-
 /* When the checkbox is checked, add a blue background */
 
 .checkbox-label input:checked~.checkmark {
   background-color: #17a2b8;
 }
-
 
 /* Create the checkmark/indicator (hidden when not checked) */
 
@@ -762,13 +752,11 @@ footer {
   display: none;
 }
 
-
 /* Show the checkmark when checked */
 
 .checkbox-label input:checked~.checkmark:after {
   display: block;
 }
-
 
 /* Style the checkmark/indicator */
 
@@ -783,7 +771,6 @@ footer {
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-
 
 /*************************
 ****** Error Page ********

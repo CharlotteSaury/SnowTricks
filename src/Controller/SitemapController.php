@@ -15,7 +15,7 @@ class SitemapController extends AbstractController
     /**
      * @Route("/sitemap.xml", name="sitemap", defaults={"_format"="xml"})
      */
-    public function index(Request $request, TrickRepository $trickRepository, UserRepository $userRepository, GroupRepository $groupRepository)
+    public function index(Request $request, TrickRepository $trickRepository)
     {
         $hostname = $request->getSchemeAndHttpHost();
 
@@ -27,11 +27,6 @@ class SitemapController extends AbstractController
         $urls[] = ['loc' => $this->generateUrl('app_privacy')];
         $urls[] = ['loc' => $this->generateUrl('app_legal')];
         $urls[] = ['loc' => $this->generateUrl('user.trick.new')];
-        $urls[] = ['loc' => $this->generateUrl('admin.users')];
-        $urls[] = ['loc' => $this->generateUrl('admin.stats')];
-        $urls[] = ['loc' => $this->generateUrl('group.index')];
-        $urls[] = ['loc' => $this->generateUrl('user.tricks')];
-        $urls[] = ['loc' => $this->generateUrl('user.comments')];
 
         foreach ($trickRepository->findBy(['parentTrick' => null]) as $trick) {
             $images = [
@@ -61,25 +56,6 @@ class SitemapController extends AbstractController
                     ])
                 ];
             }
-        }
-
-        foreach ($userRepository->findAll() as $user) {
-            $routes = ['user.dashboard', 'user.profile', 'user.edit'];
-            foreach ($routes as $route) {
-                $urls[] = [
-                    'loc' => $this->generateUrl($route, [
-                        'username' => $user->getUsername()
-                    ])
-                ];
-            }
-        }
-
-        foreach ($groupRepository->findAll() as $group) {
-            $urls[] = [
-                'loc' => $this->generateUrl('group.edit', [
-                    'id' => $group->getId()
-                ])
-            ];
         }
 
         $response = new Response(

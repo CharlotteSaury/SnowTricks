@@ -185,7 +185,8 @@ $(function() {
     })
 
     $(".edit-media-button").click(function(e) {
-        $(this).parent().parent().find(".edit-media-input").css("display", "block");
+        $(this).parent().parent().find(".custom-file").css("display", "block");
+        $(this).parent().parent().find("input[type='text']").css("display", "block");
     })
 
     $(".delete-media-button").click(function(e) {

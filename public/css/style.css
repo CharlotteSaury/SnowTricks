@@ -591,6 +591,7 @@ footer {
 }
 
 .edit-media-input .custom-file,
+.edit-media-input input[type="text"],
 .edit-media-input button {
   display: none;
 }
@@ -604,7 +605,7 @@ footer {
   background: none;
 }
 
-#editPage #trickMedia .btn {
+ #editPage #trickMedia .btn {
   display: none;
 }
 
